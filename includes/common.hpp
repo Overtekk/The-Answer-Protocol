@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:15:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/14 13:54:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/14 15:01:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,3 +14,4 @@
 #include <string>
 #include <thread>
 #include <list>
+#include <map>
