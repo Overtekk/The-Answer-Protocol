@@ -1,5 +1,0 @@
-/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_server.dir
-/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_cli_client.dir
-/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_gui_client.dir
-/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/edit_cache.dir
-/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/rebuild_cache.dir
