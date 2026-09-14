@@ -84,6 +84,7 @@ todo
 | Resource | Description |
 | :------: | :---------: |
 | [raylib github](https://github.com/raysan5/raylib) | Official repo of the `raylib` librairy |
+| [yaml-cpp github](https://github.com/jbeder/yaml-cpp) | Official repo of the `yaml` librairy |
 
 ### IA was use to:
 - todo

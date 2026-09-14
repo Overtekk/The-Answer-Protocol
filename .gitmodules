@@ -1,3 +1,6 @@
 [submodule "librairies/raylib"]
 	path = librairies/raylib
 	url = https://github.com/raysan5/raylib.git
+[submodule "librairies/yaml-cpp"]
+	path = librairies/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp

@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/14 15:57:33 by roandrie         ###   ########.fr        #
+#    Updated: 2026/09/14 16:15:50 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
 
-RAYLIB_LIB_DIR	= librairies/raylib
+SUBMODULE_DIRS	= librairies/raylib librairies/yaml-cpp
 
 # --------------- #
 #      RULES      #
@@ -38,12 +38,18 @@ cli_client:	fclean git_absolute $(CLI_CLIENT)
 gui_client:	fclean git_absolute $(GUI_CLIENT)
 
 git_absolute:
-			@if [ -d "$(RAYLIB_LIB_DIR)" ]; then \
-				echo "$(BLUE) Raylib found$(RESET)"; \
-				exit 0; \
+			@missing=0; \
+			for dir in $(SUBMODULE_DIRS); do \
+				if [ ! -f "$$dir/CMakeLists.txt" ]; then \
+					missing=1; \
+					break; \
+				fi; \
+			done; \
+			if [ $$missing -eq 1 ]; then \
+				echo "$(BRED)Downloading missing libraries...$(RESET)"; \
+				git submodule update --init --recursive; \
 			else \
-				echo "$(BRED) Downloading missing librairies...$(RESET)"; \
- 				git submodule update --init --recursive; \
+				echo "$(BLUE)All libraries found$(RESET)"; \
 			fi
 
 $(BUILD_DIR)/build.ninja	$(BUILD_DIR)/Makefile:
