@@ -78,6 +78,7 @@ todo
 | Resource | Description |
 | :------: | :---------: |
 | [w3schools - Learning C++](https://www.w3schools.com/cpp/cpp_strings_access.asp) | Learning the base of C++ language |
+| [trove assistants epita - CMake](https://trove.assistants.epita.fr/docs/cmake/) | How to use and create CMake |
 
 ### Documentation
 | Resource | Description |

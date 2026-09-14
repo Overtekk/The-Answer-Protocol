@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -x c++-header -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_server.dir/cmake_pch.hxx -o CMakeFiles/tap_server.dir/cmake_pch.hxx.gch -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_server.dir/cmake_pch.hxx.cxx",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_server.dir/cmake_pch.hxx.cxx"
+},
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_server.dir/cmake_pch.hxx -o CMakeFiles/tap_server.dir/src/main.cpp.o -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/main.cpp",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/main.cpp"
+},
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -x c++-header -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_cli_client.dir/cmake_pch.hxx -o CMakeFiles/tap_cli_client.dir/cmake_pch.hxx.gch -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_cli_client.dir/cmake_pch.hxx.cxx",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_cli_client.dir/cmake_pch.hxx.cxx"
+},
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_cli_client.dir/cmake_pch.hxx -o CMakeFiles/tap_cli_client.dir/src/cli/cli_main.cpp.o -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/cli/cli_main.cpp",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/cli/cli_main.cpp"
+},
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -x c++-header -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_gui_client.dir/cmake_pch.hxx -o CMakeFiles/tap_gui_client.dir/cmake_pch.hxx.gch -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_gui_client.dir/cmake_pch.hxx.cxx",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_gui_client.dir/cmake_pch.hxx.cxx"
+},
+{
+  "directory": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+  "command": "/usr/bin/g++   -g -Wall -Wextra -Werror -std=gnu++17 -Winvalid-pch -include /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build/CMakeFiles/tap_gui_client.dir/cmake_pch.hxx -o CMakeFiles/tap_gui_client.dir/src/gui/gui_main.cpp.o -c /sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/gui/gui_main.cpp",
+  "file": "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/src/gui/gui_main.cpp"
+}
+]

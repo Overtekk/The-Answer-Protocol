@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "The_Answer_Protocol",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "tap_cli_client::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-tap_cli_client-a0b6ac714871bb790931.json",
+					"name" : "tap_cli_client",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "tap_gui_client::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-tap_gui_client-3b9da454225ce63a67d1.json",
+					"name" : "tap_gui_client",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "tap_server::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-tap_server-3e03711b6026a9a4dd8e.json",
+					"name" : "tap_server",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol/build",
+		"source" : "/sgoinfre/goinfre/Perso/roandrie/perso/The-Answer-Protocol"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
