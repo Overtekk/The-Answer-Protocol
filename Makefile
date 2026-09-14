@@ -6,49 +6,72 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/14 10:57:22 by roandrie         ###   ########.fr        #
+#    Updated: 2026/09/14 13:26:54 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-/ --------------- \
-/    VARIABLES    \
-/ --------------- \
+# --------------- #
+#    VARIABLES    #
+# --------------- #
 
 SERVER_NAME	=	tap_server
 CLI_CLIENT	=	tap_cli_client
 GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
-cmake -B $(BUILD_DIR) -S .
 
-/ --------------- \
-/      RULES      \
-/ --------------- \
+# --------------- #
+#      RULES      #
+# --------------- #
 
-.PHONY:		all clean fclean re
+.PHONY:		all server cli_client gui_client clean fclean re
 .SILENT:
 
 all:	$(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
 
-$(SERVER_NAME):
-				cmake --build $(BUILD_DIR) --target $(SERVER_NAME)
+server:	fclean $(SERVER_NAME)
 
-$(CLI_CLIENT):
-				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT)
+cli_client:	fclean $(CLI_CLIENT)
 
-$(GUI_CLIENT):
-				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT)
+gui_client:	fclean $(GUI_CLIENT)
+
+$(BUILD_DIR)/build.ninja	$(BUILD_DIR)/Makefile:
+				@mkdir -p $(BUILD_DIR)
+				@echo "$(YELLOW)Configuring CMake in $(BUILD_DIR)...$(RESET)"
+				cmake -B $(BUILD_DIR) -S .
+
+$(SERVER_NAME):	$(BUILD_DIR)/Makefile
+				@echo "$(CYAN)Building $(SERVER_NAME)...$(RESET)"
+				cmake --build $(BUILD_DIR) --target $(SERVER_NAME) -- --no-print-directory
+				@echo "$(BGREEN)$(SERVER_NAME) Done!$(RESET)"
+
+$(CLI_CLIENT):	$(BUILD_DIR)/Makefile
+				@echo "$(CYAN)Building $(CLI_CLIENT)...$(RESET)"
+				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT) -- --no-print-directory
+				@echo "$(BGREEN)$(CLI_CLIENT) Done!$(RESET)"
+
+$(GUI_CLIENT):	$(BUILD_DIR)/Makefile
+				@echo "$(CYAN)Building $(GUI_CLIENT)...$(RESET)"
+				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT) -- --no-print-directory
+				@echo "$(BGREEN)$(GUI_CLIENT) Done!$(RESET)"
 
 clean:
-		cmake --build $(BUILD_DIR) --target clean
+			@if [ -d "$(BUILD_DIR)" ]; then \
+				echo "$(MAGENTA)Cleaning build artifacts...$(RESET)"; \
+				cmake --build $(BUILD_DIR) --target clean 2>/dev/null -- --no-print-directory || true; \
+			fi
 
 fclean:	clean
+		@echo "$(BRED)Full cleanup (removing $(BUILD_DIR) and binaries)...$(RESET)"
 		rm -rf $(BUILD_DIR)
 		rm -f $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
+		@echo "$(GREEN)Clean complete.$(RESET)"
 
-/ --------------- \
-/     COLORS      \
-/ --------------- \
+re:		fclean all
+
+# --------------- #
+#     COLORS      #
+# --------------- #
 
 BLUE		=		\033[96m
 MAGENTA		=		\033[35m

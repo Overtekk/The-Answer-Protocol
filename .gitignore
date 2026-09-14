@@ -1,9 +1,7 @@
-# Python caches
-__pycache__
-.mypy_cache
+# C++ build
+build/
 
-# Python files
-.python-version
-.venv
-
-# Other
+# Executable
+tap_server
+tap_cli_client
+tap_gui_client
