@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/14 13:26:54 by roandrie         ###   ########.fr        #
+#    Updated: 2026/09/14 15:57:33 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,8 @@ GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
 
+RAYLIB_LIB_DIR	= librairies/raylib
+
 # --------------- #
 #      RULES      #
 # --------------- #
@@ -27,13 +29,22 @@ BUILD_DIR = build
 .PHONY:		all server cli_client gui_client clean fclean re
 .SILENT:
 
-all:	$(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
+all:	git_absolute $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
 
-server:	fclean $(SERVER_NAME)
+server:	fclean git_absolute $(SERVER_NAME)
 
-cli_client:	fclean $(CLI_CLIENT)
+cli_client:	fclean git_absolute $(CLI_CLIENT)
 
-gui_client:	fclean $(GUI_CLIENT)
+gui_client:	fclean git_absolute $(GUI_CLIENT)
+
+git_absolute:
+			@if [ -d "$(RAYLIB_LIB_DIR)" ]; then \
+				echo "$(BLUE) Raylib found$(RESET)"; \
+				exit 0; \
+			else \
+				echo "$(BRED) Downloading missing librairies...$(RESET)"; \
+ 				git submodule update --init --recursive; \
+			fi
 
 $(BUILD_DIR)/build.ninja	$(BUILD_DIR)/Makefile:
 				@mkdir -p $(BUILD_DIR)
