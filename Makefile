@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/14 16:15:50 by roandrie         ###   ########.fr        #
+#    Updated: 2026/09/15 09:41:19 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
 
-SUBMODULE_DIRS	= librairies/raylib librairies/yaml-cpp
+SUBMODULE_DIRS	= libraries/raylib libraries/yaml-cpp libraries/json
 
 # --------------- #
 #      RULES      #

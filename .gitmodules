@@ -4,3 +4,6 @@
 [submodule "librairies/yaml-cpp"]
 	path = librairies/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "librairies/json"]
+	path = librairies/json
+	url = https://github.com/nlohmann/json.git

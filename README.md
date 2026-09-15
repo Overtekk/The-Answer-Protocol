@@ -80,11 +80,12 @@ todo
 | [w3schools - Learning C++](https://www.w3schools.com/cpp/cpp_strings_access.asp) | Learning the base of C++ language |
 | [trove assistants epita - CMake](https://trove.assistants.epita.fr/docs/cmake/) | How to use and create CMake |
 
-### Librairies
+### Libraries
 | Resource | Description |
 | :------: | :---------: |
-| [raylib github](https://github.com/raysan5/raylib) | Official repo of the `raylib` librairy |
-| [yaml-cpp github](https://github.com/jbeder/yaml-cpp) | Official repo of the `yaml` librairy |
+| [raylib github](https://github.com/raysan5/raylib) | Official repo of the `raylib` library |
+| [yaml-cpp github](https://github.com/jbeder/yaml-cpp) | Official repo of the `yaml` library |
+| [json github](https://github.com/nlohmann/json) | Official repo of the `json` library |
 
 ### IA was use to:
 - todo
