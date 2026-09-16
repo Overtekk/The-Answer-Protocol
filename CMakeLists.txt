@@ -36,8 +36,8 @@ add_subdirectory(libraries/json)
 add_library(project_flags INTERFACE)
 target_compile_options(project_flags INTERFACE -g -Wall -Wextra -Werror)
 target_include_directories(project_flags INTERFACE includes)
-target_link_libraries(project_flags INTERFACE  $(LIBRARIES))
-target_precompile_headers(project_flags INTERFACE $(PRECOMPILED_HEADERS))
+target_link_libraries(project_flags INTERFACE  ${LIBRARIES})
+target_precompile_headers(project_flags INTERFACE ${PRECOMPILED_HEADERS})
 
 # Executable
 add_executable(tap_server src/main.cpp)

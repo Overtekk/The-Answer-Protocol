@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/14 15:31:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/16 14:05:42 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raylib.h"
 
 int main() {
+    SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
+    SetTargetFPS(60);
 
     while (!WindowShouldClose())
     {
