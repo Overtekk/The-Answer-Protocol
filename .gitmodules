@@ -1,9 +1,9 @@
-[submodule "librairies/raylib"]
-	path = librairies/raylib
+[submodule "libraries/raylib"]
+	path = libraries/raylib
 	url = https://github.com/raysan5/raylib.git
-[submodule "librairies/yaml-cpp"]
-	path = librairies/yaml-cpp
+[submodule "libraries/yaml-cpp"]
+	path = libraries/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
-[submodule "librairies/json"]
-	path = librairies/json
+[submodule "libraries/json"]
+	path = libraries/json
 	url = https://github.com/nlohmann/json.git
