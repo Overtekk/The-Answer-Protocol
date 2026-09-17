@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/16 14:05:42 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/09/17 16:01:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raylib.h"
+# include "raylib.h"
+# include "Entity.hpp"
 
 int main() {
     SetConfigFlags(FLAG_VSYNC_HINT);

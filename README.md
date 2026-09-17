@@ -79,6 +79,7 @@ todo
 | :------: | :---------: |
 | [w3schools - Learning C++](https://www.w3schools.com/cpp/cpp_strings_access.asp) | Learning the base of C++ language |
 | [trove assistants epita - CMake](https://trove.assistants.epita.fr/docs/cmake/) | How to use and create CMake |
+| [geeksforgeeks - Virtual Base Class](https://www.geeksforgeeks.org/cpp/virtual-base-class-in-c/) | Introduction and explanations about Virtual Base Class |
 
 ### Libraries
 | Resource | Description |

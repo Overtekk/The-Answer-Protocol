@@ -12,9 +12,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Variables
 	# Headers
-set(PRECOMPILED_HEADERS
-    includes/common.hpp
+# set(PRECOMPILED_HEADERS
+#     includes/common.hpp
+# )
+set (INCLUDES_DIR
+	includes
+	includes/base_class/entities
 )
+
 	# Libraries
 set(LIBRARIES
 	Threads::Threads
@@ -35,9 +40,9 @@ add_subdirectory(libraries/json)
 # Configuration
 add_library(project_flags INTERFACE)
 target_compile_options(project_flags INTERFACE -g -Wall -Wextra -Werror)
-target_include_directories(project_flags INTERFACE includes)
+target_include_directories(project_flags INTERFACE ${INCLUDES_DIR})
 target_link_libraries(project_flags INTERFACE  ${LIBRARIES})
-target_precompile_headers(project_flags INTERFACE ${PRECOMPILED_HEADERS})
+# target_precompile_headers(project_flags INTERFACE ${PRECOMPILED_HEADERS})
 
 # Executable
 add_executable(tap_server src/main.cpp)
