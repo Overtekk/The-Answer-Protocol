@@ -15,10 +15,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # set(PRECOMPILED_HEADERS
 #     includes/common.hpp
 # )
-set (INCLUDES_DIR
-	includes
-	includes/base_class/entities
-)
 
 	# Libraries
 set(LIBRARIES
@@ -40,7 +36,7 @@ add_subdirectory(libraries/json)
 # Configuration
 add_library(project_flags INTERFACE)
 target_compile_options(project_flags INTERFACE -g -Wall -Wextra -Werror)
-target_include_directories(project_flags INTERFACE ${INCLUDES_DIR})
+target_include_directories(project_flags INTERFACE includes)
 target_link_libraries(project_flags INTERFACE  ${LIBRARIES})
 # target_precompile_headers(project_flags INTERFACE ${PRECOMPILED_HEADERS})
 

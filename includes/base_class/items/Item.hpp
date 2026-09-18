@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Entity.hpp                                         :+:      :+:    :+:   */
+/*   Item.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/18 15:35:27 by roandrie         ###   ########.fr       */
+/*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
+/*   Updated: 2026/09/18 15:36:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,19 @@
 
 namespace fs = std::filesystem;
 
-class Entity {
+class Item {
 	private :
 	std::string _name;
-	int _health;
+	std::string _description = "";
 	std::tuple<int, int> _position;
 
 	public :
 		// Constructor
-		Entity(const std::string& name, const fs::path& sprite, int health)
-        : _name(name),  _health(std::clamp(health, 0, 1000)), sprite(sprite) {}
+		Item(const std::string& name, const fs::path& sprite)
+        : _name(name), sprite(sprite) {}
 
 		// Destructor
-		virtual ~Entity() = default;
+		virtual ~Item() = default;
 
 		// Path to sprite
 		fs::path sprite;
@@ -40,15 +40,13 @@ class Entity {
 		std::string getName() const;
 		bool setName(std::string&);
 
-		// Health
-		int getHealth() const;
-		bool setHealth(int);
+		// Description
+		std::string getDescription() const;
+		bool setDescription(std::string&);
 
 		// Position
 		std::tuple<int, int> getPos() const;
 		bool setPos(std::tuple<int, int>);
-
-		// virtual void test() = 0;
 
 		// Error
 		std::string sendObjectError(std::string) const;
@@ -56,15 +54,15 @@ class Entity {
 
 // Getter
 
-inline std::string Entity::getName() const { return _name; }
+inline std::string Item::getName() const { return _name; }
 
-inline int Entity::getHealth() const { return _health;  }
+inline std::string Item::getDescription() const { return _description; }
 
-inline std::tuple<int, int> Entity::getPos() const { return _position; }
+inline std::tuple<int, int> Item::getPos() const { return _position; }
 
  // Setter
 
-inline bool Entity::setName(std::string& new_name) {
+inline bool Item::setName(std::string& new_name) {
 	if (new_name.length() >= 3 && new_name.length() <= 20) {
 		_name = new_name;
 		return true;
@@ -73,13 +71,17 @@ inline bool Entity::setName(std::string& new_name) {
 	return false;
 }
 
-inline bool Entity::setHealth(int new_value) {
-	_health = std::clamp(new_value, 0, 1000);
-	return true;
+inline bool Item::setDescription(std::string& new_desc) {
+	if (new_desc.length() >= 1 && new_desc.length() <= 1000) {
+		_description = new_desc;
+		return true;
+	}
+	sendObjectError("Can't modify description. Minimum 1 and maximum 1000 characters.");
+	return false;
 }
 
-inline bool Entity::setPos(std::tuple<int, int> new_pos) {
-	if (std::get<0>(new_pos) < 0 || std::get<1>(new_pos) < 0) {
+inline bool Item::setPos(std::tuple<int, int> new_pos) {
+	if (std::get<0>(new_pos) < 0 || std::get<0>(new_pos) < 0) {
 		sendObjectError("Position can't be negative.");
 		return false;
 	}
@@ -88,7 +90,7 @@ inline bool Entity::setPos(std::tuple<int, int> new_pos) {
 }
 
 // Error
-inline std::string Entity::sendObjectError(std::string error) const {
+inline std::string Item::sendObjectError(std::string error) const {
 	std::ostringstream oss;
     oss << this << " object error: " << error << "\n";
     return oss.str();
