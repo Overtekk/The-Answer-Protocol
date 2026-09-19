@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/18 15:48:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/19 11:50:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,9 @@ bool Player::addItemToInventory(std::unique_ptr<Item> item) {
 }
 
 bool Player::removeItemToInventory(const std::string& item_name) {
-	if (checkItemInInventory(item_name)) {
-		_inventory.erase(item_name);
-		return true;
-	}
+	if (_inventory.erase(item_name) > 0) {
+        return true;
+    }
 	sendObjectError(item_name + " not in player inventory. Can't remove it.");
 	return false;
 }
