@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/15 09:41:19 by roandrie         ###   ########.fr        #
+#    Updated: 2026/09/21 13:54:51 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,11 +31,11 @@ SUBMODULE_DIRS	= libraries/raylib libraries/yaml-cpp libraries/json
 
 all:	git_absolute $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
 
-server:	fclean git_absolute $(SERVER_NAME)
+server:	git_absolute $(SERVER_NAME)
 
-cli_client:	fclean git_absolute $(CLI_CLIENT)
+cli_client:	git_absolute $(CLI_CLIENT)
 
-gui_client:	fclean git_absolute $(GUI_CLIENT)
+gui_client:	git_absolute $(GUI_CLIENT)
 
 git_absolute:
 			@missing=0; \

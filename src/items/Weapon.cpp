@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Weapon.hpp                                         :+:      :+:    :+:   */
+/*   Weapon.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/19 10:35:34 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:44:12 by roandrie         ###   ########.fr       */
+/*   Created: 2026/09/21 14:07:21 by roandrie          #+#    #+#             */
+/*   Updated: 2026/09/21 14:44:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+# include "base_class/items/Weapon.hpp"
 
-# include "Item.hpp"
-
-class Weapon : public Item {
-	public:
-		Weapon(const std::string& name, const fs::path& sprite);
-};
+Weapon::Weapon(
+	const std::string& name, const fs::path& sprite
+):
+	Item(name, sprite) {}
