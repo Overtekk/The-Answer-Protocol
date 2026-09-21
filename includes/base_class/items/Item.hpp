@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/18 15:36:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 10:35:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,21 @@
 # include <tuple>
 
 namespace fs = std::filesystem;
+using ItemID = uint64_t;
 
 class Item {
 	private :
 	std::string _name;
+	ItemID _id;
 	std::string _description = "";
 	std::tuple<int, int> _position;
+
+	inline static ItemID _next_id = 1;
 
 	public :
 		// Constructor
 		Item(const std::string& name, const fs::path& sprite)
-        : _name(name), sprite(sprite) {}
+        : _name(name), _id(_next_id++), sprite(sprite) {}
 
 		// Destructor
 		virtual ~Item() = default;
@@ -37,28 +41,23 @@ class Item {
 		fs::path sprite;
 
 		// Name
-		std::string getName() const;
-		bool setName(std::string&);
+		std::string getName() const { return _name; }
+		bool setName(std::string& new_name);
+
+		// ID
+		ItemID getId() const { return _id; }
 
 		// Description
-		std::string getDescription() const;
-		bool setDescription(std::string&);
+		std::string getDescription() const { return _description; }
+		bool setDescription(std::string& new_desc);
 
 		// Position
-		std::tuple<int, int> getPos() const;
-		bool setPos(std::tuple<int, int>);
+		std::tuple<int, int> getPos() const { return _position; }
+		bool setPos(std::tuple<int, int> new_pos);
 
 		// Error
-		std::string sendObjectError(std::string) const;
+		std::string sendObjectError(std::string error) const;
 };
-
-// Getter
-
-inline std::string Item::getName() const { return _name; }
-
-inline std::string Item::getDescription() const { return _description; }
-
-inline std::tuple<int, int> Item::getPos() const { return _position; }
 
  // Setter
 

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/18 15:35:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 10:36:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,30 +37,22 @@ class Entity {
 		fs::path sprite;
 
 		// Name
-		std::string getName() const;
-		bool setName(std::string&);
+		std::string getName() const { return _name; }
+		bool setName(std::string& new_name);
 
 		// Health
-		int getHealth() const;
-		bool setHealth(int);
+		int getHealth() const { return _health;  }
+		bool setHealth(int new_value);
 
 		// Position
-		std::tuple<int, int> getPos() const;
-		bool setPos(std::tuple<int, int>);
+		std::tuple<int, int> getPos() const { return _position; }
+		bool setPos(std::tuple<int, int> new_pos);
 
 		// virtual void test() = 0;
 
 		// Error
-		std::string sendObjectError(std::string) const;
+		std::string sendObjectError(std::string error) const;
 };
-
-// Getter
-
-inline std::string Entity::getName() const { return _name; }
-
-inline int Entity::getHealth() const { return _health;  }
-
-inline std::tuple<int, int> Entity::getPos() const { return _position; }
 
  // Setter
 
