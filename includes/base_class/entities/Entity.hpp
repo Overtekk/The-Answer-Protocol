@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 10:36:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 12:12:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 # include <algorithm>
 # include <filesystem>
 # include <tuple>
+# include "raylib.h"
+
+# define MAX_FRAME_SPEED 15
+# define MIN_FRAME_SPEED 1
 
 namespace fs = std::filesystem;
 
@@ -28,13 +32,15 @@ class Entity {
 	public :
 		// Constructor
 		Entity(const std::string& name, const fs::path& sprite, int health)
-        : _name(name),  _health(std::clamp(health, 0, 1000)), sprite(sprite) {}
+        : _name(name), _health(std::clamp(health, 0, 1000)), sprite(sprite) {}
 
 		// Destructor
 		virtual ~Entity() = default;
 
 		// Path to sprite
 		fs::path sprite;
+		// Load texture
+		Texture2D texture = LoadTexture(sprite.c_str());
 
 		// Name
 		std::string getName() const { return _name; }
@@ -47,6 +53,10 @@ class Entity {
 		// Position
 		std::tuple<int, int> getPos() const { return _position; }
 		bool setPos(std::tuple<int, int> new_pos);
+
+		// Raylib funcs
+		void on_draw(int x, int y);
+		void unload_texture() { UnloadTexture(texture); }
 
 		// virtual void test() = 0;
 
@@ -77,6 +87,12 @@ inline bool Entity::setPos(std::tuple<int, int> new_pos) {
 	}
 	_position = new_pos;
 	return true;
+}
+
+// Raylib funcs
+
+inline void Entity::on_draw(int x, int y) {
+	DrawTexture(texture, x, y, WHITE);
 }
 
 // Error

@@ -20,6 +20,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(LIBRARIES
 	Threads::Threads
 	nlohmann_json::nlohmann_json
+	raylib
 )
 
 # Disables examples/tests from dependencies
@@ -48,4 +49,4 @@ add_executable(tap_gui_client src/gui/gui_main.cpp)
 # Add configurations
 target_link_libraries(tap_server PRIVATE project_flags yaml-cpp)
 target_link_libraries(tap_cli_client PRIVATE project_flags)
-target_link_libraries(tap_gui_client PRIVATE project_flags raylib)
+target_link_libraries(tap_gui_client PRIVATE project_flags)
