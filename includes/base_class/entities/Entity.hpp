@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:50:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 16:40:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,13 @@ class Entity {
 	private :
 		std::string _name;
 		int _health;
-		std::tuple<int, int> _position;
+		std::tuple<float, float> _position;
 		fs::path _sprite;
+
+	protected :
+		float speed = 100.0f;
+		float dx = 0;
+		float dy = 0;
 
 	public :
 		// Constructor
@@ -43,13 +48,14 @@ class Entity {
 		bool setHealth(int new_value);
 
 		// Position
-		std::tuple<int, int> getPos() const;
-		bool setPos(std::tuple<int, int> new_pos);
+		std::tuple<float, float> getPos() const;
+		bool setPos(std::tuple<float, float> new_pos);
+		void set_direction(float new_dx, float new_dy);
 
 		// Sprite
 		fs::path getSpritePath() const { return _sprite; }
 
-		// virtual void test() = 0;
+		virtual void update(float delta_time);
 
 		// Error
 		std::string sendObjectError(std::string error) const;

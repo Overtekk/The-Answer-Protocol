@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:57:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 16:48:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,20 @@ class VisualEntity {
 		std::tuple<int, int> _sprite_dim;
 		float _frame_timer;
 
+		// Reference to the entity
+		const Entity& _entity;
+
 		Rectangle init_sprite_rect();
 
 	public:
-		VisualEntity(const fs::path& sprite_path, std::tuple<int, int> sprite_dim, float scale = 1.0f);
+		VisualEntity(const Entity& entity, std::tuple<int, int> sprite_dim, float scale = 1.0f);
 
 		virtual ~VisualEntity();
 
-		void on_draw(float x, float y);
+		// Protection against copying texture
+		VisualEntity(const VisualEntity&) = delete;
+		VisualEntity& operator=(const VisualEntity&) = delete;
+
+		void on_draw();
 		void unload_texture();
 };

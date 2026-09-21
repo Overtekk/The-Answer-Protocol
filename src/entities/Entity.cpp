@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:42:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/21 16:43:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,19 @@ Entity::Entity(
 	_health(std::clamp(health, 0, 1000)),
 	_sprite(sprite) {}
 
+void Entity::update(float delta_time) {
+	std::get<0>(_position) = dx * speed * delta_time;
+	std::get<1>(_position) = dy * speed * delta_time;
+	dx, dy = 0.0f, 0.0f;
+};
+
 // Getter
 
 std::string Entity::getName() const { return _name; }
 
 int Entity::getHealth() const { return _health;  }
 
-std::tuple<int, int> Entity::getPos() const { return _position; }
+std::tuple<float, float> Entity::getPos() const { return _position; }
 
  // Setter
 
@@ -43,13 +49,18 @@ bool Entity::setHealth(int new_value) {
 	return true;
 }
 
-bool Entity::setPos(std::tuple<int, int> new_pos) {
+bool Entity::setPos(std::tuple<float, float> new_pos) {
 	if (std::get<0>(new_pos) < 0 || std::get<1>(new_pos) < 0) {
 		sendObjectError("Position can't be negative.");
 		return false;
 	}
 	_position = new_pos;
 	return true;
+}
+
+void Entity::set_direction(float new_dx, float new_dy) {
+	dx = std::clamp(new_dx, -1.0f, 1.0f);
+	dy = std::clamp(new_dy, -1.0f, 1.0f);
 }
 
 // Error
