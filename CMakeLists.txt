@@ -10,23 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
 # Export commands for VSCODE
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Variables
-	# Headers
-# set(PRECOMPILED_HEADERS
-#     includes/common.hpp
-# )
-set (INCLUDES_DIR
-	includes
-	includes/base_class/entities
-)
-
-	# Libraries
-set(LIBRARIES
-	Threads::Threads
-	nlohmann_json::nlohmann_json
-)
-
-# Disables examples/tests from dependencies
+#Disable examples and tests from submodules
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 set(JSON_BuildTests OFF CACHE BOOL "" FORCE)
@@ -37,19 +21,63 @@ add_subdirectory(libraries/raylib)
 add_subdirectory(libraries/yaml-cpp)
 add_subdirectory(libraries/json)
 
-# Configuration
-add_library(project_flags INTERFACE)
-target_compile_options(project_flags INTERFACE -g -Wall -Wextra -Werror)
-target_include_directories(project_flags INTERFACE ${INCLUDES_DIR})
-target_link_libraries(project_flags INTERFACE  ${LIBRARIES})
-# target_precompile_headers(project_flags INTERFACE ${PRECOMPILED_HEADERS})
+# Config
+add_library(project_warnings INTERFACE)
+target_compile_options(project_warnings INTERFACE -g -Wall -Wextra -Werror)
+target_include_directories(project_warnings INTERFACE includes)
 
-# Executable
-add_executable(tap_server src/main.cpp)
-add_executable(tap_cli_client src/cli/cli_main.cpp)
-add_executable(tap_gui_client src/gui/gui_main.cpp)
+# -------------#
+#   Variables
+# -------------#
 
-# Add configurations
-target_link_libraries(tap_server PRIVATE project_flags yaml-cpp)
-target_link_libraries(tap_cli_client PRIVATE project_flags)
-target_link_libraries(tap_gui_client PRIVATE project_flags raylib)
+set(COMMON_SOURCES
+    src/items/Item.cpp
+    src/items/Weapon.cpp
+    src/entities/Entity.cpp
+    src/entities/Player.cpp
+)
+
+set(SERVER_MAIN     src/main.cpp)
+set(CLI_MAIN        src/cli/cli_main.cpp)
+set(GUI_MAIN        src/gui/gui_main.cpp)
+
+set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES})
+
+set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES})
+
+set(GUI_SOURCES
+    ${GUI_MAIN}
+    ${COMMON_SOURCES}
+    src/gui/entities/VisualEntity.cpp
+	src/gui/entities/VisualPlayer.cpp
+)
+
+# -------------#
+#  Executables
+# -------------#
+
+# 1. Server TCP
+add_executable(tap_server ${SERVER_SOURCES})
+target_link_libraries(tap_server PRIVATE
+    project_warnings
+    Threads::Threads
+    yaml-cpp
+    nlohmann_json::nlohmann_json
+)
+
+# 2. Client CLI
+add_executable(tap_cli_client ${CLI_SOURCES})
+target_link_libraries(tap_cli_client PRIVATE
+    project_warnings
+    Threads::Threads
+    nlohmann_json::nlohmann_json
+)
+
+# 3. Client GUI
+add_executable(tap_gui_client ${GUI_SOURCES})
+target_link_libraries(tap_gui_client PRIVATE
+    project_warnings
+    Threads::Threads
+    nlohmann_json::nlohmann_json
+    raylib
+)

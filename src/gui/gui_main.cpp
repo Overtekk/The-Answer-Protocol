@@ -6,23 +6,28 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/17 16:01:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 11:31:01 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "raylib.h"
-# include "Entity.hpp"
+#include "gui/entities/VisualPlayer.hpp"
 
 int main() {
     SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
 
+	VisualPlayer kris("Kris", "assets/sprites/player/kris_walk.png", {19, 38}, 20, 2.0f);
+
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(RAYWHITE);
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+
+			kris.update(GetFrameTime());
+			kris.on_draw();
+
         EndDrawing();
     }
 

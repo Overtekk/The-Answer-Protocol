@@ -88,6 +88,9 @@ todo
 | [yaml-cpp github](https://github.com/jbeder/yaml-cpp) | Official repo of the `yaml` library |
 | [json github](https://github.com/nlohmann/json) | Official repo of the `json` library |
 
+### Assets
+Deltarune assets are created by Toby Fox and Temmie. They were gathered on [The Spriters Resource](https://www.spriters-resource.com/pc_computer/deltarune/asset/110448/).
+
 ### IA was use to:
 - todo
 

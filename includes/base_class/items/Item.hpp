@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Entity.hpp                                         :+:      :+:    :+:   */
+/*   Item.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 10:42:42 by roandrie         ###   ########.fr       */
+/*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
+/*   Updated: 2026/09/21 14:43:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,35 +15,46 @@
 # include <iostream>
 # include <algorithm>
 # include <filesystem>
-# include <string>
 # include <tuple>
 
 namespace fs = std::filesystem;
+using ItemID = uint64_t;
 
-class Entity {
+class Item {
 	private :
-		std::string _name;
-		int _health;
-		fs::path _sprite;
+	std::string _name;
+	ItemID _id;
+	std::string _description = "";
+	std::tuple<int, int> _position;
+
+	inline static ItemID _next_id = 1;
 
 	public :
 		// Constructor
-		Entity(const std::string& name, const fs::path& sprite, int health);
+		Item(const std::string& name, const fs::path& sprite);
 
 		// Destructor
-		virtual ~Entity() = default;
+		virtual ~Item() = default;
+
+		// Path to sprite
+		fs::path sprite;
 
 		// Name
 		std::string getName() const;
 		bool setName(std::string& new_name);
 
-		// Health
-		int getHealth() const;
-		bool setHealth(int new_value);
+		// ID
+		ItemID getId() const;
 
-		// Sprite
-		fs::path getSpritePath() const { return _sprite; }
+		// Description
+		std::string getDescription() const;
+		bool setDescription(std::string& new_desc);
+
+		// Position
+		std::tuple<int, int> getPos() const;
+		bool setPos(std::tuple<int, int> new_pos);
 
 		// Error
 		std::string sendObjectError(std::string error) const;
 };
+
