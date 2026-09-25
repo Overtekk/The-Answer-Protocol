@@ -6,12 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 11:49:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 12:13:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cmath>
 # include "gui/entities/VisualEntity.hpp"
+
+# define FRAME_DURATION 0.15f
 
 VisualEntity::VisualEntity(
 	const Entity& entity, std::tuple<int, int> sprite_dim, float scale
@@ -27,19 +29,35 @@ VisualEntity::~VisualEntity() { UnloadTexture(_texture); }
 void VisualEntity::update(float delta_time) {
 	update_movement(delta_time);
 	// Normalize vector
-	float length = sqrt((dx * dx) + (dy * dy));
+	float length = sqrt((_dx * _dx) + (_dy * _dy));
 	if (length > 0) {
-		dx = dx / length;
-		dy = dy / length;
+		_dx = _dx / length;
+		_dy = _dy / length;
 	}
+	update_sprite(delta_time);
 
-	_position.x += dx * speed * delta_time;
-	_position.y += dy * speed * delta_time;
-	dx = 0.0f;
-	dy = 0.0f;
+	_position.x += _dx * _speed * delta_time;
+	_position.y += _dy * _speed * delta_time;
+	_dx = 0.0f;
+	_dy = 0.0f;
 };
 
-void VisualEntity::update_movement(float) { }
+void VisualEntity::update_movement(float) {}
+
+void VisualEntity::update_sprite(float delta_time) {
+	if (_dx != 0.0f || _dy != 0.0f) {
+		_frame_timer += delta_time;
+
+		if (_frame_timer > FRAME_DURATION) {
+			_frame_timer = 0;
+			_current_frame = (_current_frame + 1) % 4;
+		}
+	}
+	else {
+		_frame_timer = 0;
+		_current_frame = 0;
+	}
+}
 
 // Draw
 void VisualEntity::on_draw() {
@@ -55,7 +73,9 @@ void VisualEntity::on_draw() {
 
 // Utils
 Rectangle VisualEntity::init_sprite_rect() {
-    return {0.0f, 0.0f, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
+	int x = _current_frame * (float)std::get<0>(_sprite_dim);
+	int y = _direction_row * (float)std::get<1>(_sprite_dim);
+    return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
 }
 
 // Getter

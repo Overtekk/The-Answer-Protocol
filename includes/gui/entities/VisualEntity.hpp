@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 11:45:55 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 12:13:40 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 # define MAX_FRAME_SPEED 15
 # define MIN_FRAME_SPEED 1
+
+enum Direction {UP, DOWN, LEFT, RIGHT};
 
 class VisualEntity {
 	private:
@@ -35,16 +37,18 @@ class VisualEntity {
 
 		// Sprite frame
 		Rectangle init_sprite_rect();
-		Rectangle _frame_rec;
+		int _current_frame = 0;
 		float _frame_timer;
+		enum Direction _direction_row = DOWN;
 
 		// Movement
-		float speed = 100.0f;
-		float dx = 0;
-		float dy = 0;
+		float _speed = 100.0f;
+		float _dx = 0;
+		float _dy = 0;
 
 	protected:
 		virtual void update_movement(float delta_time);
+		virtual void update_sprite(float delta_time);
 
 	public:
 		VisualEntity(const Entity& entity, std::tuple<int, int> sprite_dim, float scale = 1.0f);
