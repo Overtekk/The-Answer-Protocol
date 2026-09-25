@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 09:56:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 11:31:01 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int main() {
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
+			kris.update(GetFrameTime());
 			kris.on_draw();
 
         EndDrawing();
