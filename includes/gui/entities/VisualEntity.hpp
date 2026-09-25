@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 12:13:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 14:55:40 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define MAX_FRAME_SPEED 15
 # define MIN_FRAME_SPEED 1
 
-enum Direction {UP, DOWN, LEFT, RIGHT};
+enum Direction {DOWN = 0, LEFT = 1, UP = 2};
 
 class VisualEntity {
 	private:
@@ -39,6 +39,7 @@ class VisualEntity {
 		Rectangle init_sprite_rect();
 		int _current_frame = 0;
 		float _frame_timer;
+		bool _facing_left = true;
 		enum Direction _direction_row = DOWN;
 
 		// Movement

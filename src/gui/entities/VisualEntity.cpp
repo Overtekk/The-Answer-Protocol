@@ -6,14 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 12:13:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 15:01:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cmath>
 # include "gui/entities/VisualEntity.hpp"
 
-# define FRAME_DURATION 0.15f
+# define FRAME_DURATION 0.18f
 
 VisualEntity::VisualEntity(
 	const Entity& entity, std::tuple<int, int> sprite_dim, float scale
@@ -34,6 +34,22 @@ void VisualEntity::update(float delta_time) {
 		_dx = _dx / length;
 		_dy = _dy / length;
 	}
+	if (_dy > 0) {
+		_direction_row = DOWN;
+	}
+	else if (_dy < 0) {
+		_direction_row = UP;
+	}
+	else if (_dx != 0) {
+		_direction_row = LEFT;
+		if (_dx > 0) {
+			_facing_left = false;
+		}
+		else {
+			_facing_left = true;
+		}
+	}
+
 	update_sprite(delta_time);
 
 	_position.x += _dx * _speed * delta_time;
@@ -64,7 +80,7 @@ void VisualEntity::on_draw() {
     Rectangle source = init_sprite_rect();
 	auto [px, py] = getPos();
     Rectangle dest = {
-        px, py, source.width * _sprite_scale_mult, source.height * _sprite_scale_mult
+        px, py, (std::abs(source.width) * _sprite_scale_mult), source.height * _sprite_scale_mult
     };
     Vector2 origin = {0.0f, 0.0f};
 
@@ -73,9 +89,12 @@ void VisualEntity::on_draw() {
 
 // Utils
 Rectangle VisualEntity::init_sprite_rect() {
-	int x = _current_frame * (float)std::get<0>(_sprite_dim);
-	int y = _direction_row * (float)std::get<1>(_sprite_dim);
-    return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
+	float x = _current_frame * (float)std::get<0>(_sprite_dim);
+	float y = _direction_row * (float)std::get<1>(_sprite_dim);
+	if (_facing_left) {
+    	return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
+	}
+	return {x, y, -(float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
 }
 
 // Getter
@@ -92,8 +111,8 @@ bool VisualEntity::setPos(Vector2 new_pos) {
 }
 
 void VisualEntity::set_direction(float new_dx, float new_dy) {
-	dx = std::clamp(new_dx, -1.0f, 1.0f);
-	dy = std::clamp(new_dy, -1.0f, 1.0f);
+	_dx = std::clamp(new_dx, -1.0f, 1.0f);
+	_dy = std::clamp(new_dy, -1.0f, 1.0f);
 }
 
 // Error
