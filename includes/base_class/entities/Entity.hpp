@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 16:40:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 09:37:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Entity {
 	private :
 		std::string _name;
 		int _health;
-		std::tuple<float, float> _position;
+		std::tuple<float, float> _position = {0.0f, 0.0f};
 		fs::path _sprite;
 
 	protected :

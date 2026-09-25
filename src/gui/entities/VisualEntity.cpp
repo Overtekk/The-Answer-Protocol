@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 16:49:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 09:50:18 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ VisualEntity::VisualEntity(
 	const Entity& entity, std::tuple<int, int> sprite_dim, float scale
 ):
 	_entity(entity),
-	LoadTexture(entity.getSpritePath().string().c_str()),
+	_texture(LoadTexture(entity.getSpritePath().string().c_str())),
 	_sprite_scale_mult(scale),
 	_sprite_dim(sprite_dim) {}
 
@@ -30,8 +30,9 @@ Rectangle VisualEntity::init_sprite_rect() {
 
 void VisualEntity::on_draw() {
     Rectangle source = init_sprite_rect();
+	auto [px, py] = _entity.getPos();
     Rectangle dest = {
-        _entity.getPos, y, source.width * _sprite_scale_mult, source.height * _sprite_scale_mult
+        px, py, source.width * _sprite_scale_mult, source.height * _sprite_scale_mult
     };
     Vector2 origin = {0.0f, 0.0f};
 

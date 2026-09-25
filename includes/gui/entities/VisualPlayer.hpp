@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:48:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:48:30 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 09:54:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ public:
         int health,
         float scale = 1.0f
     ) : Player(name, sprite, health),
-        VisualEntity(sprite, sprite_dim, scale) {}
+        VisualEntity(*this, sprite_dim, scale) {}
 };

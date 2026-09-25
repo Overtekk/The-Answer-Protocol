@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 16:43:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 09:14:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ Entity::Entity(
 	_sprite(sprite) {}
 
 void Entity::update(float delta_time) {
-	std::get<0>(_position) = dx * speed * delta_time;
-	std::get<1>(_position) = dy * speed * delta_time;
-	dx, dy = 0.0f, 0.0f;
+	std::get<0>(_position) += dx * speed * delta_time;
+	std::get<1>(_position) += dy * speed * delta_time;
+	dx = 0.0f;
+	dy = 0.0f;
 };
 
 // Getter

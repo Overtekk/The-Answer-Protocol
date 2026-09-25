@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 16:48:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/09/25 09:49:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 
 class VisualEntity {
 	private:
+		// Reference to the entity
+		const Entity& _entity;
+
 		Texture2D _texture;
 		float _sprite_scale_mult;
 		Rectangle _frame_rec;
@@ -28,9 +31,6 @@ class VisualEntity {
 		float sprite_height;
 		std::tuple<int, int> _sprite_dim;
 		float _frame_timer;
-
-		// Reference to the entity
-		const Entity& _entity;
 
 		Rectangle init_sprite_rect();
 
