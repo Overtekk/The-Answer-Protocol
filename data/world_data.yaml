@@ -241,7 +241,7 @@ entities:
       hp: 20
 
   rouxls_kaard:
-    name: "Rouxls Kaard"
+    name: "Swatch"
     description: ""
     dialogue: []
     type: "shop"
