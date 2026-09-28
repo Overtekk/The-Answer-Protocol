@@ -1,0 +1,249 @@
+# --- LOCATIONS ---
+world:
+  locations:
+  # SPAWN
+    spawn:
+      name: "Cyber-City"
+      description: ""
+    exits:
+      west: "road_traffic"
+      east: "carnival"
+    spawns: []
+    items: []
+
+  # CITY ROAD TRAFFIC
+    road_traffic:
+      name: "City Road Traffic"
+      description: ""
+    exits:
+      north: "city_too"
+      east: "spawn"
+    spawns: []
+    items: []
+
+  # CITY TOO
+    city_too:
+      name: "City Too"
+      description: ""
+    exits:
+      north: "manor_entrance"
+      south: "road_traffic"
+    spawns: ["virovirokun"]
+    items: []
+
+  # MANOR ENTRANCE
+    manor_entrance:
+      name: "Manor Entrance"
+      description: ""
+    exits:
+      west: "manor_hall"
+      east: "back_street"
+      south: "city_too"
+    spawns: ["guard_dog", "k_round"]
+    items: []
+
+  # BACK STREET
+    back_street:
+      name: "Back Street"
+      description: ""
+    exits:
+      west: "manor_entrance"
+      east: "cyber_field"
+    spawns: ["maus", "susie"]
+    items: []
+
+  # CYBER FIELD
+    cyber_field:
+      name: "Cyber Field"
+      description: ""
+    exits:
+      west: "back_street"
+      south: "trash_area"
+    spawns: ["kawkaw", "holy_cow"]
+    items: []
+
+  # TRASH AREA
+    trash_area:
+      name: "Trash Area"
+      description: ""
+    exits:
+      north: "cyber_field"
+      south: "carnival"
+    spawns: ["spamton"]
+    items: []
+
+  # CARNIVAL
+    carnival:
+      name: "Carnival"
+      description: ""
+    exits:
+      north: "trash_area"
+      west: "spawn"
+    spawns: ["ralsei"]
+    items: []
+
+  # MANOR HALL
+    hall_shop:
+      name: "Hall's Shop"
+      description: ""
+      has_save_point: true
+    exits:
+      north: "queen_castle"
+      east: "manor_entrance"
+    spawns: ["rouxls_kaard"]
+    items: []
+
+  # QUEEN CASTLE
+    queen_castle:
+      name: "Queen Castle Floor 1"
+      description: ""
+    exits:
+      east: "throne"
+      south: "hall_shop"
+    spawns: ["swatchlings"]
+    items: []
+
+  # QUEEN THRONE
+    throne:
+      name: "Queen's Throne"
+      description: ""
+    exits:
+      west: "queen_castle"
+    spawns: ["queen"]
+    items: []
+
+# SPECIAL ROOMS
+  # EGG ROOM
+    egg_room:
+      name: "???"
+      description: "???"
+      special: true
+    exits:
+      north: "road_traffic"
+      south: "road_traffic"
+      east: "road_traffic"
+      west: "road_traffic"
+    spawns: []
+    items: ["egg"]
+
+  # SECRET ROOM
+    secret_room:
+      name: "Secret Room"
+      description: ""
+      special: true
+    exits:
+      east: "trash_area"
+    spawns: ["sans"]
+    items: []
+
+# --- ITEMS ---
+items:
+  egg:
+    name: "EGG"
+    description: "Just an EGG."
+
+# --- ENTITIES ---
+entities:
+  virovirokun:
+    name: "Virovirokun"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  guard_dog:
+    name: "Guard Dog"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  maus:
+    name: "Maus"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  kawkaw:
+    name: "KawKaw"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  swatchlings:
+    name: "Swatchlings"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  k_round:
+    name: "K.Round"
+    description: ""
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  queen:
+    name: "Queen"
+    description: ""
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  sans:
+    name: "Sans"
+    description: ""
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  susie:
+    name: "Susie"
+    description: ""
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  ralsei:
+    name: "Ralsei"
+    description: ""
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  holy_cow:
+    name: "Holy Cow"
+    description: ""
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  spamton:
+    name: "Spamton"
+    description: ""
+    dialogue: []
+    type: "shop"
+    stats:
+      hp: 20
+
+  rouxls_kaard:
+    name: "Rouxls Kaard"
+    description: ""
+    dialogue: []
+    type: "shop"
+    stats:
+      hp: 20
