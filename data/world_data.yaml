@@ -24,7 +24,7 @@ world:
   # CITY TOO
     city_too:
       name: "City Too"
-      description: ""
+      description: "The second best city made of cyber things."
     exits:
       north: "manor_entrance"
       south: "road_traffic"
@@ -34,7 +34,7 @@ world:
   # MANOR ENTRANCE
     manor_entrance:
       name: "Manor Entrance"
-      description: ""
+      description: "A giant manor that hide the sun."
     exits:
       west: "manor_hall"
       east: "back_street"
@@ -45,7 +45,7 @@ world:
   # BACK STREET
     back_street:
       name: "Back Street"
-      description: ""
+      description: "A place surrounded by iron fences with no lights."
     exits:
       west: "manor_entrance"
       east: "cyber_field"
@@ -55,7 +55,7 @@ world:
   # CYBER FIELD
     cyber_field:
       name: "Cyber Field"
-      description: ""
+      description: "The ground seem like grass but it's just an image."
     exits:
       west: "back_street"
       south: "trash_area"
@@ -65,7 +65,7 @@ world:
   # TRASH AREA
     trash_area:
       name: "Trash Area"
-      description: ""
+      description: "The place smells bad, there are a lot of trashs and rats."
     exits:
       north: "cyber_field"
       south: "carnival"
