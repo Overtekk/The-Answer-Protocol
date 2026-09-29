@@ -4,7 +4,7 @@ world:
   # SPAWN
     spawn:
       name: "Cyber-City"
-      description: ""
+      description: "A city made of cyber things."
     exits:
       west: "road_traffic"
       east: "carnival"
@@ -14,7 +14,7 @@ world:
   # CITY ROAD TRAFFIC
     road_traffic:
       name: "City Road Traffic"
-      description: ""
+      description: "Only the red light pass throught your eyes."
     exits:
       north: "city_too"
       east: "spawn"
@@ -141,6 +141,35 @@ items:
   egg:
     name: "EGG"
     description: "Just an EGG."
+
+  chocolate_bar:
+    name: "Chocolate Bar"
+    description: "A delicious bar of chocolate by Mr.Biste."
+
+  wheat:
+    name: "Wheat"
+    description: "Wet wheat."
+
+  milk:
+    name: "Milk"
+    description: "You can see your reflect throught the white substance."
+
+  chocolate_cake:
+    name: "Chocolate Cake"
+    description: "Made by Ralsei, by Ralsei, for Susie."
+
+  remote:
+    name: "The Remote"
+    description: "H[a]ck the [Ga]te."
+
+  key_a:
+    name: "Key A"
+    description: "Key with 'A' noted on it."
+
+  key_b:
+    name: "Key B"
+    description: "Key with a drawing of a bee on it."
+
 
 # --- ENTITIES ---
 entities:
