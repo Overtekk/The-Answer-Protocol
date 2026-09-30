@@ -237,7 +237,8 @@ entities:
   virovirokun:
     name: "Virovirokun"
     description: "A virus with a slightly criminal streak... and a heart of gold."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "enemy"
     stats:
       hp: 20
@@ -245,7 +246,8 @@ entities:
   guard_dog:
     name: "Guard Dog"
     description: "It's so excited that it thinks fighting is just play."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "enemy"
     stats:
       hp: 20
@@ -253,7 +255,8 @@ entities:
   maus:
     name: "Maus"
     description: "It dreams of re-enacting scenes from cat and mouse cartoons."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "enemy"
     stats:
       hp: 20
@@ -261,7 +264,8 @@ entities:
   kawkaw:
     name: "KawKaw"
     description: ""
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "enemy"
     stats:
       hp: 20
@@ -269,7 +273,8 @@ entities:
   swatchlings:
     name: "Swatchlings"
     description: "A conical crow which lives in the ground. Disturbs Shi's crops, only because it wants to play with him."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "enemy"
     stats:
       hp: 20
@@ -277,7 +282,8 @@ entities:
   k_round:
     name: "K.Round"
     description: "Despite appearances, it's trying its best to defeat you."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "boss"
     stats:
       hp: 20
@@ -285,7 +291,8 @@ entities:
   queen:
     name: "Queen"
     description: "The Queen that has stolen your moss to produce her drinking."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "boss"
     stats:
       hp: 20
@@ -293,7 +300,8 @@ entities:
   sans:
     name: "Sans"
     description: "It's Sans the skeleton!"
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "boss"
     stats:
       hp: 20
@@ -301,7 +309,8 @@ entities:
   susie:
     name: "Susie"
     description: "Your best friend, Susie!"
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "npc"
     stats:
       hp: 20
@@ -309,7 +318,8 @@ entities:
   ralsei:
     name: "Ralsei"
     description: "The prince of the Dark World and also your best friend."
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "npc"
     stats:
       hp: 20
@@ -317,7 +327,8 @@ entities:
   holy_cow:
     name: "Holy Cow"
     description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "npc"
     stats:
       hp: 20
@@ -325,7 +336,8 @@ entities:
   spamton:
     name: "Spamton"
     description: "He wants to make a DEAL, but don't give him your MONEY!"
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "shop"
     stats:
       hp: 20
@@ -333,7 +345,8 @@ entities:
   swatch:
     name: "Swatch"
     description: "He like juice,"
-    dialogue: []
+    dialogue:
+      default: "Hello!"
     type: "shop"
     stats:
       hp: 20

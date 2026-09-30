@@ -41,9 +41,12 @@ set(SERVER_MAIN     src/main.cpp)
 set(CLI_MAIN        src/cli/cli_main.cpp)
 set(GUI_MAIN        src/gui/gui_main.cpp)
 
-set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES})
+set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
+	src/server/parser/parser.cpp
+)
 
-set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES})
+set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}
+)
 
 set(GUI_SOURCES
     ${GUI_MAIN}
