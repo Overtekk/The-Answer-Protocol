@@ -1,0 +1,339 @@
+# --- LOCATIONS ---
+world:
+  locations:
+  # SPAWN
+    spawn:
+      name: "Cyber-City"
+      description: "A city made of cyber things with a cyber sky."
+    exits:
+      west: "road_traffic"
+      east: "carnival"
+    spawns: []
+    items: []
+
+  # CITY ROAD TRAFFIC
+    road_traffic:
+      name: "City Road Traffic"
+      description: "Only the red light pass throught your eyes in this place."
+    exits:
+      north: "city_too"
+      east: "spawn"
+    spawns: []
+    items: []
+
+  # CITY TOO
+    city_too:
+      name: "City Too"
+      description: "The second best city made of cyber things under a fake cyber sky."
+    exits:
+      north: "manor_entrance"
+      south: "road_traffic"
+    spawns: ["virovirokun"]
+    items: []
+
+  # MANOR ENTRANCE
+    manor_entrance:
+      name: "Manor Entrance"
+      description: "A giant manor that is like as tall that 5 You."
+    exits:
+      west: "manor_hall"
+      east: "back_street"
+      south: "city_too"
+    spawns: ["guard_dog", "k_round"]
+    items: []
+
+  # BACK STREET
+    back_street:
+      name: "Back Street"
+      description: "A place surrounded by iron fences with only one light."
+    exits:
+      west: "manor_entrance"
+      east: "cyber_field"
+    spawns: ["maus", "susie"]
+    items: []
+
+  # CYBER FIELD
+    cyber_field:
+      name: "Cyber Field"
+      description: "The ground seem like grass but it's just an image not in png."
+    exits:
+      west: "back_street"
+      south: "trash_area"
+    spawns: ["kawkaw", "holy_cow"]
+    items: []
+
+  # TRASH AREA
+    trash_area:
+      name: "Trash Area"
+      description: "The place smells bad, there are a lot of trashs and rats (it's only drawing of that)."
+    exits:
+      north: "cyber_field"
+      south: "carnival"
+    spawns: ["spamton"]
+    items: []
+
+  # CARNIVAL
+    carnival:
+      name: "Carnival"
+      description: "A giant circus is on the middle and a man is yelling 'I can do anything!' every 10 seconds."
+    exits:
+      north: "trash_area"
+      west: "spawn"
+    spawns: ["ralsei"]
+    items: []
+
+  # MANOR HALL
+    hall_shop:
+      name: "Hall's Shop"
+      description: "Queen's personnal shop where she buy she best acid soda of the world."
+      has_save_point: true
+    exits:
+      north: "queen_castle"
+      east: "manor_entrance"
+    spawns: ["swatch"]
+    items: []
+
+  # QUEEN CASTLE
+    queen_castle:
+      name: "Queen Castle Floor 1"
+      description: "Floor 0 is right above but the entrance was condamned because it was covered in flour."
+    exits:
+      east: "throne"
+      south: "hall_shop"
+    spawns: ["swatchlings"]
+    items: []
+
+  # QUEEN THRONE
+    throne:
+      name: "Queen's Throne"
+      description: "The throne of the Queen. I can't say much, there is only that in that room."
+    exits:
+      west: "queen_castle"
+    spawns: ["queen"]
+    items: []
+
+# SPECIAL ROOMS
+  # EGG ROOM
+    egg_room:
+      name: "???"
+      description: "???"
+      special: true
+    exits:
+      north: "road_traffic"
+      south: "road_traffic"
+      east: "road_traffic"
+      west: "road_traffic"
+    spawns: []
+    items: ["egg"]
+
+  # SECRET ROOM
+    secret_room:
+      name: "Secret Room"
+      description: "It's a secret room with a secret character that you can see."
+      special: true
+    exits:
+      east: "trash_area"
+    spawns: ["sans"]
+    items: []
+
+# --- ITEMS ---
+items:
+  egg:
+    name: "EGG"
+    description: "Just an EGG."
+    type: "key"
+
+  # KEY ITEM
+  chocolate_bar:
+    name: "Chocolate Bar"
+    description: "A delicious bar of chocolate by Mr.Biste."
+    type: "key"
+
+  wheat:
+    name: "Wheat"
+    description: "Wet wheat."
+    type: "key"
+
+  milk:
+    name: "Milk"
+    description: "You can see your reflect throught the white substance."
+    type: "key"
+
+  chocolate_cake:
+    name: "Chocolate Cake"
+    description: "Made by Ralsei, by Ralsei, for Susie."
+    type: "key"
+
+  remote:
+    name: "The Remote"
+    description: "Can H[a]ck the [Ga]te."
+    type: "key"
+
+  key_a:
+    name: "Key A"
+    description: "Key with 'A' noted on it."
+    type: "key"
+
+  key_b:
+    name: "Key B"
+    description: "Key with a drawing of a bee on it."
+    type: "key"
+
+  pipis:
+    name: "Pipis"
+    description: "An invasive species of freshwater clam."
+    type: "key"
+
+  # WEAPONS
+  wood_blade:
+    name: "Wood Blade"
+    description: "A wooden practice blade with a carbon-reinforced core. Mightier than a sword? Maybe equal at best."
+    type: "weapon"
+    damage: 5
+
+  trefoil:
+    name: "Trefoil"
+    description: "Mossy rapier with a clover emblem. Covered in green clovers and rainbows."
+    damage: 7
+
+  saber10:
+    name: "Saber10"
+    description: "A saber made of 10 cactus needles. Fortunately, can deal more than 10 damage."
+    type: "weapon"
+    damage: 11
+
+  ultimate_sword:
+    name: "Ultimate Sword"
+    description: "'The Ultimate Weapon' that's what is written on the blade."
+    type: "weapon"
+    damage: 1
+
+  # CONSUMABLES
+  bandage:
+    name: "Bandage"
+    description: "It has cartoon characters on it."
+    type: "consumable"
+    hp: 4
+
+  giga_salad:
+    name: "Giga Salad"
+    description: "An enormous salad... but, it's just lettuce, so it's worthless."
+    type: "consumable"
+    hp: 5
+
+  cd_bagel:
+    name: "cd_bagel"
+    description: "A bagel with a reflective inside. Makes music with each bite."
+    type: "consumable"
+    hp: 8
+
+  revive_mint:
+    name: "Heals a fallen ally to MAX HP. A minty green crystal."
+    type: "consumable"
+    hp: 9999
+
+# --- ENTITIES ---
+entities:
+  virovirokun:
+    name: "Virovirokun"
+    description: "A virus with a slightly criminal streak... and a heart of gold."
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  guard_dog:
+    name: "Guard Dog"
+    description: "It's so excited that it thinks fighting is just play."
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  maus:
+    name: "Maus"
+    description: "It dreams of re-enacting scenes from cat and mouse cartoons."
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  kawkaw:
+    name: "KawKaw"
+    description: ""
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  swatchlings:
+    name: "Swatchlings"
+    description: "A conical crow which lives in the ground. Disturbs Shi's crops, only because it wants to play with him."
+    dialogue: []
+    type: "enemy"
+    stats:
+      hp: 20
+
+  k_round:
+    name: "K.Round"
+    description: "Despite appearances, it's trying its best to defeat you."
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  queen:
+    name: "Queen"
+    description: "The Queen that has stolen your moss to produce her drinking."
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  sans:
+    name: "Sans"
+    description: "It's Sans the skeleton!"
+    dialogue: []
+    type: "boss"
+    stats:
+      hp: 20
+
+  susie:
+    name: "Susie"
+    description: "Your best friend, Susie!"
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  ralsei:
+    name: "Ralsei"
+    description: "The prince of the Dark World and also your best friend."
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  holy_cow:
+    name: "Holy Cow"
+    description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
+    dialogue: []
+    type: "npc"
+    stats:
+      hp: 20
+
+  spamton:
+    name: "Spamton"
+    description: "He wants to make a DEAL, but don't give him your MONEY!"
+    dialogue: []
+    type: "shop"
+    stats:
+      hp: 20
+
+  swatch:
+    name: "Swatch"
+    description: "He like juice,"
+    dialogue: []
+    type: "shop"
+    stats:
+      hp: 20
