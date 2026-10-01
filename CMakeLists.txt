@@ -35,6 +35,7 @@ set(COMMON_SOURCES
     src/items/Weapon.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
+	src/utils/error.cpp
 )
 
 set(SERVER_MAIN     src/main.cpp)

@@ -1,26 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.cpp                                         :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 12:28:06 by roandrie         ###   ########.fr       */
+/*   Created: 2026/10/01 12:14:57 by roandrie          #+#    #+#             */
+/*   Updated: 2026/10/01 12:19:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include <yaml-cpp/yaml.h>
-# include "utils.h"
+#pragma once
 
-bool load_file(const std::string& filepath) {
-	try {
-		YAML::LoadFile(filepath);
-	}
-	catch (const YAML::Exception& e) {
-		print_error(e.what());
-		return false;
-	}
-	return true;
-}
+# include <iostream>
+
+void print_error(const std::string& error_msg);

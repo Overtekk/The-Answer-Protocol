@@ -6,14 +6,20 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/17 14:56:09 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 12:28:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
+# include "server.h"
 
 int main() {
 	std::cout << "Hello World, i'm the server!\n";
+
+	if (!load_file("data/world_data.yaml")) {
+		return EXIT_FAILURE;
+	}
+
 	std::cout << "Goodbye!\n";
+
 	return 0;
 }

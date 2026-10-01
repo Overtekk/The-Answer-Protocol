@@ -1,26 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.cpp                                         :+:      :+:    :+:   */
+/*   error.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 12:28:06 by roandrie         ###   ########.fr       */
+/*   Created: 2026/10/01 12:16:02 by roandrie          #+#    #+#             */
+/*   Updated: 2026/10/01 12:22:32 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
-# include <yaml-cpp/yaml.h>
-# include "utils.h"
 
-bool load_file(const std::string& filepath) {
-	try {
-		YAML::LoadFile(filepath);
-	}
-	catch (const YAML::Exception& e) {
-		print_error(e.what());
-		return false;
-	}
-	return true;
+void print_error(const std::string& error_msg) {
+	std::cerr << "\n\033[1;31m" << "ERROR: " << error_msg << "\033[0m\n" << "\n";
 }

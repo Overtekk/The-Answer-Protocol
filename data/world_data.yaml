@@ -5,112 +5,112 @@ world:
     spawn:
       name: "Cyber-City"
       description: "A city made of cyber things with a cyber sky."
-    exits:
-      west: "road_traffic"
-      east: "carnival"
-    spawns: []
-    items: []
+      exits:
+        west: "road_traffic"
+        east: "carnival"
+      spawns: []
+      items: []
 
   # CITY ROAD TRAFFIC
     road_traffic:
       name: "City Road Traffic"
       description: "Only the red light pass throught your eyes in this place."
-    exits:
-      north: "city_too"
-      east: "spawn"
-    spawns: []
-    items: []
+      exits:
+        north: "city_too"
+        east: "spawn"
+      spawns: []
+      items: []
 
   # CITY TOO
     city_too:
       name: "City Too"
       description: "The second best city made of cyber things under a fake cyber sky."
-    exits:
-      north: "manor_entrance"
-      south: "road_traffic"
-    spawns: ["virovirokun"]
-    items: []
+      exits:
+        north: "manor_entrance"
+        south: "road_traffic"
+      spawns: ["virovirokun"]
+      items: []
 
   # MANOR ENTRANCE
     manor_entrance:
       name: "Manor Entrance"
       description: "A giant manor that is like as tall that 5 You."
-    exits:
-      west: "manor_hall"
-      east: "back_street"
-      south: "city_too"
-    spawns: ["guard_dog", "k_round"]
-    items: []
+      exits:
+        west: "manor_hall"
+        east: "back_street"
+        south: "city_too"
+      spawns: ["guard_dog", "k_round"]
+      items: []
 
   # BACK STREET
     back_street:
       name: "Back Street"
       description: "A place surrounded by iron fences with only one light."
-    exits:
-      west: "manor_entrance"
-      east: "cyber_field"
-    spawns: ["maus", "susie"]
-    items: []
+      exits:
+        west: "manor_entrance"
+        east: "cyber_field"
+      spawns: ["maus", "susie"]
+      items: []
 
   # CYBER FIELD
     cyber_field:
       name: "Cyber Field"
       description: "The ground seem like grass but it's just an image not in png."
-    exits:
-      west: "back_street"
-      south: "trash_area"
-    spawns: ["kawkaw", "holy_cow"]
-    items: []
+      exits:
+        west: "back_street"
+        south: "trash_area"
+      spawns: ["kawkaw", "holy_cow"]
+      items: []
 
   # TRASH AREA
     trash_area:
       name: "Trash Area"
       description: "The place smells bad, there are a lot of trashs and rats (it's only drawing of that)."
-    exits:
-      north: "cyber_field"
-      south: "carnival"
-    spawns: ["spamton"]
-    items: []
+      exits:
+        north: "cyber_field"
+        south: "carnival"
+      spawns: ["spamton"]
+      items: []
 
   # CARNIVAL
     carnival:
       name: "Carnival"
       description: "A giant circus is on the middle and a man is yelling 'I can do anything!' every 10 seconds."
-    exits:
-      north: "trash_area"
-      west: "spawn"
-    spawns: ["ralsei"]
-    items: []
+      exits:
+        north: "trash_area"
+        west: "spawn"
+      spawns: ["ralsei"]
+      items: []
 
   # MANOR HALL
     hall_shop:
       name: "Hall's Shop"
       description: "Queen's personnal shop where she buy she best acid soda of the world."
       has_save_point: true
-    exits:
-      north: "queen_castle"
-      east: "manor_entrance"
-    spawns: ["swatch"]
-    items: []
+      exits:
+        north: "queen_castle"
+        east: "manor_entrance"
+      spawns: ["swatch"]
+      items: []
 
   # QUEEN CASTLE
     queen_castle:
       name: "Queen Castle Floor 1"
       description: "Floor 0 is right above but the entrance was condamned because it was covered in flour."
-    exits:
-      east: "throne"
-      south: "hall_shop"
-    spawns: ["swatchlings"]
-    items: []
+      exits:
+        east: "throne"
+        south: "hall_shop"
+      spawns: ["swatchlings"]
+      items: []
 
   # QUEEN THRONE
     throne:
       name: "Queen's Throne"
       description: "The throne of the Queen. I can't say much, there is only that in that room."
-    exits:
-      west: "queen_castle"
-    spawns: ["queen"]
-    items: []
+      exits:
+        west: "queen_castle"
+      spawns: ["queen"]
+      items: []
 
 # SPECIAL ROOMS
   # EGG ROOM
@@ -118,23 +118,23 @@ world:
       name: "???"
       description: "???"
       special: true
-    exits:
-      north: "road_traffic"
-      south: "road_traffic"
-      east: "road_traffic"
-      west: "road_traffic"
-    spawns: []
-    items: ["egg"]
+      exits:
+        north: "road_traffic"
+        south: "road_traffic"
+        east: "road_traffic"
+        west: "road_traffic"
+      spawns: []
+      items: ["egg"]
 
   # SECRET ROOM
     secret_room:
       name: "Secret Room"
       description: "It's a secret room with a secret character that you can see."
       special: true
-    exits:
-      east: "trash_area"
-    spawns: ["sans"]
-    items: []
+      exits:
+        east: "trash_area"
+      spawns: ["sans"]
+      items: []
 
 # --- ITEMS ---
 items:
@@ -263,7 +263,7 @@ entities:
 
   kawkaw:
     name: "KawKaw"
-    description: ""
+    description: "Nyon"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -290,7 +290,7 @@ entities:
 
   queen:
     name: "Queen"
-    description: "The Queen that has stolen your moss to produce her drinking."
+    description: "The Queen that has stolen your moss to play with you."
     dialogue:
       default: "Hello!"
     type: "boss"
@@ -344,7 +344,7 @@ entities:
 
   swatch:
     name: "Swatch"
-    description: "He like juice,"
+    description: "He like juice."
     dialogue:
       default: "Hello!"
     type: "shop"
