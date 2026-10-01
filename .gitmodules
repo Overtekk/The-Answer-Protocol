@@ -7,3 +7,9 @@
 [submodule "libraries/json"]
 	path = libraries/json
 	url = https://github.com/nlohmann/json.git
+[submodule "raytmx"]
+	path = raytmx
+	url = https://github.com/luphi/raytmx
+[submodule "libraries/raytmx"]
+	path = libraries/raytmx
+	url = https://github.com/luphi/raytmx

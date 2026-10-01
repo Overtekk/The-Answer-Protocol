@@ -35,6 +35,7 @@ set(COMMON_SOURCES
     src/items/Weapon.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
+    src/rooms/Room.cpp
 )
 
 set(SERVER_MAIN     src/main.cpp)
@@ -75,6 +76,9 @@ target_link_libraries(tap_cli_client PRIVATE
 
 # 3. Client GUI
 add_executable(tap_gui_client ${GUI_SOURCES})
+target_include_directories(tap_gui_client PRIVATE
+    libraries/raytmx
+)
 target_link_libraries(tap_gui_client PRIVATE
     project_warnings
     Threads::Threads
