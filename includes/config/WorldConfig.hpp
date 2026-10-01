@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 15:40:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 16:03:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # include <unordered_map>
 # include <vector>
 
-enum Direction {NORTH, SOUTH, EAST, WEST};
-enum ItemType {WEAPON, KEY, CONSUMABLE};
-enum EnemyType {ENEMY, BOSS, NPC, SHOP};
+enum class Direction {NORTH, SOUTH, EAST, WEST, UNKNOWN};
+enum class ItemType {WEAPON, KEY, CONSUMABLE, UNKNOWN};
+enum class EnemyType {ENEMY, BOSS, NPC, SHOP, UNKNOWN};
 
 struct LocationConfig {
 	std::string name;

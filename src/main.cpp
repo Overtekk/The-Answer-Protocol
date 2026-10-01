@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 15:39:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 16:15:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ int main() {
 		return EXIT_FAILURE;
 	}
 	WorldConfig world_data;
-	parse_file(root, world_data);
+	 if (!parse_file(root, world_data)) {
+		std::cerr << "\n❌ Server aborting: invalid world data configuration." << std::endl;
+		return 1;
+	 }
 
 	return 0;
 }

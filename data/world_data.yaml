@@ -229,7 +229,8 @@ items:
     hp: 8
 
   revive_mint:
-    name: "Heals a fallen ally to MAX HP. A minty green crystal."
+    name: "Revive Mint"
+    description: "Heals a fallen ally to MAX HP. A minty green crystal."
     type: "consumable"
     hp: 9999
 
