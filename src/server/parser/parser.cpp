@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 15:01:09 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 15:46:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 # include "utils.h"
 # include "config/WorldConfig.hpp"
 
+LocationConfig parse_locationConfig(const YAML::Node& node);
+ItemConfig parse_itemConfig(const YAML::Node& node);
 Direction convert_direction(const std::string& direction_str);
 ItemType convert_itemType(const std::string& itemtype_str);
-ItemType convert_itemType(const std::string& itemtype_str);
-ItemConfig parse_itemConfig(const YAML::Node& node);
+EnemyType convert_enemyType(const std::string& enemytype_str);
+EntityConfig parse_entityConfig(const YAML::Node& node);
 
 
 // TEMPLATE
@@ -52,6 +54,14 @@ bool load_file(const std::string& filepath, YAML::Node& root) {
 // PARSER
 // public
 bool parse_file(const YAML::Node& root, WorldConfig& world) {
+	// Check LOCATIONS
+	if (root["world"] && root["world"]["locations"] && root["world"]["locations"].IsMap()) {
+		for (const auto& entry : root["locations"]) {
+			std::string loc_id = entry.first.as<std::string>();
+			world.locations[loc_id] = parse_locationConfig(entry.second);
+		}
+	}
+
 	// Check ITEMS
 	if (root["items"] && root["items"].IsMap()) {
 		for (const auto& entry : root["items"]) {
@@ -59,6 +69,15 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 			world.items[item_id] = parse_itemConfig(entry.second);
 		}
 	}
+
+	// Check ENTITIES
+	if (root["entities"] && root["entities"].IsMap()) {
+		for (const auto& entry : root["entities"]) {
+			std::string entity_id = entry.first.as<std::string>();
+			world.entities[entity_id] = parse_entityConfig(entry.second);
+		}
+	}
+
 	return true;
 }
 
@@ -67,14 +86,15 @@ LocationConfig parse_locationConfig(const YAML::Node& node) {
 
 	config.name = getValue<std::string>(node, "name", "");
 	config.description = getValue<std::string>(node, "description", "");
-	if (node["exits"] && node["exists"].IsMap()) {
+	if (node["exits"] && node["exits"].IsMap()) {
 		for (const auto& entry : node["exits"]) {
-			Direction dir = convert_direction(getValue<Direction>(entry.first.as<std::string>(), "type", ""));
-			std::string room_id = entry.second.as<std::string>();
-			config.exits[dir] = room_id;
+			Direction dir = convert_direction(entry.first.as<std::string>());
+			config.exits[dir] = entry.second.as<std::string>();
 		}
 	}
-	config
+	config.spawns = getValue<std::vector<std::string>>(node, "spawns", {});
+	config.items = getValue<std::vector<std::string>>(node, "items", {});
+	return config;
 }
 
 ItemConfig parse_itemConfig(const YAML::Node& node) {
@@ -88,6 +108,22 @@ ItemConfig parse_itemConfig(const YAML::Node& node) {
 	return config;
 }
 
+EntityConfig parse_entityConfig(const YAML::Node& node) {
+	EntityConfig config;
+
+	config.name = getValue<std::string>(node, "name", "");
+	config.description = getValue<std::string>(node, "description", "");
+	if (node["dialogue"] && node["dialogue"].IsMap()) {
+		for (const auto& entry : node["dialogue"]) {
+			std::string dial_key = entry.first.as<std::string>();
+			config.dialogue[dial_key] = entry.second.as<std::string>();
+		}
+	}
+	config.type = convert_enemyType(getValue<std::string>(node, "type", ""));
+	config.hp = getValue<int>(node, "hp", 100);
+	return config;
+}
+
 // CONVERTER
 
 Direction convert_direction(const std::string& direction_str) {
@@ -96,7 +132,7 @@ Direction convert_direction(const std::string& direction_str) {
 	if (direction_str == "east")  return EAST;
 	if (direction_str == "west")  return WEST;
 
-	throw std::runtime_error("Unknown direction: " + direction_str);
+	throw std::runtime_error("\033[1;31mERROR: Unknown direction: " + direction_str + "\033[0m");
 }
 
 ItemType convert_itemType(const std::string& itemtype_str) {
@@ -104,7 +140,7 @@ ItemType convert_itemType(const std::string& itemtype_str) {
 	if (itemtype_str == "key") return KEY;
 	if (itemtype_str == "consumable")  return CONSUMABLE;
 
-	throw std::runtime_error("Unknown item type: " + itemtype_str);
+	throw std::runtime_error("\033[1;31mERROR: Unknown item type: " + itemtype_str + "\033[0m");
 }
 
 EnemyType convert_enemyType(const std::string& enemytype_str) {
@@ -113,5 +149,5 @@ EnemyType convert_enemyType(const std::string& enemytype_str) {
 	if (enemytype_str == "npc")  return NPC;
 	if (enemytype_str == "shop")  return SHOP;
 
-	throw std::runtime_error("Unknown enemy type: " + enemytype_str);
+	throw std::runtime_error("\033[1;31mERROR: Unknown enemy type: " + enemytype_str + "\033[0m");
 }

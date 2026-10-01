@@ -194,6 +194,7 @@ items:
   trefoil:
     name: "Trefoil"
     description: "Mossy rapier with a clover emblem. Covered in green clovers and rainbows."
+    type: "weapon"
     damage: 7
 
   saber10:
@@ -240,8 +241,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   guard_dog:
     name: "Guard Dog"
@@ -249,8 +249,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   maus:
     name: "Maus"
@@ -258,8 +257,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   kawkaw:
     name: "KawKaw"
@@ -267,8 +265,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   swatchlings:
     name: "Swatchlings"
@@ -276,8 +273,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   k_round:
     name: "K.Round"
@@ -285,8 +281,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   queen:
     name: "Queen"
@@ -294,8 +289,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   sans:
     name: "Sans"
@@ -303,8 +297,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   susie:
     name: "Susie"
@@ -312,8 +305,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   ralsei:
     name: "Ralsei"
@@ -321,8 +313,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   holy_cow:
     name: "Holy Cow"
@@ -330,8 +321,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   spamton:
     name: "Spamton"
@@ -339,8 +329,7 @@ entities:
     dialogue:
       default: "Hello!"
     type: "shop"
-    stats:
-      hp: 20
+    hp: 20
 
   swatch:
     name: "Swatch"
@@ -348,5 +337,4 @@ entities:
     dialogue:
       default: "Hello!"
     type: "shop"
-    stats:
-      hp: 20
+    hp: 20

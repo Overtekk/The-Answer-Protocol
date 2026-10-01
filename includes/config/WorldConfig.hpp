@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 12:48:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 15:40:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@
 enum Direction {NORTH, SOUTH, EAST, WEST};
 enum ItemType {WEAPON, KEY, CONSUMABLE};
 enum EnemyType {ENEMY, BOSS, NPC, SHOP};
-
-struct WorldConfig {
-	std::unordered_map<std::string, LocationConfig> locations;
-	std::unordered_map<std::string, ItemConfig> items;
-    std::unordered_map<std::string, EntityConfig> entities;
-};
 
 struct LocationConfig {
 	std::string name;
@@ -47,5 +41,11 @@ struct EntityConfig {
 	std::string description;
 	std::unordered_map<std::string, std::string> dialogue;
 	EnemyType type;
-	std::unordered_map<std::string, int> stats;
+	int hp;
+};
+
+struct WorldConfig {
+	std::unordered_map<std::string, LocationConfig> locations;
+	std::unordered_map<std::string, ItemConfig> items;
+    std::unordered_map<std::string, EntityConfig> entities;
 };

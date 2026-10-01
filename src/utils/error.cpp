@@ -6,12 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:16:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 12:22:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/01 15:44:05 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 
 void print_error(const std::string& error_msg) {
-	std::cerr << "\n\033[1;31m" << "ERROR: " << error_msg << "\033[0m\n" << "\n";
+	std::cerr << "\n\033[1;31m" << "ERROR: " << error_msg << "\033[0m" << "\n";
 }
