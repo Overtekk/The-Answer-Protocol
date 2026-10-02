@@ -36,7 +36,7 @@ world:
       name: "Manor Entrance"
       description: "A giant manor that is like as tall that 5 You."
       exits:
-        west: "manor_hall"
+        west: "hall_shop"
         east: "back_street"
         south: "city_too"
       spawns: ["guard_dog", "k_round"]
@@ -86,7 +86,6 @@ world:
     hall_shop:
       name: "Hall's Shop"
       description: "Queen's personnal shop where she buy she best acid soda of the world."
-      has_save_point: true
       exits:
         north: "queen_castle"
         east: "manor_entrance"

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 16:03:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 16:25:36 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ struct LocationConfig {
 	std::unordered_map<Direction, std::string> exits;
 	std::vector<std::string> spawns;
 	std::vector<std::string> items;
-	bool has_save_point;
 	bool special;
 };
 
