@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:11:19 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 15:40:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 16:40:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,3 +18,6 @@
 
 bool load_file(const std::string& filepath, YAML::Node& root);
 bool parse_file(const YAML::Node& root, WorldConfig& world);
+
+// - Debug -
+void debug_print_structure(WorldConfig& world);

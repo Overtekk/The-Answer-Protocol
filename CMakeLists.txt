@@ -36,6 +36,7 @@ set(COMMON_SOURCES
     src/entities/Entity.cpp
     src/entities/Player.cpp
 	src/utils/print.cpp
+	src/utils/enum_convert.cpp
 )
 
 set(SERVER_MAIN     src/main.cpp)
@@ -44,6 +45,7 @@ set(GUI_MAIN        src/gui/gui_main.cpp)
 
 set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
 	src/server/parser/parser.cpp
+	src/debug/debug_structure.cpp
 )
 
 set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}

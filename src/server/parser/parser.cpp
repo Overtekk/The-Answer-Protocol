@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 16:26:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 16:52:53 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,13 +271,3 @@ void check_locations_data(
 	}
 }
 
-// Transform a direction (enum) to a string.
-std::string direction_to_string(Direction dir) {
-    switch (dir) {
-        case Direction::NORTH: return "north";
-        case Direction::SOUTH: return "south";
-        case Direction::EAST:  return "east";
-        case Direction::WEST:  return "west";
-        default:               return "unknown";
-    }
-}

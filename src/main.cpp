@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 15:16:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 16:41:59 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int main() {
 		std::cerr << "\n❌ Server aborting: invalid world data configuration.\n";
 		return 1;
 	 }
+
+	 debug_print_structure(world_data);
 
 	return 0;
 }
