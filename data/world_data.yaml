@@ -238,6 +238,7 @@ entities:
   virovirokun:
     name: "Virovirokun"
     description: "A virus with a slightly criminal streak... and a heart of gold."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -246,6 +247,7 @@ entities:
   guard_dog:
     name: "Guard Dog"
     description: "It's so excited that it thinks fighting is just play."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -254,6 +256,7 @@ entities:
   maus:
     name: "Maus"
     description: "It dreams of re-enacting scenes from cat and mouse cartoons."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -262,6 +265,7 @@ entities:
   kawkaw:
     name: "KawKaw"
     description: "Nyon"
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -270,6 +274,7 @@ entities:
   swatchlings:
     name: "Swatchlings"
     description: "A conical crow which lives in the ground. Disturbs Shi's crops, only because it wants to play with him."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "enemy"
@@ -278,6 +283,7 @@ entities:
   k_round:
     name: "K.Round"
     description: "Despite appearances, it's trying its best to defeat you."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "boss"
@@ -286,6 +292,7 @@ entities:
   queen:
     name: "Queen"
     description: "The Queen that has stolen your moss to play with you."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "boss"
@@ -294,6 +301,7 @@ entities:
   sans:
     name: "Sans"
     description: "It's Sans the skeleton!"
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "boss"
@@ -302,6 +310,7 @@ entities:
   susie:
     name: "Susie"
     description: "Your best friend, Susie!"
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "npc"
@@ -310,6 +319,7 @@ entities:
   ralsei:
     name: "Ralsei"
     description: "The prince of the Dark World and also your best friend."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "npc"
@@ -318,6 +328,7 @@ entities:
   holy_cow:
     name: "Holy Cow"
     description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "npc"
@@ -326,6 +337,7 @@ entities:
   spamton:
     name: "Spamton"
     description: "He wants to make a DEAL, but don't give him your MONEY!"
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "shop"
@@ -334,6 +346,7 @@ entities:
   swatch:
     name: "Swatch"
     description: "He like juice."
+    sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
       default: "Hello!"
     type: "shop"

@@ -6,14 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 16:52:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 18:02:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
+#include <filesystem>
 # include <yaml-cpp/yaml.h>
 # include "utils.h"
 # include "config/WorldConfig.hpp"
+
+namespace fs = std::filesystem;
 
 LocationConfig parse_locationConfig(const std::string& loc_id, const YAML::Node& node, std::unordered_set<std::string>& knows_locations);
 ItemConfig parse_itemConfig(const std::string& item_id, const YAML::Node& node, std::unordered_set<std::string>& knows_items);
@@ -23,6 +26,7 @@ ItemType convert_itemType(const std::string& itemtype_str);
 EnemyType convert_enemyType(const std::string& enemytype_str);
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id);
 void check_int(int value, const std::string& id);
+void check_sprite(const std::string&  sprite, const std::string& id);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
 
@@ -167,6 +171,9 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
+	config.sprite = getValue<std::string>(node, "sprite", "");
+	check_sprite(config.sprite, entity_id);
+
 	if (node["dialogue"] && node["dialogue"].IsMap()) {
 		for (const auto& entry : node["dialogue"]) {
 			std::string dial_key = entry.first.as<std::string>();
@@ -229,6 +236,23 @@ void check_global_data_validation(const std::string& name, const std::string& de
 void check_int(int value, const std::string& id) {
 	if (0 > value) {
 		throw std::runtime_error(id + " invalid integer. Need to be positive.");
+	}
+}
+
+void check_sprite(const std::string& sprite, const std::string& id) {
+	if (sprite.empty()) {
+		throw std::runtime_error(id + " missing sprite for this entity.");
+	}
+
+	fs::path p(sprite);
+	// Check that file exist
+	std::error_code ec;
+	if (!fs::exists(p, ec) || ec) {
+		throw std::runtime_error(id + " missing sprite.");
+	}
+	// Check extension
+	if (p.extension() != ".png") {
+		throw std::runtime_error(id + " sprite must be in png.");
 	}
 }
 

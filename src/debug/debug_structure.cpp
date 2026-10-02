@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 16:36:01 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 17:24:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/02 17:46:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void debug_print_structure(WorldConfig& world) {
 
 	for (const auto& [entity_id, entity] : world.entities) {
 		std::cout << "[" + entity_id + "]" + "{'" + entity.name + "', '" + entity.description + "', ";
+		std::cout << "sprite: '" + entity.sprite + "', ";
 		std::cout << "type: " + enemy_type_to_string(entity.type);
 		std::cout << ", hp: " + std::to_string(entity.hp);
 		std::cout << ", dialogue[" ;
