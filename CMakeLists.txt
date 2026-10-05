@@ -24,7 +24,9 @@ add_subdirectory(libraries/json)
 # Config
 add_library(project_warnings INTERFACE)
 target_compile_options(project_warnings INTERFACE -g -Wall -Wextra -Werror)
-target_include_directories(project_warnings INTERFACE includes)
+target_include_directories(project_warnings INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
+)
 
 # -------------#
 #   Variables
@@ -37,19 +39,27 @@ set(COMMON_SOURCES
     src/entities/Player.cpp
     src/entities/PNJ.cpp
     src/rooms/Room.cpp
+	src/utils/print.cpp
+	src/utils/enum_convert.cpp
+	src/utils/files.cpp
+	src/debug/debug_structure.cpp
 )
 
 set(SERVER_MAIN     src/main.cpp)
 set(CLI_MAIN        src/cli/cli_main.cpp)
 set(GUI_MAIN        src/gui/gui_main.cpp)
 
-set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES})
+set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
+	src/server/parser/parser.cpp
+)
 
-set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES})
+set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}
+)
 
 set(GUI_SOURCES
     ${GUI_MAIN}
     ${COMMON_SOURCES}
+	src/gui/parser/gui_parser.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
 )
@@ -83,6 +93,7 @@ target_include_directories(tap_gui_client PRIVATE
 target_link_libraries(tap_gui_client PRIVATE
     project_warnings
     Threads::Threads
+	yaml-cpp
     nlohmann_json::nlohmann_json
     raylib
 )

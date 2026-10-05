@@ -5,136 +5,148 @@ world:
     spawn:
       name: "Cyber-City"
       description: "A city made of cyber things with a cyber sky."
-    exits:
-      west: "road_traffic"
-      east: "carnival"
-    spawns: []
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        west: "road_traffic"
+        east: "carnival"
+      spawns: []
+      items: []
 
   # CITY ROAD TRAFFIC
     road_traffic:
       name: "City Road Traffic"
       description: "Only the red light pass throught your eyes in this place."
-    exits:
-      north: "city_too"
-      east: "spawn"
-    spawns: []
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        north: "city_too"
+        east: "spawn"
+      spawns: []
+      items: []
 
   # CITY TOO
     city_too:
       name: "City Too"
       description: "The second best city made of cyber things under a fake cyber sky."
-    exits:
-      north: "manor_entrance"
-      south: "road_traffic"
-    spawns: ["virovirokun"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        north: "manor_entrance"
+        south: "road_traffic"
+      spawns: ["virovirokun"]
+      items: []
 
   # MANOR ENTRANCE
     manor_entrance:
       name: "Manor Entrance"
       description: "A giant manor that is like as tall that 5 You."
-    exits:
-      west: "manor_hall"
-      east: "back_street"
-      south: "city_too"
-    spawns: ["guard_dog", "k_round"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        west: "hall_shop"
+        east: "back_street"
+        south: "city_too"
+      spawns: ["guard_dog", "k_round"]
+      items: []
 
   # BACK STREET
     back_street:
       name: "Back Street"
       description: "A place surrounded by iron fences with only one light."
-    exits:
-      west: "manor_entrance"
-      east: "cyber_field"
-    spawns: ["maus", "susie"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        west: "manor_entrance"
+        east: "cyber_field"
+      spawns: ["maus", "susie"]
+      items: []
 
   # CYBER FIELD
     cyber_field:
       name: "Cyber Field"
       description: "The ground seem like grass but it's just an image not in png."
-    exits:
-      west: "back_street"
-      south: "trash_area"
-    spawns: ["kawkaw", "holy_cow"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        west: "back_street"
+        south: "trash_area"
+      spawns: ["kawkaw", "holy_cow"]
+      items: []
 
   # TRASH AREA
     trash_area:
       name: "Trash Area"
       description: "The place smells bad, there are a lot of trashs and rats (it's only drawing of that)."
-    exits:
-      north: "cyber_field"
-      south: "carnival"
-    spawns: ["spamton"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        north: "cyber_field"
+        south: "carnival"
+      spawns: ["spamton"]
+      items: []
 
   # CARNIVAL
     carnival:
       name: "Carnival"
       description: "A giant circus is on the middle and a man is yelling 'I can do anything!' every 10 seconds."
-    exits:
-      north: "trash_area"
-      west: "spawn"
-    spawns: ["ralsei"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        north: "trash_area"
+        west: "spawn"
+      spawns: ["ralsei"]
+      items: []
 
   # MANOR HALL
     hall_shop:
       name: "Hall's Shop"
       description: "Queen's personnal shop where she buy she best acid soda of the world."
-      has_save_point: true
-    exits:
-      north: "queen_castle"
-      east: "manor_entrance"
-    spawns: ["swatch"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        north: "queen_castle"
+        east: "manor_entrance"
+      spawns: ["swatch"]
+      items: []
 
   # QUEEN CASTLE
     queen_castle:
       name: "Queen Castle Floor 1"
       description: "Floor 0 is right above but the entrance was condamned because it was covered in flour."
-    exits:
-      east: "throne"
-      south: "hall_shop"
-    spawns: ["swatchlings"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        east: "throne"
+        south: "hall_shop"
+      spawns: ["swatchlings"]
+      items: []
 
   # QUEEN THRONE
     throne:
       name: "Queen's Throne"
       description: "The throne of the Queen. I can't say much, there is only that in that room."
-    exits:
-      west: "queen_castle"
-    spawns: ["queen"]
-    items: []
+      tile_map: "assets/sprites/player/kris_walk.png"
+      exits:
+        west: "queen_castle"
+      spawns: ["queen"]
+      items: []
 
 # SPECIAL ROOMS
   # EGG ROOM
     egg_room:
       name: "???"
       description: "???"
+      tile_map: "assets/sprites/player/kris_walk.png"
       special: true
-    exits:
-      north: "road_traffic"
-      south: "road_traffic"
-      east: "road_traffic"
-      west: "road_traffic"
-    spawns: []
-    items: ["egg"]
+      exits:
+        north: "road_traffic"
+        south: "road_traffic"
+        east: "road_traffic"
+        west: "road_traffic"
+      spawns: []
+      items: ["egg"]
 
   # SECRET ROOM
     secret_room:
       name: "Secret Room"
       description: "It's a secret room with a secret character that you can see."
+      tile_map: "assets/sprites/player/kris_walk.png"
       special: true
-    exits:
-      east: "trash_area"
-    spawns: ["sans"]
-    items: []
+      exits:
+        east: "trash_area"
+      spawns: ["sans"]
+      items: []
 
 # --- ITEMS ---
 items:
@@ -194,6 +206,7 @@ items:
   trefoil:
     name: "Trefoil"
     description: "Mossy rapier with a clover emblem. Covered in green clovers and rainbows."
+    type: "weapon"
     damage: 7
 
   saber10:
@@ -228,7 +241,8 @@ items:
     hp: 8
 
   revive_mint:
-    name: "Heals a fallen ally to MAX HP. A minty green crystal."
+    name: "Revive Mint"
+    description: "Heals a fallen ally to MAX HP. A minty green crystal."
     type: "consumable"
     hp: 9999
 
@@ -237,103 +251,116 @@ entities:
   virovirokun:
     name: "Virovirokun"
     description: "A virus with a slightly criminal streak... and a heart of gold."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   guard_dog:
     name: "Guard Dog"
     description: "It's so excited that it thinks fighting is just play."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   maus:
     name: "Maus"
     description: "It dreams of re-enacting scenes from cat and mouse cartoons."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   kawkaw:
     name: "KawKaw"
-    description: ""
-    dialogue: []
+    description: "Nyon"
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   swatchlings:
     name: "Swatchlings"
     description: "A conical crow which lives in the ground. Disturbs Shi's crops, only because it wants to play with him."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "enemy"
-    stats:
-      hp: 20
+    hp: 20
 
   k_round:
     name: "K.Round"
     description: "Despite appearances, it's trying its best to defeat you."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   queen:
     name: "Queen"
-    description: "The Queen that has stolen your moss to produce her drinking."
-    dialogue: []
+    description: "The Queen that has stolen your moss to play with you."
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   sans:
     name: "Sans"
     description: "It's Sans the skeleton!"
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "boss"
-    stats:
-      hp: 20
+    hp: 20
 
   susie:
     name: "Susie"
     description: "Your best friend, Susie!"
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   ralsei:
     name: "Ralsei"
     description: "The prince of the Dark World and also your best friend."
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   holy_cow:
     name: "Holy Cow"
     description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "npc"
-    stats:
-      hp: 20
+    hp: 20
 
   spamton:
     name: "Spamton"
     description: "He wants to make a DEAL, but don't give him your MONEY!"
-    dialogue: []
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "shop"
-    stats:
-      hp: 20
+    hp: 20
 
   swatch:
     name: "Swatch"
-    description: "He like juice,"
-    dialogue: []
+    description: "He like juice."
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      default: "Hello!"
     type: "shop"
-    stats:
-      hp: 20
+    hp: 20
