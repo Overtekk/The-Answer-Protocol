@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/05 13:56:32 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/05 16:08:51 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 # include <iostream>
 # include <string>
 # include <filesystem>
-# include <map>
 # include <unordered_map>
 # include "base_class/items/Item.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
+# include "base_class/entities/PNJ.hpp"
 // # include "base_class/entities/WorldConfig.hpp"
 
 namespace fs = std::filesystem;
@@ -29,9 +29,9 @@ class Room {
         std::string                                     _name;
         std::string                                     _description;
         fs::path                                        _background;
-        std::map<ItemID, std::unique_ptr<Item>>         _items;
-        std::map<std::string, Player*>                  _players;
-        std::map<std::string, Entity*>                  _pnj;
+        std::unordered_map<ItemID, Item*>               _items;
+        std::unordered_map<std::string, Player*>        _players;
+        std::unordered_map<std::string, PNJ*>           _pnj;
         // std::unordered_map<Direction, std::string>   _exits;
         bool                                            _save_point;
         bool                                            _special;
@@ -52,12 +52,17 @@ class Room {
         // Players
         bool                    addPlayer(Player* player);
         Player*                 popPlayer(const std::string& name);
-        Player*                 getplayer(const std::string& name);
+        Player*                 getPlayer(const std::string& name);
 
         // PNJ
-        // bool                    addPlayer(Player* player);
-        // Player*                 popPlayer(const std::string& name);
-        // Player*                 getplayer(const std::string& name);
+        bool                    addPNJ(PNJ* pnj);
+        PNJ*                    popPNJ(const std::string& name);
+        PNJ*                    getPNJ(const std::string& name);
+
+        // Items
+        bool                    placeItem(Item* item);
+        Item*                   popItem(ItemID item_id);
+        Item*                   getItem(ItemID item_id);
 
         // Special stats
         bool                    isSavePoint() const;
