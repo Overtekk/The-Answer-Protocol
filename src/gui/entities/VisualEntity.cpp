@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 15:01:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 09:42:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ void VisualEntity::update(float delta_time) {
 		_dy = _dy / length;
 	}
 	if (_dy > 0) {
-		_direction_row = DOWN;
+		_direction_row = EntityDirection::DOWN;
 	}
 	else if (_dy < 0) {
-		_direction_row = UP;
+		_direction_row = EntityDirection::UP;
 	}
 	else if (_dx != 0) {
-		_direction_row = LEFT;
+		_direction_row = EntityDirection::LEFT;
 		if (_dx > 0) {
 			_facing_left = false;
 		}
@@ -90,7 +90,7 @@ void VisualEntity::on_draw() {
 // Utils
 Rectangle VisualEntity::init_sprite_rect() {
 	float x = _current_frame * (float)std::get<0>(_sprite_dim);
-	float y = _direction_row * (float)std::get<1>(_sprite_dim);
+	float y = static_cast<int>(_direction_row) * (float)std::get<1>(_sprite_dim);
 	if (_facing_left) {
     	return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
 	}

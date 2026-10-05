@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 17:42:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 09:08:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ enum class EnemyType {ENEMY, BOSS, NPC, SHOP, UNKNOWN};
 struct LocationConfig {
 	std::string name;
 	std::string description;
+	std::string tile_map;
 	std::unordered_map<Direction, std::string> exits;
 	std::vector<std::string> spawns;
 	std::vector<std::string> items;

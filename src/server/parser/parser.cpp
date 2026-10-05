@@ -6,15 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 18:02:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 09:45:33 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
-#include <filesystem>
-# include <yaml-cpp/yaml.h>
+# include <filesystem>
 # include "utils.h"
-# include "config/WorldConfig.hpp"
 
 namespace fs = std::filesystem;
 
@@ -29,23 +27,6 @@ void check_int(int value, const std::string& id);
 void check_sprite(const std::string&  sprite, const std::string& id);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
-
-
-// --- TEMPLATE ---
-// Safely extracts a typed value from a YAML node with fallback to defaultValue on error or missing key.
-template <typename T>
-T getValue(const YAML::Node& parent, const std::string& key, const T& defaultValue) {
-	if (parent[key] && parent[key].IsDefined()) {
-		try {
-			return parent[key].as<T>();
-		}
-		catch (const YAML::Exception& e) {
-			print_error(e.what());
-			return defaultValue;
-		}
-	}
-	return defaultValue;
-}
 
 // LOADER (public)
 // Try to load the world_data file.
@@ -171,8 +152,7 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
-	config.sprite = getValue<std::string>(node, "sprite", "");
-	check_sprite(config.sprite, entity_id);
+
 
 	if (node["dialogue"] && node["dialogue"].IsMap()) {
 		for (const auto& entry : node["dialogue"]) {
@@ -236,23 +216,6 @@ void check_global_data_validation(const std::string& name, const std::string& de
 void check_int(int value, const std::string& id) {
 	if (0 > value) {
 		throw std::runtime_error(id + " invalid integer. Need to be positive.");
-	}
-}
-
-void check_sprite(const std::string& sprite, const std::string& id) {
-	if (sprite.empty()) {
-		throw std::runtime_error(id + " missing sprite for this entity.");
-	}
-
-	fs::path p(sprite);
-	// Check that file exist
-	std::error_code ec;
-	if (!fs::exists(p, ec) || ec) {
-		throw std::runtime_error(id + " missing sprite.");
-	}
-	// Check extension
-	if (p.extension() != ".png") {
-		throw std::runtime_error(id + " sprite must be in png.");
 	}
 }
 

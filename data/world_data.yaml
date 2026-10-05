@@ -5,6 +5,7 @@ world:
     spawn:
       name: "Cyber-City"
       description: "A city made of cyber things with a cyber sky."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "road_traffic"
         east: "carnival"
@@ -15,6 +16,7 @@ world:
     road_traffic:
       name: "City Road Traffic"
       description: "Only the red light pass throught your eyes in this place."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         north: "city_too"
         east: "spawn"
@@ -25,6 +27,7 @@ world:
     city_too:
       name: "City Too"
       description: "The second best city made of cyber things under a fake cyber sky."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         north: "manor_entrance"
         south: "road_traffic"
@@ -35,6 +38,7 @@ world:
     manor_entrance:
       name: "Manor Entrance"
       description: "A giant manor that is like as tall that 5 You."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "hall_shop"
         east: "back_street"
@@ -46,6 +50,7 @@ world:
     back_street:
       name: "Back Street"
       description: "A place surrounded by iron fences with only one light."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "manor_entrance"
         east: "cyber_field"
@@ -56,6 +61,7 @@ world:
     cyber_field:
       name: "Cyber Field"
       description: "The ground seem like grass but it's just an image not in png."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "back_street"
         south: "trash_area"
@@ -66,6 +72,7 @@ world:
     trash_area:
       name: "Trash Area"
       description: "The place smells bad, there are a lot of trashs and rats (it's only drawing of that)."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         north: "cyber_field"
         south: "carnival"
@@ -76,6 +83,7 @@ world:
     carnival:
       name: "Carnival"
       description: "A giant circus is on the middle and a man is yelling 'I can do anything!' every 10 seconds."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         north: "trash_area"
         west: "spawn"
@@ -86,6 +94,7 @@ world:
     hall_shop:
       name: "Hall's Shop"
       description: "Queen's personnal shop where she buy she best acid soda of the world."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         north: "queen_castle"
         east: "manor_entrance"
@@ -96,6 +105,7 @@ world:
     queen_castle:
       name: "Queen Castle Floor 1"
       description: "Floor 0 is right above but the entrance was condamned because it was covered in flour."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         east: "throne"
         south: "hall_shop"
@@ -106,6 +116,7 @@ world:
     throne:
       name: "Queen's Throne"
       description: "The throne of the Queen. I can't say much, there is only that in that room."
+      tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "queen_castle"
       spawns: ["queen"]
@@ -116,6 +127,7 @@ world:
     egg_room:
       name: "???"
       description: "???"
+      tile_map: "assets/sprites/player/kris_walk.png"
       special: true
       exits:
         north: "road_traffic"
@@ -129,6 +141,7 @@ world:
     secret_room:
       name: "Secret Room"
       description: "It's a secret room with a secret character that you can see."
+      tile_map: "assets/sprites/player/kris_walk.png"
       special: true
       exits:
         east: "trash_area"

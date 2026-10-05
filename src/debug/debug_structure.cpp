@@ -6,16 +6,19 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 16:36:01 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 17:46:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 09:54:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include "utils.h"
 
-void debug_print_structure(WorldConfig& world) {
+void debug_print_structure(WorldConfig& world, bool show_gui_info = false) {
 	for (const auto& [loc_id, loc] : world.locations) {
 		std::cout << "[" + loc_id + "]" + "{'" + loc.name + "', '" + loc.description + "', ";
+		if (show_gui_info) {
+			std::cout << "tile_map: '" + loc.tile_map + "', ";
+		}
 		if (loc.special) {
 			std::cout << "special: true, ";
 		}
@@ -50,7 +53,9 @@ void debug_print_structure(WorldConfig& world) {
 
 	for (const auto& [entity_id, entity] : world.entities) {
 		std::cout << "[" + entity_id + "]" + "{'" + entity.name + "', '" + entity.description + "', ";
-		std::cout << "sprite: '" + entity.sprite + "', ";
+		if (show_gui_info) {
+			std::cout << "sprite: '" + entity.sprite + "', ";
+		}
 		std::cout << "type: " + enemy_type_to_string(entity.type);
 		std::cout << ", hp: " + std::to_string(entity.hp);
 		std::cout << ", dialogue[" ;

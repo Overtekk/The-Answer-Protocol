@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 16:41:59 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 09:47:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <yaml-cpp/yaml.h>
 # include "server.h"
+# include "gui.h"
+# include "debug.h"
 
 int main() {
 	YAML::Node root;
@@ -19,7 +20,7 @@ int main() {
 		return EXIT_FAILURE;
 	}
 	WorldConfig world_data;
-	 if (!parse_file(root, world_data)) {
+	if (!parse_file(root, world_data)) {
 		std::cerr << "\n❌ Server aborting: invalid world data configuration.\n";
 		return 1;
 	 }
