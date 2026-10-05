@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 16:35:13 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/05 12:18:32 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,14 @@ int main() {
 	// InitWindow(800, 450, "raylib example - basic window");
     // SetTargetFPS(60);
 
-	// VisualPlayer kris("Kris", "assets/sprites/player/kris_walk.png", {19, 38}, 20, 2.0f);
+	VisualPlayer kris("Kris", "assets/sprites/player/kris_walk.png", {19, 38}, 20, 2.0f);
 
     Room room1("Spawn", "I don't have any description yet", "assets/sprites/player/kris_walk.png", false, false);
-    std::cout << room1.getName() << "\n";
+    
+    room1.addPlayer(&kris);
+    std::cout << room1.getplayer(kris.getName())->getName() << "\n\n";
+    room1.popPlayer("Kris");
+    
 
     // while (!WindowShouldClose())
     // {

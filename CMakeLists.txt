@@ -35,6 +35,7 @@ set(COMMON_SOURCES
     src/items/Weapon.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
+    src/entities/PNJ.cpp
     src/rooms/Room.cpp
 )
 
