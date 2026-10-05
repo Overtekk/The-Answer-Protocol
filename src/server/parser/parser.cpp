@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 10:24:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 13:36:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				std::string loc_id = entry.first.as<std::string>();
 				world.locations[loc_id] = parse_locationConfig(loc_id, entry.second, knows_locations);
 			}
+			if (7 > knows_locations.size()) {
+				throw std::runtime_error("You need to have a least 8 different locations.");
+			}
+		}
+		else {
+			throw std::runtime_error("Missing locations. Did you forget? 😱");
 		}
 
 		// Check ITEMS
@@ -51,6 +57,9 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.items[item_id] = parse_itemConfig(item_id, entry.second, knows_items);
 			}
 		}
+		else {
+			throw std::runtime_error("Missing items. Did you forget? 😱");
+		}
 
 		// Check ENTITIES
 		if (root["entities"] && root["entities"].IsMap()) {
@@ -58,6 +67,9 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				std::string entity_id = entry.first.as<std::string>();
 				world.entities[entity_id] = parse_entityConfig(entity_id, entry.second, knows_entities);
 			}
+		}
+		else {
+			throw std::runtime_error("Missing entities. Did you forget? 😱");
 		}
 
 		// Check if all data are valid

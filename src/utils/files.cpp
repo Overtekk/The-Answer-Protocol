@@ -6,7 +6,7 @@
 /* By: roandrie <roandrie@student.42lehavre.fr   +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/10/05 10:23:50 by roandrie        #+#    #+#              */
-/* Updated: 2026/10/05 10:43:49 by roandrie        ###   ########.fr       */
+/* Updated: 2026/10/05 13:26:04 by roandrie        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
@@ -19,6 +19,9 @@ YAML::Node load_file(const std::string& filepath) {
 	YAML::Node root;
 	try {
 		root = YAML::LoadFile(filepath);
+		if (root.IsNull()) {
+			print_error("File is empty.\n");
+		}
 	}
 	catch (const YAML::Exception& e) {
 		print_error(e.what());
