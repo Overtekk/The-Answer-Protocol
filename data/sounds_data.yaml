@@ -1,0 +1,17 @@
+sounds:
+  testsound:
+    name: "testsound"
+    path: "test.wav"
+
+  test2:
+    name: "test2"
+    path: "test.ogg"
+
+musics:
+  test:
+    name: "testt"
+    path: "test.ogg"
+
+  test2:
+    name: "test2"
+    path: "test.ogg"

@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/09/25 11:36:56 by roandrie         ###   ########.fr        #
+#    Updated: 2026/10/05 12:31:40 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SUBMODULE_DIRS	= libraries/raylib libraries/yaml-cpp libraries/json
 #      RULES      #
 # --------------- #
 
-.PHONY:		all server cli_client gui_client clean fclean re $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
+.PHONY:		all server cli_client gui_client clean fclean re $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT) \
+			run_server run_gui run_cli devserv devcli devgui
 .SILENT:
 
 all:	git_absolute $(SERVER_NAME) $(CLI_CLIENT) $(GUI_CLIENT)
@@ -36,6 +37,21 @@ server:	git_absolute $(SERVER_NAME)
 cli_client:	git_absolute $(CLI_CLIENT)
 
 gui_client:	git_absolute $(GUI_CLIENT)
+
+run_server:
+			./$(SERVER_NAME)
+
+run_cli:
+			./$(CLI_CLIENT)
+
+run_gui:
+			./$(GUI_CLIENT)
+
+devserv: server run_server
+
+devcli: cli_client run_cli
+
+devgui: gui_client run_gui
 
 git_absolute:
 			@missing=0; \
