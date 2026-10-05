@@ -6,24 +6,24 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 10:07:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 11:49:24 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "raylib.h"
 # include "gui/entities/VisualPlayer.hpp"
 # include "gui.h"
-# include "server.h" // REMOVE LATER
+# include "utils.h"
 # include "debug.h"
 
-void test_gui_parser(); // REMOVE LATER
+int gui_parser();
 
 int main() {
     // SetConfigFlags(FLAG_VSYNC_HINT);
 	// InitWindow(800, 450, "raylib example - basic window");
     // SetTargetFPS(60);
 
-	test_gui_parser(); // REMOVE LATER
+	gui_parser();
 
 	// VisualPlayer kris("Kris", "assets/sprites/player/kris_walk.png", {19, 38}, 20, 2.0f);
 
@@ -43,29 +43,25 @@ int main() {
     return 0;
 }
 
-bool load_file(const std::string& filepath, YAML::Node& root) { // REMOVE LATER
-	try {
-		root = YAML::LoadFile(filepath);
-	}
-	catch (const YAML::Exception& e) {
-		return false;
-	}
-	return true;
-}
-
-void test_gui_parser() { // REMOVE LATER
-	YAML::Node root;
+int gui_parser() {
 	WorldConfig world_data;
 
-	if (!load_file("data/world_data.yaml", root)) {
-        std::cerr << "\n❌ Unable to load YAML file.\n";
-        return;
-    }
+	YAML::Node root = load_file("data/world_data.yaml");
+	YAML::Node root_sounds = load_file("data/sounds_data.yaml");
+	YAML::Node root_sprites = load_file("data/sprites_data.yaml");
+	if (root.IsNull() or root_sounds.IsNull() or root_sprites.IsNull()) {
+		return EXIT_FAILURE;
+	}
+	std::queue<YAML::Node> nodes_list;
+	nodes_list.push(root);
+	nodes_list.push(root_sounds);
+	nodes_list.push(root_sprites);
 
-	if (!parse_file_for_gui(root, world_data)) {
+	if (!parse_file_for_gui(nodes_list, world_data)) {
 		std::cerr << "\n❌ Server aborting: invalid world data configuration.\n";
-		return;
+		return 1;
 	 }
 
 	 debug_print_structure(world_data, true);
+	 return 0;
 }

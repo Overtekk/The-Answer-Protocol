@@ -39,6 +39,7 @@ set(COMMON_SOURCES
     src/entities/Player.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
+	src/utils/files.cpp
 	src/debug/debug_structure.cpp
 )
 

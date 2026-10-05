@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:08:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 10:41:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,26 @@ struct EntityConfig {
 	int hp;
 };
 
+struct SpriteConfig {
+	std::string name;
+	std::string path;
+};
+
+struct SoundConfig {
+	std::string name;
+	std::string path;
+};
+
+struct MusicConfig {
+	std::string name;
+	std::string path;
+};
+
 struct WorldConfig {
 	std::unordered_map<std::string, LocationConfig> locations;
 	std::unordered_map<std::string, ItemConfig> items;
     std::unordered_map<std::string, EntityConfig> entities;
+	std::unordered_map<std::string, SpriteConfig> sprite;
+	std::unordered_map<std::string, SoundConfig> sound;
+	std::unordered_map<std::string, MusicConfig> music;
 };

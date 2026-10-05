@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:45:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 10:24:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,6 @@ void check_int(int value, const std::string& id);
 void check_sprite(const std::string&  sprite, const std::string& id);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
-
-// LOADER (public)
-// Try to load the world_data file.
-bool load_file(const std::string& filepath, YAML::Node& root) {
-	try {
-		root = YAML::LoadFile(filepath);
-	}
-	catch (const YAML::Exception& e) {
-		print_error(e.what());
-		return false;
-	}
-	return true;
-}
 
 // --- PARSER (public) ---
 // Validate each data and construct the global world structure.

@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:14:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:46:05 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/05 11:04:07 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <iostream>
+# include <queue>
 # include <yaml-cpp/yaml.h>
 # include "config/WorldConfig.hpp"
 
@@ -29,6 +30,9 @@ std::string direction_to_string(Direction dir);
 std::string enemy_type_to_string(EnemyType type);
 std::string item_type_to_string(ItemType type);
 
+// - Load files -
+YAML::Node load_file(const std::string& filepath);
+
 // --- TEMPLATE ---
 // Safely extracts a typed value from a YAML node with fallback to defaultValue on error or missing key.
 template <typename T>
@@ -43,4 +47,12 @@ T getValue(const YAML::Node& parent, const std::string& key, const T& defaultVal
 		}
 	}
 	return defaultValue;
+}
+
+// Extract a element from a queue, pop it and return the value
+template <typename T>
+T pop_front(std::queue<T>& q) {
+    T val = std::move(q.front());
+    q.pop();
+    return val;
 }

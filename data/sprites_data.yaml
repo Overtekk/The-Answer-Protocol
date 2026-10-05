@@ -1,0 +1,8 @@
+sprites:
+  test:
+    name: "test"
+    path: "assets/sprites/player/kris_walk.png"
+
+  test2:
+    name: "test2"
+    path: "assets/sprites/player/kris_walk.png"
