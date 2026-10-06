@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:32:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:45:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,5 @@ class Entity {
 		void				setHealth(int new_value);
 
 		// --- ERROR ---
-		std::string sendObjectError(std::string error) const;
+		void sendObjectError(std::string error) const;
 };

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:34:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:46:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void		Entity::setHealth(int new_value) {
 }
 
 // Error
-std::string Entity::sendObjectError(std::string error) const {
-	std::ostringstream oss;
-    oss << this << " object error: " << error << "\n";
-    return oss.str();
+void Entity::sendObjectError(std::string error) const {
+   print_log(" ERROR: " + error + "\n");
 }
