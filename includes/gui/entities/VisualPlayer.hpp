@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VisualPlayer.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:48:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:32:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:19:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

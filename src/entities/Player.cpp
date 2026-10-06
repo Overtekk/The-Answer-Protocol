@@ -14,10 +14,10 @@
 
 // --- CONSTRUCTOR ---
 Player::Player(
-	const std::string& name, const std::string& description, const fs::path& sprite,
+	const std::string& name, const fs::path& sprite,
 	int health
 ):
-	Entity(name, description, sprite, EnemyType::UNKNOWN, health) {}
+	Entity(name, "", sprite, EnemyType::UNKNOWN, health) {}
 
 // --- SETTER ---
 bool Player::setName(std::string& new_name) {

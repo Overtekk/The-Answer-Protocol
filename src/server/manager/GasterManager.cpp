@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GasterManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 12:23:57 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:02:09 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void GasterManager::create_items() {
 		}
 
 		if (new_item) {
-			_world_state.items[item_id] = std::move(new_item);
+			_world_state.items[new_item->getId()] = std::move(new_item);
 		}
 	}
 }
@@ -133,6 +133,6 @@ void GasterManager::debug_print_structure_state() {
 
 	std::cout << RED << "ITEMS:\n" << RESET;
 	for (const auto& [id, item] : _world_state.items) {
-		std::cout << id << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << ".\n";
+		std::cout << id << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << " and his id is: " << YEL << item->getId() << RESET << ".\n";
 	}
 }

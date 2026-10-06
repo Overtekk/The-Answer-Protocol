@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WorldState.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 09:27:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 09:38:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:02:02 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,5 @@
 struct WorldState {
 	std::unordered_map<std::string, std::unique_ptr<Room>> rooms;
 	std::unordered_map<std::string, std::unique_ptr<Entity>> entities;
-	std::unordered_map<std::string, std::unique_ptr<Item>> items;
+	std::unordered_map<ItemID, std::unique_ptr<Item>> items;
 };
