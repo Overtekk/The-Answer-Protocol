@@ -40,6 +40,7 @@ set(COMMON_SOURCES
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
 	src/utils/files.cpp
+	src/server/protocol/TCP_responses.cpp
 	src/debug/debug_structure.cpp
 )
 
