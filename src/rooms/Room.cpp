@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 11:37:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:16:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ bool    Room::placeItem(Item* item) {
         std::cout << this->sendObjectError("Item's pointer point to null");
         return (false);
     }
-    ItemID  item_id = item->getId();
+    ItemID  item_id = item->getID();
     if (this->_items.count(item_id) == 1)
     {
         std::cout << this->sendObjectError("Exact item already in room");

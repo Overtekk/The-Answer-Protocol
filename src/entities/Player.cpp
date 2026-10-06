@@ -42,7 +42,7 @@ Item* Player::addItemToInventory(std::unique_ptr<Item> item) {
 		return nullptr;
 	}
 
-	ItemID id = item->getId();
+	ItemID id = item->getID();
 	Item* item_ptr = item.get();
 	_inventory[id] = std::move(item);
 	return item_ptr;
