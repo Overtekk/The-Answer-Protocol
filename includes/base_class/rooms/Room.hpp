@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Room.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/05 16:08:51 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 11:31:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <iostream>
 # include <string>
@@ -19,7 +19,7 @@
 # include "base_class/items/Item.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
-# include "base_class/entities/PNJ.hpp"
+# include "base_class/entities/NPC.hpp"
 // # include "base_class/entities/WorldConfig.hpp"
 
 namespace fs = std::filesystem;
@@ -31,15 +31,14 @@ class Room {
         fs::path                                        _background;
         std::unordered_map<ItemID, Item*>               _items;
         std::unordered_map<std::string, Player*>        _players;
-        std::unordered_map<std::string, PNJ*>           _pnj;
+        std::unordered_map<std::string, NPC*>           _npc;
         // std::unordered_map<Direction, std::string>   _exits;
-        bool                                            _save_point;
         bool                                            _special;
 
     public:
         // Constructor
-        Room(const std::string& name, const std::string& description, const fs::path& background, 
-        const bool _save_point, const bool _special);
+        Room(const std::string& name, const std::string& description, const fs::path& background,
+        const bool _special);
 
         // Name
         std::string             getName() const;
@@ -54,10 +53,10 @@ class Room {
         Player*                 popPlayer(const std::string& name);
         Player*                 getPlayer(const std::string& name);
 
-        // PNJ
-        bool                    addPNJ(PNJ* pnj);
-        PNJ*                    popPNJ(const std::string& name);
-        PNJ*                    getPNJ(const std::string& name);
+        // NPC
+        bool                    addNPC(NPC* npc);
+        NPC*                    popNPC(const std::string& name);
+        NPC*                    getNPC(const std::string& name);
 
         // Items
         bool                    placeItem(Item* item);
@@ -65,7 +64,6 @@ class Room {
         Item*                   getItem(ItemID item_id);
 
         // Special stats
-        bool                    isSavePoint() const;
         bool                    isSpecial() const;
 
         // Texture

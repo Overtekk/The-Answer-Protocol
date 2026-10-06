@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Player.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/01 15:27:54 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 11:51:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <filesystem>
 # include <map>
@@ -21,11 +21,13 @@
 namespace fs = std::filesystem;
 
 class Player : public Entity {
-	private:
+	private :
 		std::map<ItemID, std::unique_ptr<Item>> _inventory;
 
-	public:
-		Player(const std::string& name, const fs::path& sprite, int health);
+	public :
+		Player(
+			const std::string& name, const std::string& description, const fs::path& sprite,
+			EnemyType type, int health);
 
 		// Inventory
 		Item* addItemToInventory(std::unique_ptr<Item> item);

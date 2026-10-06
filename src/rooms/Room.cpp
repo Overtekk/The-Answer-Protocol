@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Room.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/05 16:09:13 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 11:37:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 
 Room::Room(
     const std::string& name, const std::string& description, const fs::path& background,
-    const bool save_point, const bool special
+    const bool special
 ):
     _name(name),
     _description(description),
     _background(background),
-    _save_point(save_point),
     _special(special)
     {
     }
@@ -77,7 +76,7 @@ bool        Room::addPlayer(Player* player) {
         std::cout << this->sendObjectError("Player's pointer point to null");
         return (false);
     }
-    
+
     const std::string name = player->getName();
     if (this->_players.count(name) == 1)
     {
@@ -107,41 +106,41 @@ Player*     Room::getPlayer(const std::string& name) {
 }
 
 // ============================================================================
-// =============================   PNJ   ======================================
+// =============================   npc   ======================================
 // ============================================================================
 
-bool        Room::addPNJ(PNJ* pnj) {
-    if (pnj == nullptr)
+bool        Room::addNPC(NPC* npc) {
+    if (npc == nullptr)
     {
-        std::cout << this->sendObjectError("PNJ's pointer point to null");
+        std::cout << this->sendObjectError("npc's pointer point to null");
         return (false);
     }
-    
-    const std::string name = pnj->getName();
-    if (this->_pnj.count(name) == 1)
+
+    const std::string name = npc->getName();
+    if (this->_npc.count(name) == 1)
     {
-        std::cout << this->sendObjectError("PNJ already in room");
+        std::cout << this->sendObjectError("npc already in room");
         return (false);
     }
-    this->_pnj[name] = pnj;
+    this->_npc[name] = npc;
     return (true);
 }
 
-PNJ*        Room::popPNJ(const std::string& name) {
-    if (this->_pnj.count(name) == 1)
+NPC*        Room::popNPC(const std::string& name) {
+    if (this->_npc.count(name) == 1)
     {
-        PNJ  *pnj = this->_pnj[name];
-        this->_pnj.erase(name);
-        return (pnj);
+        NPC  *npc = this->_npc[name];
+        this->_npc.erase(name);
+        return (npc);
     }
-    std::cout << this->sendObjectError("Invalide PNJ name key (PNJ not in room)");
+    std::cout << this->sendObjectError("Invalide npc name key (npc not in room)");
     return (nullptr);
 }
 
-PNJ*     Room::getPNJ(const std::string& name) {
-    if (this->_pnj.count(name) == 1)
-        return (this->_pnj[name]);
-    std::cout << this->sendObjectError("Invalide PNJ name key (PNJ not in room)");
+NPC*     Room::getNPC(const std::string& name) {
+    if (this->_npc.count(name) == 1)
+        return (this->_npc[name]);
+    std::cout << this->sendObjectError("Invalide npc name key (npc not in room)");
     return (nullptr);
 }
 
@@ -186,10 +185,6 @@ Item*   Room::getItem(ItemID item_id) {
 // ============================================================================
 // =======================      Special stats      ============================
 // ============================================================================
-bool        Room::isSavePoint() const {
-    return (this->_save_point);
-}
-
 bool        Room::isSpecial() const {
     return (this->_special);
 }

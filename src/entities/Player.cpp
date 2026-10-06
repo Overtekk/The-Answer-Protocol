@@ -13,9 +13,10 @@
 # include "base_class/entities/Player.hpp"
 
 Player::Player(
-	const std::string& name, const fs::path& sprite, int health
+	const std::string& name, const std::string& description, const fs::path& sprite,
+	EnemyType type, int health
 ):
-	Entity(name,sprite, health) {}
+	Entity(name, description, sprite, type, health) {}
 
 // Inventory System
 Item* Player::addItemToInventory(std::unique_ptr<Item> item) {

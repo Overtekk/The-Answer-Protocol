@@ -6,11 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:43:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 11:31:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <iostream>
 # include <algorithm>

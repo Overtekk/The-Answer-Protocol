@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PNJ.hpp                                            :+:      :+:    :+:   */
+/*   NPCShop.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/05 14:00:25 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 11:44:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
-#include "Entity.hpp"
+# include <unordered_map>
+# include "NPC.hpp"
+# include "config/Enums.hpp"
 
-class PNJ : public Entity {
-    private:
-        /* data */
-    public:
+
+class NPCShop : public NPC {
+    private :
+		std::unordered_map<std::string, std::string> _dialogue;
+
+    public :
         // Constructor
-        PNJ(const std::string& name, const fs::path& sprite, int health);
+        NPCShop(
+			const std::string& name, const std::string& description, const fs::path& sprite,
+			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
+		);
 
         // Destructor
-        ~PNJ() = default;
+        ~NPCShop() = default;
 };

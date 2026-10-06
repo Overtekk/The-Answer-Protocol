@@ -6,11 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:42:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 11:32:10 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <tuple>
 # include "raylib.h"
@@ -22,7 +22,7 @@
 enum class EntityDirection {DOWN = 0, LEFT = 1, UP = 2};
 
 class VisualEntity {
-	private:
+	private :
 		// Reference to the entity
 		const Entity& _entity;
 
@@ -47,11 +47,11 @@ class VisualEntity {
 		float _dx = 0;
 		float _dy = 0;
 
-	protected:
+	protected :
 		virtual void update_movement(float delta_time);
 		virtual void update_sprite(float delta_time);
 
-	public:
+	public :
 		VisualEntity(const Entity& entity, std::tuple<int, int> sprite_dim, float scale = 1.0f);
 
 		virtual ~VisualEntity();

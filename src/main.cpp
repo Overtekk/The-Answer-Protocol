@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 15:02:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 09:53:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int main() {
 	 }
 
 	 GasterManager gaster = GasterManager(world_data);
-	 gaster.debug_print_structure_data();
+	 gaster.debug_print_structure_state();
 
 	return 0;
 }

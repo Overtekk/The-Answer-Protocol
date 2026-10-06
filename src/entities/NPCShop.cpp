@@ -1,17 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PNJ.cpp                                            :+:      :+:    :+:   */
+/*   NPCShop.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:04:23 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/05 14:07:28 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 11:50:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "base_class/entities/PNJ.hpp"
+# include "base_class/entities/NPCShop.hpp"
 
-PNJ::PNJ(
-    const std::string& name, const fs::path& sprite, int health
-): Entity(name, sprite, health) {}
+// --- CONSTRUCTOR ---
+NPCShop::NPCShop(
+    const std::string& name, const std::string& description, const fs::path& sprite,
+	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
+):
+	NPC(name, description, sprite, dialogue, type, health) {}

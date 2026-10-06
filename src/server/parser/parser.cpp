@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 13:36:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 11:38:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <filesystem>
+# include "config/Enums.hpp"
 # include "utils.h"
 
 namespace fs = std::filesystem;

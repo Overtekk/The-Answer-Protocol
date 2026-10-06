@@ -37,7 +37,10 @@ set(COMMON_SOURCES
     src/items/Weapon.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
-    src/entities/PNJ.cpp
+    src/entities/NPC.cpp
+	src/entities/NPCShop.cpp
+	src/entities/Enemy.cpp
+	src/entities/Boss.cpp
     src/rooms/Room.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
