@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 11:31:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:16:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "base_class/entities/NPC.hpp"
-// # include "base_class/entities/WorldConfig.hpp"
+# include "config/Enums.hpp"
 
 namespace fs = std::filesystem;
 
+// * ABSTRACT CLASS *
 class Room {
     private :
         std::string                                     _name;
@@ -32,13 +33,16 @@ class Room {
         std::unordered_map<ItemID, Item*>               _items;
         std::unordered_map<std::string, Player*>        _players;
         std::unordered_map<std::string, NPC*>           _npc;
-        // std::unordered_map<Direction, std::string>   _exits;
+        //std::unordered_map<Direction, std::string>   	_exits;
         bool                                            _special;
 
     public:
-        // Constructor
-        Room(const std::string& name, const std::string& description, const fs::path& background,
-        const bool _special);
+        // --- CONSTRUCTOR ---
+        Room(
+			const std::string& name, const std::string& description, const fs::path& background,
+			const bool _special);
+		// --- DESTRUCTOR ---
+        virtual ~Room() = default;
 
         // Name
         std::string             getName() const;
@@ -68,9 +72,6 @@ class Room {
 
         // Texture
         fs::path                getBGTexturePath() const;
-
-        // Destructor
-        virtual ~Room() = default;
 
         // Error
         std::string sendObjectError(std::string error) const;

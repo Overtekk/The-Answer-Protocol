@@ -34,7 +34,9 @@ target_include_directories(project_warnings INTERFACE
 
 set(COMMON_SOURCES
     src/items/Item.cpp
-    src/items/Weapon.cpp
+    src/items/ItemWeapon.cpp
+	src/items/ItemKey.cpp
+	src/items/ItemConsumable.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
     src/entities/NPC.cpp

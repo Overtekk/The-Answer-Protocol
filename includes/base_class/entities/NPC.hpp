@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 11:44:23 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:07:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,17 @@
 # include "Entity.hpp"
 # include "config/Enums.hpp"
 
-
+// * Represent a NPC *
 class NPC : public Entity {
     private :
 		std::unordered_map<std::string, std::string> _dialogue;
 
     public :
-        // Constructor
+        // --- CONSTRUCTOR ---
         NPC(
 			const std::string& name, const std::string& description, const fs::path& sprite,
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
-
-        // Destructor
+        // --- DESTRUCTOR ---
         ~NPC() = default;
 };

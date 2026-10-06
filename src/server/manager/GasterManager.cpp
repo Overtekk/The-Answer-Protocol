@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:56:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 12:23:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include "base_class/entities/NPC.hpp"
 # include "base_class/entities/NPCShop.hpp"
 # include "base_class/items/Item.hpp"
+# include "base_class/items/ItemWeapon.hpp"
+# include "base_class/items/ItemKey.hpp"
+# include "base_class/items/ItemConsumable.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -31,6 +34,7 @@ GasterManager::GasterManager(
 		// Create all the objects
 		create_room();
 		create_entities();
+		create_items();
 	}
 
 // --- CREATE OBJECTS ---
@@ -78,6 +82,36 @@ void GasterManager::create_entities() {
 	}
 }
 
+void GasterManager::create_items() {
+	for (const auto& [item_id, item] : _world_data.items) {
+		std::unique_ptr<Item> new_item;
+
+		switch (item.type) {
+			case ItemType::CONSUMABLE:
+				new_item = std::make_unique<ItemConsumable>(
+					item.name, item.description, item.type, item.damage, item.hp);
+				break;
+
+			case ItemType::KEY:
+				new_item = std::make_unique<ItemKey>(
+					item.name, item.description, item.type, item.damage, item.hp);
+				break;
+
+			case ItemType::WEAPON:
+				new_item = std::make_unique<ItemWeapon>(
+					item.name, item.description, item.type, item.damage, item.hp);
+				break;
+
+			default:
+					continue;
+		}
+
+		if (new_item) {
+			_world_state.items[item_id] = std::move(new_item);
+		}
+	}
+}
+
 
 // --- DEBUG ---
 // Print the structure of WorldData
@@ -95,5 +129,10 @@ void GasterManager::debug_print_structure_state() {
 	std::cout << RED << "ENTITIES:\n" << RESET;
 	for (const auto& [id, entity] : _world_state.entities) {
 		std::cout << id << " is at " << entity.get() << " and is named " << CYN << entity->getName() << RESET << " and his type is " << enemy_type_to_string(entity->getType()) << ".\n";
+	}
+
+	std::cout << RED << "ITEMS:\n" << RESET;
+	for (const auto& [id, item] : _world_state.items) {
+		std::cout << id << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << ".\n";
 	}
 }

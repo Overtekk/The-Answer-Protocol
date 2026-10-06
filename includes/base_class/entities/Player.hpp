@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:51:23 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:20:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,28 @@
 
 namespace fs = std::filesystem;
 
+// * Represent a player *
 class Player : public Entity {
 	private :
 		std::map<ItemID, std::unique_ptr<Item>> _inventory;
 
 	public :
+		// --- CONSTRUCTOR ---
 		Player(
 			const std::string& name, const std::string& description, const fs::path& sprite,
-			EnemyType type, int health);
+			int health);
+		// --- DESTRUCTOR ---
+        ~Player() = default;
 
-		// Inventory
-		Item* addItemToInventory(std::unique_ptr<Item> item);
-		bool removeItemFromInventory(ItemID id);
-		bool checkItemInInventory(ItemID id) const;
-		Item* getItem(ItemID id) const;
-		ItemID getItemIdByName(const std::string& name) const;
+		// --- SETTER ---
+		bool setName(std::string& new_name);
+
+		// --- INVENTORY SYSTEM ---
+		Item* 		addItemToInventory(std::unique_ptr<Item> item);
+		bool 		removeItemFromInventory(ItemID id);
+		bool 		checkItemInInventory(ItemID id) const;
+		Item* 		getItem(ItemID id) const;
+		ItemID 		getItemIdByName(const std::string& name) const;
 		std::string getItemInInventory() const;
 };
 
