@@ -6,44 +6,46 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 10:42:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:12:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include <iostream>
 # include <algorithm>
 # include <filesystem>
 # include <string>
 # include <tuple>
+# include "config/Enums.hpp"
 
 namespace fs = std::filesystem;
 
+// * ABSTRACT CLASS *
 class Entity {
-	private :
+	protected :
 		std::string _name;
-		int _health;
-		fs::path _sprite;
+
+	private :
+		std::string _description;
+		int 		_health;
+		fs::path	_sprite;
+		EnemyType	_type;
 
 	public :
-		// Constructor
-		Entity(const std::string& name, const fs::path& sprite, int health);
-
-		// Destructor
+		// --- CONSTRUCTOR ---
+		Entity(
+			const std::string& name, const std::string& description, const fs::path& sprite,
+			EnemyType type, int health);
+		// --- DESTRUCTOR ---
 		virtual ~Entity() = default;
 
-		// Name
-		std::string getName() const;
-		bool setName(std::string& new_name);
+		// --- GETTER ---
+		std::string 		getName() const;
+		int 				getHealth() const;
+		fs::path			getSpritePath() const;
+		virtual EnemyType	getType() const;
 
-		// Health
-		int getHealth() const;
-		bool setHealth(int new_value);
-
-		// Sprite
-		fs::path getSpritePath() const { return _sprite; }
-
-		// Error
+		// --- ERROR ---
 		std::string sendObjectError(std::string error) const;
 };

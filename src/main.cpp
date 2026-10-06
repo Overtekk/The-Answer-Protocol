@@ -6,16 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 13:36:04 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 09:53:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server.h"
 # include "utils.h"
 # include "debug.h"
+# include "server/manager/GasterManager.hpp"
 
 int main() {
-	YAML::Node root = load_file("data/test.yaml");
+	YAML::Node root = load_file("data/world_data.yaml");
 	if (root.IsNull()) {
 		print_error("Failed to load file.");
 		return EXIT_FAILURE;
@@ -26,7 +27,8 @@ int main() {
 		return 1;
 	 }
 
-	 debug_print_structure(world_data);
+	 GasterManager gaster = GasterManager(world_data);
+	 gaster.debug_print_structure_state();
 
 	return 0;
 }
