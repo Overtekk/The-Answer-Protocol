@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:12:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:32:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ class Entity {
 		int 				getHealth() const;
 		fs::path			getSpritePath() const;
 		virtual EnemyType	getType() const;
+
+		// --- SETTER ---
+		void				setHealth(int new_value);
 
 		// --- ERROR ---
 		std::string sendObjectError(std::string error) const;

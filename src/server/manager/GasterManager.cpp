@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:17:03 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:30:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ GasterManager::GasterManager(
 		create_entities();
 		create_items();
 	}
+
 
 // --- CREATE OBJECTS ---
 void GasterManager::create_room() {

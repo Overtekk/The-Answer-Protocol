@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:17:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:32:07 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ class GasterManager {
 		GasterManager(WorldConfig& world_data);
 		// --- DESTRUCTOR ---
 		virtual ~GasterManager() = default;
+
+		// --- CREATE PLAYER ---
+
 
 
 	// --- DEBUG ---
