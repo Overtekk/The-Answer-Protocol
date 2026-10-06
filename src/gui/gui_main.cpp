@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:36:09 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 15:29:15 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "gui/entities/VisualPlayer.hpp"
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/NPC.hpp"
-# include "base_class/items/Weapon.hpp"
+# include "base_class/items/ItemWeapon.hpp"
 
 int gui_parser();
 
@@ -34,13 +34,18 @@ int main() {
 
     // NPC ralsei("Ralsei", "He like chocolate", "None/None/stil/None",100);
 
-    std::unique_ptr wooden_sword = std::make_unique<Weapon>("Wooden Sword", "t");
+    std::unique_ptr wooden_sword = std::make_unique<ItemWeapon>("Wooden Sword", "t", ItemType::WEAPON, 100000, 0);
 
     Room room1("Spawn", "I don't have any description yet", "assets/sprites/player/kris_walk.png", false);
+    Room room2("Elevator", "It's the Regretevator elevator !!!", "oiia/oiia", false);
 
+	room1.setExitNorth(&room2);
     room1.addPlayer(&kris);
     std::cout << room1.getPlayer(kris.getName())->getName() << "\n\n";
-    room1.popPlayer("Kris");
+
+	room2.setExitSouth(&room1);
+	std::cout << room2.getFromDirection(Direction::SOUTH)->getName() << "\n\n";
+	std::cout << room2.getFromDirection(Direction::EAST) << "\n\n";
 
 
     // while (!WindowShouldClose())
@@ -78,6 +83,6 @@ int gui_parser() {
 		return 1;
 	 }
 
-	 debug_print_structure(world_data, true);
+	// debug_print_structure(world_data, true);
 	 return 0;
 }

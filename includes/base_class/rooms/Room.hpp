@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Room.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 13:16:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 15:22:45 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Room {
         std::unordered_map<ItemID, Item*>               _items;
         std::unordered_map<std::string, Player*>        _players;
         std::unordered_map<std::string, NPC*>           _npc;
-        //std::unordered_map<Direction, std::string>   	_exits;
+        std::unordered_map<Direction, Room*>   	        _exits;
         bool                                            _special;
 
     public:
@@ -66,6 +66,14 @@ class Room {
         bool                    placeItem(Item* item);
         Item*                   popItem(ItemID item_id);
         Item*                   getItem(ItemID item_id);
+
+        // Directions
+        void                    setExitNorth(Room* room);
+        void                    setExitSouth(Room* room);
+        void                    setExitEast(Room* room);
+        void                    setExitWest(Room* room);
+        void                    setExitUnknown(Room* room);
+        Room*                   getFromDirection(Direction direction);
 
         // Special stats
         bool                    isSpecial() const;
