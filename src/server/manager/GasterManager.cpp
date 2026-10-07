@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 10:39:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 12:03:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
-# include "protocol/error_code.hpp"
+# include "protocol/TCP_error.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"

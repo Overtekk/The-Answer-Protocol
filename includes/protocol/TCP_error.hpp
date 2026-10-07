@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 15:27:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:59:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ enum class TCPErrorCode {
 	CONNECTION_FAILED,
 	SEND_FAILED,
 	INVALID_USERNAME,
+	SYSTEM_ERROR,
 };
 
 

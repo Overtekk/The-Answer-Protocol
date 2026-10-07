@@ -6,11 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:00:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 12:03:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "protocol/error_code.hpp"
+# include "protocol/TCP_error.hpp"
 
 std::string getTCP_errorDescription(TCPErrorCode error_code);
 
@@ -55,6 +55,9 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 			break;
 		case TCPErrorCode::SEND_FAILED:
 			err_message = "901 SEND_FAILED";
+			break;
+		case TCPErrorCode::SYSTEM_ERROR:
+			err_message = "904 SYSTEM_ERROR";
 			break;
 		default:
 			err_message = "Invalid error code";
@@ -115,6 +118,9 @@ std::string getTCP_errorDescription(TCPErrorCode error_code) {
 			break;
 		case TCPErrorCode::SEND_FAILED:
 			err_desc = "Message transmission failed";
+			break;
+		case TCPErrorCode::SYSTEM_ERROR:
+			err_desc = "Server can't be opened due to system error. Please retry.";
 			break;
 		default:
 			err_desc = "Invalid error code. No description.";
