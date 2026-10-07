@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:52:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:54:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void	TCPServer::handleClientRead(int fd) {
 void	TCPServer::handleClientWrite(int fd) {
 	// Find the client
 	auto it = _sessions.find(fd);
-	if (it == NULL) {
+	if (it == _sessions.end()) {
 		return;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 11:23:08 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 13:37:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:54:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ TCPSocket::TCPSocket(TCPSocket&& other) noexcept {
 }
 
 TCPSocket&	TCPSocket::operator=(TCPSocket&& other) noexcept {
-	if (this != &other) {
+	if (this == &other) {
 		return *this;
 	}
 

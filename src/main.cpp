@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 09:53:29 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:55:30 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # include "utils.h"
 # include "debug.h"
 # include "server/manager/GasterManager.hpp"
+# include "server/TCPServer.hpp"
 
 int main() {
 	YAML::Node root = load_file("data/world_data.yaml");
@@ -27,8 +28,12 @@ int main() {
 		return 1;
 	 }
 
-	 GasterManager gaster = GasterManager(world_data);
-	 gaster.debug_print_structure_state();
+	 TCPServer server(4242);
+	 std::cout << "Server listening on port 4242...\n";
+	 server.run();
+
+	//  GasterManager gaster = GasterManager(world_data);
+	//  gaster.debug_print_structure_state();
 
 	return 0;
 }
