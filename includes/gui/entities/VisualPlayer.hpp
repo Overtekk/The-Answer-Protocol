@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   VisualPlayer.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:48:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/25 11:16:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:19:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# pragma once
+#pragma once
 
 # include "base_class/entities/Player.hpp"
 # include "gui/entities/VisualEntity.hpp"

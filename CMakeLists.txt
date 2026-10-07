@@ -34,12 +34,20 @@ target_include_directories(project_warnings INTERFACE
 
 set(COMMON_SOURCES
     src/items/Item.cpp
-    src/items/Weapon.cpp
+    src/items/ItemWeapon.cpp
+	src/items/ItemKey.cpp
+	src/items/ItemConsumable.cpp
     src/entities/Entity.cpp
     src/entities/Player.cpp
+    src/entities/NPC.cpp
+	src/entities/NPCShop.cpp
+	src/entities/Enemy.cpp
+	src/entities/Boss.cpp
+    src/rooms/Room.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
 	src/utils/files.cpp
+	src/server/protocol/TCP_responses.cpp
 	src/debug/debug_structure.cpp
 )
 
@@ -49,6 +57,7 @@ set(GUI_MAIN        src/gui/gui_main.cpp)
 
 set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
 	src/server/parser/parser.cpp
+	src/server/manager/GasterManager.cpp
 )
 
 set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}
@@ -85,6 +94,9 @@ target_link_libraries(tap_cli_client PRIVATE
 
 # 3. Client GUI
 add_executable(tap_gui_client ${GUI_SOURCES})
+target_include_directories(tap_gui_client PRIVATE
+    libraries/raytmx
+)
 target_link_libraries(tap_gui_client PRIVATE
     project_warnings
     Threads::Threads

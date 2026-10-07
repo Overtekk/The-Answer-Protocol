@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Weapon.cpp                                         :+:      :+:    :+:   */
+/*   NPCShop.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/21 14:07:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 14:44:43 by roandrie         ###   ########.fr       */
+/*   Created: 2026/10/05 14:04:23 by nbuchy            #+#    #+#             */
+/*   Updated: 2026/10/06 11:50:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "base_class/items/Weapon.hpp"
+# include "base_class/entities/NPCShop.hpp"
 
-Weapon::Weapon(
-	const std::string& name, const fs::path& sprite
+// --- CONSTRUCTOR ---
+NPCShop::NPCShop(
+    const std::string& name, const std::string& description, const fs::path& sprite,
+	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 ):
-	Item(name, sprite) {}
+	NPC(name, description, sprite, dialogue, type, health) {}

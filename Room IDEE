@@ -1,0 +1,19 @@
+.hpp (template)
+.cpp (code et m'ethodes... tout)
+
+Class
+  Attribut:
+  - Nom ✅
+  - Description ✅
+  - Entée/sortie (dict, enum) ✅
+  - NPC (list obj ou string ?) ✅
+  - Items (dict obj ou string ?) ✅
+  - save_point (bool) ✅
+  - spécial (bool) ✅
+  - Textures de la map ✅
+  - joueur sur la map (list) ✅
+
+Class visual hérite de ↑
+  methode:
+  - on_draw()
+  - update_sprite()

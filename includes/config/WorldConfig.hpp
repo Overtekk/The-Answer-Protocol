@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 10:41:23 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 10:31:07 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,10 @@
 # include <string>
 # include <unordered_map>
 # include <vector>
+# include "config/Enums.hpp"
 
-enum class Direction {NORTH, SOUTH, EAST, WEST, UNKNOWN};
-enum class ItemType {WEAPON, KEY, CONSUMABLE, UNKNOWN};
-enum class EnemyType {ENEMY, BOSS, NPC, SHOP, UNKNOWN};
-
+/// ** Structures that hold raws data for the manager to create the objects later on. **
+// Contains the data for the locations.
 struct LocationConfig {
 	std::string name;
 	std::string description;
@@ -30,6 +29,7 @@ struct LocationConfig {
 	bool special;
 };
 
+// Contains the data for the items.
 struct ItemConfig {
 	std::string name;
 	std::string description;
@@ -38,6 +38,7 @@ struct ItemConfig {
 	int hp;
 };
 
+// Contains the data for the entities.
 struct EntityConfig {
 	std::string name;
 	std::string description;
@@ -47,21 +48,25 @@ struct EntityConfig {
 	int hp;
 };
 
+// Contains the data for the sprites (other than entities and tilesmap).
 struct SpriteConfig {
 	std::string name;
 	std::string path;
 };
 
+// Contains the data for the sounds/sfx.
 struct SoundConfig {
 	std::string name;
 	std::string path;
 };
 
+// Contains the data for the musics.
 struct MusicConfig {
 	std::string name;
 	std::string path;
 };
 
+// Structure that hold every struct above to have a global structure.
 struct WorldConfig {
 	std::unordered_map<std::string, LocationConfig> locations;
 	std::unordered_map<std::string, ItemConfig> items;

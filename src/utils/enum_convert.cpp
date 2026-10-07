@@ -6,12 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 16:48:05 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 11:26:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 11:38:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
-# include "config/WorldConfig.hpp"
+# include "config/Enums.hpp"
 
 std::string direction_to_string(Direction dir) {
     switch (dir) {

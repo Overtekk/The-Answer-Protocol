@@ -6,40 +6,28 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:57:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:11:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "base_class/entities/Entity.hpp"
 
+// --- CONSTRUCTOR ---
 Entity::Entity(
-	const std::string& name, const fs::path& sprite, int health
+	const std::string& name, const std::string& description, const fs::path& sprite,
+	EnemyType type, int health
 ):
 	_name(name),
+	_description(description),
 	_health(std::clamp(health, 0, 1000)),
-	_sprite(sprite) {}
+	_sprite(sprite),
+	_type(type) {}
 
-// Getter
-
+// --- GETTER ---
 std::string Entity::getName() const { return _name; }
-
-int Entity::getHealth() const { return _health;  }
-
- // Setter
-
-bool Entity::setName(std::string& new_name) {
-	if (new_name.length() >= 3 && new_name.length() <= 20) {
-		_name = new_name;
-		return true;
-	}
-	sendObjectError("Can't modify name. Minimum 3 and maximum 20 characters.");
-	return false;
-}
-
-bool Entity::setHealth(int new_value) {
-	_health = std::clamp(new_value, 0, 1000);
-	return true;
-}
+int 		Entity::getHealth() const { return _health;  }
+EnemyType 	Entity::getType() const { return _type; }
+fs::path 	Entity::getSpritePath() const {return _sprite; };
 
 // Error
 std::string Entity::sendObjectError(std::string error) const {

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:14:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/09/21 10:46:59 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 13:21:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 # include <memory>
 # include "base_class/entities/Player.hpp"
 # include "base_class/items/Item.hpp"
-# include "base_class/items/Weapon.hpp"
+# include "base_class/items/ItemWeapon.hpp"
 
 int main() {
 	std::cout << "Hello World, i'm the cli!\n";
 
-	Player test_player("Player Test", "t", 20);
+	Player test_player("Player Test", "t", "t", 20);
 
-	auto wooden_sword = std::make_unique<Weapon>("Wooden Sword", "t");
-	auto excalibur = std::make_unique<Weapon>("Excalibur", "t");
+	auto wooden_sword = std::make_unique<ItemWeapon>("Wooden Sword", "t");
+	auto excalibur = std::make_unique<ItemWeapon>("Excalibur", "t");
 
 	ItemID sword_id = wooden_sword->getId();
 	// ItemID excalibur_id = excalibur->getId();

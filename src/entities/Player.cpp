@@ -12,12 +12,24 @@
 
 # include "base_class/entities/Player.hpp"
 
+// --- CONSTRUCTOR ---
 Player::Player(
-	const std::string& name, const fs::path& sprite, int health
+	const std::string& name, const fs::path& sprite,
+	int health
 ):
-	Entity(name,sprite, health) {}
+	Entity(name, "", sprite, EnemyType::UNKNOWN, health) {}
 
-// Inventory System
+// --- SETTER ---
+bool Player::setName(std::string& new_name) {
+	if (new_name.length() >= 3 && new_name.length() <= 20) {
+		_name = new_name;
+		return true;
+	}
+	sendObjectError("Can't modify name. Minimum 3 and maximum 20 characters.");
+	return false;
+}
+
+// --- INVENTORY SYSTEM ---
 Item* Player::addItemToInventory(std::unique_ptr<Item> item) {
 	if (!item) {
 		sendObjectError("Can't add item: null pointer provided.");
