@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 09:45:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 10:39:18 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
+# include "protocol/error_code.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -41,7 +42,16 @@ GasterManager::GasterManager(
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
 bool	GasterManager::create_player(const std::string& player_name) {
-	Player new_player = Player(player_name, 100);
+	// Check name lenght
+	if (player_name.length() < 3 && player_name.length() > 20) {
+		std::cout << getTCP_error(TCPErrorCode::INVALID_USERNAME, true);
+		return false;
+	}
+
+	std::unique_ptr<Player> new_player = std::make_unique<Player>(player_name);
+	std::string player_uuid = new_player->generate_uuid_v4();
+	_world_state.players[player_uuid] = std::move(new_player);
+	return true;
 }
 
 // --- OBJECTS MANAGEMENTS ---
@@ -62,22 +72,22 @@ void	GasterManager::create_entities() {
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			default:

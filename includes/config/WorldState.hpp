@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 09:27:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 15:49:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 10:25:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@
 # include <unordered_map>
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/Entity.hpp"
+# include "base_class/entities/Player.hpp"
 # include "base_class/items/Item.hpp"
 
-// *Structure that contains all objects.*
 
+// *Structure that contains all objects.*
 struct WorldState {
 	std::unordered_map<std::string, std::unique_ptr<Room>> rooms;
 	std::unordered_map<std::string, std::unique_ptr<Entity>> entities;
 	std::unordered_map<ItemID, std::unique_ptr<Item>> items;
+	std::unordered_map<std::string, std::unique_ptr<Player>> players;
 };
