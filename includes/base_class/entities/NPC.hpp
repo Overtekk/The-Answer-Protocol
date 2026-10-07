@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 13:07:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 10:27:09 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class NPC : public Entity {
     public :
         // --- CONSTRUCTOR ---
         NPC(
-			const std::string& name, const std::string& description, const fs::path& sprite,
+			const std::string& name, const std::string& description,
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
         // --- DESTRUCTOR ---
