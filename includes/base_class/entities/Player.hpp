@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:19:57 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/07 09:59:55 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ class Player : public Entity {
 	public :
 		// --- CONSTRUCTOR ---
 		Player(
-			const std::string& name, const fs::path& sprite,
-			int health);
+			const std::string& name, int health);
 		// --- DESTRUCTOR ---
         ~Player() = default;
 
@@ -44,4 +43,3 @@ class Player : public Entity {
 		ItemID 		getItemIdByName(const std::string& name) const;
 		std::string getItemInInventory() const;
 };
-

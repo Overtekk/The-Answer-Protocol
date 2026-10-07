@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NPCShop.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:04:23 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 11:50:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:59:54 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // --- CONSTRUCTOR ---
 NPCShop::NPCShop(
-    const std::string& name, const std::string& description, const fs::path& sprite,
+    const std::string& name, const std::string& description,
 	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 ):
-	NPC(name, description, sprite, dialogue, type, health) {}
+	NPC(name, description, dialogue, type, health) {}

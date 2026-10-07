@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Enemy.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:11:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:50:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:58:47 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 // --- CONSTRUCTOR ---
 Enemy::Enemy(
-    const std::string& name, const std::string& description, const fs::path& sprite,
+    const std::string& name, const std::string& description,
 	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 ):
-	Entity(name, description, sprite, type, health),
+	Entity(name, description, type, health),
 	_dialogue(dialogue)
 {}
