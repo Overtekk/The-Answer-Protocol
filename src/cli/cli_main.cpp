@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:14:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:21:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:01:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 int main() {
 	std::cout << "Hello World, i'm the cli!\n";
 
-	Player test_player("Player Test", "t", "t", 20);
+	Player test_player("Player Test");
 
 	auto wooden_sword = std::make_unique<ItemWeapon>("Wooden Sword", "t");
 	auto excalibur = std::make_unique<ItemWeapon>("Excalibur", "t");
 
-	ItemID sword_id = wooden_sword->getId();
+	ItemID sword_id = wooden_sword->getID();
 	// ItemID excalibur_id = excalibur->getId();
 
 	test_player.addItemToInventory(std::move(wooden_sword));

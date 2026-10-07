@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 10:31:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:00:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 			err_message = "404 ITEM_NOT_IN_INVENTORY";
 			break;
 		case TCPErrorCode::NPC_NOT_FOUND:
+			err_message = "404 NPC_NOT_FOUND";
+			break;
+		case TCPErrorCode::NPC_NOT_HOSTILE:
 			err_message = "405 NPC_NOT_HOSTILE";
 			break;
 		case TCPErrorCode::NO_QUEST_AVAILABLE:
@@ -58,7 +61,7 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 	}
 
 	if (add_description) {
-		return ("ERR " + err_message + "\n" + getTCP_errorDescription(error_code) + "\n");
+		return ("ERR " + err_message + "\n" + getTCP_errorDescription(error_code));
 	}
 
 	return ("ERR " + err_message + "\n");
