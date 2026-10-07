@@ -60,6 +60,7 @@ set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
 	src/server/manager/GasterManager.cpp
 	src/server/tcp_socket.cpp
 	src/server/tcp_session.cpp
+	src/server/tcp_server.cpp
 )
 
 set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}

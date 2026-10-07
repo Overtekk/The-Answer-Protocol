@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 15:11:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 15:52:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <vector>
+# include <cstdint>
 
 # include "server/TCPSocket.hpp"
 # include "config/Enums.hpp"
@@ -24,7 +25,7 @@ class TCPSession {
 		TCPSocket	_socket;
 		// Network information
 		std::string	_ip;
-		uint16_t	_port;
+		std::uint16_t	_port;
 
 		// Protocol status
 		SessionState	_state = SessionState::CONNECTED;
@@ -38,7 +39,7 @@ class TCPSession {
 
 	public :
 		// --- CONSTRUCTOR ---
-		TCPSession(TCPSocket&& socket, const std::string& ip, uint16_t port);
+		TCPSession(TCPSocket&& socket, const std::string& ip, std::uint16_t port);
 		// --- DESTRUCTOR ---
 		virtual ~TCPSession() = default;
 		// prevent copy of the instance
@@ -46,11 +47,11 @@ class TCPSession {
 		TCPSession& operator=(const TCPSession&) = delete;
 
 		// --- GETTER ---
-		std::string		getIP() const;
-		uint16_t		getPort() const;
-		int				getSocketDescriptor() const;
-		SessionState	getSessionState() const;
-		std::string		getUsername() const;
+		std::string			getIP() const;
+		std::uint16_t		getPort() const;
+		int					getSocketDescriptor() const;
+		SessionState		getSessionState() const;
+		std::string			getUsername() const;
 		// --- SETTER ---
 		void			setSessionState(SessionState new_state);
 		void			setUsername(const std::string& username);

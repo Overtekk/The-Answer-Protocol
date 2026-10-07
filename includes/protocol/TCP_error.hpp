@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_code.hpp                                     :+:      :+:    :+:   */
+/*   TCP_error.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:59:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:31:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ enum class TCPErrorCode {
 	SEND_FAILED,
 	INVALID_USERNAME,
 	SYSTEM_ERROR,
+	CONNEXION_ERROR,
 };
 
 

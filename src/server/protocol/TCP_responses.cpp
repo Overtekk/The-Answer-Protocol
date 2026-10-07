@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 12:03:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 16:32:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 			break;
 		case TCPErrorCode::SYSTEM_ERROR:
 			err_message = "904 SYSTEM_ERROR";
+			break;
+		case TCPErrorCode::CONNEXION_ERROR:
+			err_message = "900 CONNEXION ERROR";
 			break;
 		default:
 			err_message = "Invalid error code";
@@ -121,6 +124,9 @@ std::string getTCP_errorDescription(TCPErrorCode error_code) {
 			break;
 		case TCPErrorCode::SYSTEM_ERROR:
 			err_desc = "Server can't be opened due to system error. Please retry.";
+			break;
+		case TCPErrorCode::CONNEXION_ERROR:
+			err_desc = "You have been disconnected.";
 			break;
 		default:
 			err_desc = "Invalid error code. No description.";
