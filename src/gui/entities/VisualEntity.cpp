@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:53:27 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/07 16:52:51 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void VisualEntity::update(float delta_time) {
 		}
 	}
 
-	update_sprite(delta_time);
+	// update_sprite(delta_time);
 
 	_position.x += _dx * _speed * delta_time;
 	_position.y += _dy * _speed * delta_time;
@@ -65,42 +65,42 @@ void VisualEntity::update(float delta_time) {
 
 void VisualEntity::update_movement(float) {}
 
-void VisualEntity::update_sprite(float delta_time) {
-	if (_dx != 0.0f || _dy != 0.0f) {
-		_frame_timer += delta_time;
+// void VisualEntity::update_sprite(float delta_time) {
+// 	if (_dx != 0.0f || _dy != 0.0f) {
+// 		_frame_timer += delta_time;
 
-		if (_frame_timer > FRAME_DURATION) {
-			_frame_timer = 0;
-			_current_frame = (_current_frame + 1) % 4;
-		}
-	}
-	else {
-		_frame_timer = 0;
-		_current_frame = 0;
-	}
-}
+// 		if (_frame_timer > FRAME_DURATION) {
+// 			_frame_timer = 0;
+// 			_current_frame = (_current_frame + 1) % 4;
+// 		}
+// 	}
+// 	else {
+// 		_frame_timer = 0;
+// 		_current_frame = 0;
+// 	}
+// }
 
 // Draw
-void VisualEntity::on_draw() {
-    Rectangle source = init_sprite_rect();
-	auto [px, py] = getPos();
-    Rectangle dest = {
-        px, py, (std::abs(source.width) * _sprite_scale), source.height * _sprite_scale
-    };
-    Vector2 origin = {0.0f, 0.0f};
+// void VisualEntity::on_draw() {
+//     Rectangle source = init_sprite_rect();
+// 	auto [px, py] = getPos();
+//     Rectangle dest = {
+//         px, py, (std::abs(source.width) * _sprite_scale), source.height * _sprite_scale
+//     };
+//     Vector2 origin = {0.0f, 0.0f};
 
-    DrawTexturePro(_img, source, dest, origin, 0.0f, WHITE);
-}
+//     DrawTexturePro(_img, source, dest, origin, 0.0f, WHITE);
+// }
 
 // Utils
-Rectangle VisualEntity::init_sprite_rect() {
-	float x = _current_frame * (float)std::get<0>(_sprite_dim);
-	float y = static_cast<int>(_direction_row) * (float)std::get<1>(_sprite_dim);
-	if (_facing_left) {
-    	return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
-	}
-	return {x, y, -(float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
-}
+// Rectangle VisualEntity::init_sprite_rect() {
+// 	float x = _current_frame * (float)std::get<0>(_sprite_dim);
+// 	float y = static_cast<int>(_direction_row) * (float)std::get<1>(_sprite_dim);
+// 	if (_facing_left) {
+//     	return {x, y, (float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
+// 	}
+// 	return {x, y, -(float)std::get<0>(_sprite_dim), (float)std::get<1>(_sprite_dim)};
+// }
 
 // Getter
 Vector2 VisualEntity::getPos() const { return _position; }

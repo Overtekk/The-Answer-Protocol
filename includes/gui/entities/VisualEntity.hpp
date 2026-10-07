@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:53:00 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/07 16:52:19 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class VisualEntity {
 
 		// Sprite frame
 		Rectangle init_sprite_rect();
-		int _current_frame = 0;
-		float _frame_timer;
+		// int _current_frame = 0;
+		// float _frame_timer;
 		bool _facing_left = true;
 		EntityDirection _direction_row = EntityDirection::DOWN;
 
@@ -47,7 +47,7 @@ class VisualEntity {
 
 	protected :
 		virtual void update_movement(float delta_time);
-		virtual void update_sprite(float delta_time);
+		// virtual void update_sprite(float delta_time);
 
 	public :
 		VisualEntity(const Entity& entity, std::string texture, std::tuple<int, int> sprite_dim, float scale = 1.0f);
@@ -61,7 +61,7 @@ class VisualEntity {
 		virtual void update(float delta_time);
 
 		// Draw
-		void on_draw();
+		// void on_draw();
 		void unload_texture();
 
 		// Position

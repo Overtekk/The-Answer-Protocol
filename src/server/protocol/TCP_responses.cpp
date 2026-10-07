@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TCP_responses.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 15:27:06 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 14:07:15 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ std::string getTCP_errorDescription(TCPErrorCode error_code);
 
 // (PUBLIC)
 // * Return a string that matches the specified error code. *
-std::string getTCP_error(TCPErrorCode error_code, bool add_description = false) {
+std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 	std::string err_message;
 
 	switch (error_code) {
@@ -42,6 +42,9 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description = false) 
 			err_message = "404 ITEM_NOT_IN_INVENTORY";
 			break;
 		case TCPErrorCode::NPC_NOT_FOUND:
+			err_message = "404 NPC_NOT_FOUND";
+			break;
+		case TCPErrorCode::NPC_NOT_HOSTILE:
 			err_message = "405 NPC_NOT_HOSTILE";
 			break;
 		case TCPErrorCode::NO_QUEST_AVAILABLE:
@@ -55,13 +58,13 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description = false) 
 			break;
 		default:
 			err_message = "Invalid error code";
-
-		if (add_description) {
-			return ("ERR " + err_message + "\n" + getTCP_errorDescription(error_code) + "\n");
-		}
-
-		return ("ERR " + err_message + "\n");
 	}
+
+	if (add_description) {
+		return ("ERR " + err_message + "\n" + getTCP_errorDescription(error_code));
+	}
+
+	return ("ERR " + err_message + "\n");
 }
 
 
@@ -115,6 +118,7 @@ std::string getTCP_errorDescription(TCPErrorCode error_code) {
 			break;
 		default:
 			err_desc = "Invalid error code. No description.";
+	}
 
 	return err_desc;
 }
