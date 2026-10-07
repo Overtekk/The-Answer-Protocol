@@ -1,22 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Boss.cpp                                           :+:      :+:    :+:   */
+/*   config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/06 10:14:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 10:27:43 by roandrie         ###   ########.fr       */
+/*   Created: 2026/10/07 10:04:27 by roandrie          #+#    #+#             */
+/*   Updated: 2026/10/07 10:04:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "base_class/entities/Boss.hpp"
+#pragma once
 
-// --- CONSTRUCTOR ---
-Boss::Boss(
-    const std::string& name, const std::string& description,
-	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
-):
-	Entity(name, description, type, health),
-	_dialogue(dialogue)
-{}
+// Max player that can be connected at once
+# define MAX_PLAYERS 5

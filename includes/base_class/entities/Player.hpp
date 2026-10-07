@@ -3,33 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   Player.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:19:57 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/07 10:19:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <filesystem>
 # include <map>
 # include <utility>
+# include <uuid/uuid.h>
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
 
-namespace fs = std::filesystem;
+// PlayerID for the session
+using PlayerID = uint64_t;
 
 // * Represent a player *
 class Player : public Entity {
 	private :
-		std::map<ItemID, std::unique_ptr<Item>> _inventory;
+		std::map<ItemID, std::unique_ptr<Item>>	_inventory;
+		inline static							PlayerID _next_id = 1;
 
 	public :
 		// --- CONSTRUCTOR ---
-		Player(
-			const std::string& name, const fs::path& sprite,
-			int health);
+		Player(const std::string& name);
 		// --- DESTRUCTOR ---
         ~Player() = default;
 
@@ -43,5 +43,8 @@ class Player : public Entity {
 		Item* 		getItem(ItemID id) const;
 		ItemID 		getItemIdByName(const std::string& name) const;
 		std::string getItemInInventory() const;
+
+		// --- UUID ---
+		std::string	generate_uuid_v4() const;
 };
 

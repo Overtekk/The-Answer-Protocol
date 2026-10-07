@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:13:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:13:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Item {
 
 		// --- GETTER ---
 		std::string getName() const;
-		ItemID 		getId() const;
+		ItemID 		getID() const;
 		std::string getDescription() const;
 		ItemType 	getType() const;
 		int 		getDamage() const;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Room.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/06 15:24:24 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/06 15:49:36 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ bool            Room::placeItem(Item* item) {
         std::cout << this->sendObjectError("Item's pointer point to null");
         return (false);
     }
-    ItemID  item_id = item->getId();
+    ItemID  item_id = item->getID();
     if (this->_items.count(item_id) == 1)
     {
         std::cout << this->sendObjectError("Exact item already in room");

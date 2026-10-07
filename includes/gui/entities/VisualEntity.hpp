@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:32:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 09:37:53 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ class VisualEntity {
 		const Entity& _entity;
 
 		// Texture
-		Texture2D _texture;
-		float sprite_width;
-		float sprite_height;
-		std::tuple<int, int> _sprite_dim;
-		float _sprite_scale_mult;
+		std::string				_sprite;
+		Texture2D				_texture;
+		float					sprite_width;
+		float					sprite_height;
+		std::tuple<int, int>	_sprite_dim;
+		float					_sprite_scale_mult;
 
 		Vector2 _position = {0.0f, 0.0f};
 
@@ -52,7 +53,7 @@ class VisualEntity {
 		virtual void update_sprite(float delta_time);
 
 	public :
-		VisualEntity(const Entity& entity, std::tuple<int, int> sprite_dim, float scale = 1.0f);
+		VisualEntity(const Entity& entity, std::string sprite, std::tuple<int, int> sprite_dim, float scale = 1.0f);
 
 		virtual ~VisualEntity();
 
