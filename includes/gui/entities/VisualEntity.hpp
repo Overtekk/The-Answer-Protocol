@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 11:32:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:53:00 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ class VisualEntity {
 		const Entity& _entity;
 
 		// Texture
-		Texture2D _texture;
-		float sprite_width;
-		float sprite_height;
-		std::tuple<int, int> _sprite_dim;
-		float _sprite_scale_mult;
+		Texture2D				_img; // Texture
+		std::tuple<int, int>	_sprite_dim;
+		float					_sprite_scale;
 
 		Vector2 _position = {0.0f, 0.0f};
 
@@ -44,15 +42,15 @@ class VisualEntity {
 
 		// Movement
 		float _speed = 100.0f;
-		float _dx = 0;
-		float _dy = 0;
+		float _dx = 0; // entity x direction -1 = left, 1 = right, 0 = None
+		float _dy = 0; // entity y direction -1 = up, 1 = down, 0 = None
 
 	protected :
 		virtual void update_movement(float delta_time);
 		virtual void update_sprite(float delta_time);
 
 	public :
-		VisualEntity(const Entity& entity, std::tuple<int, int> sprite_dim, float scale = 1.0f);
+		VisualEntity(const Entity& entity, std::string texture, std::tuple<int, int> sprite_dim, float scale = 1.0f);
 
 		virtual ~VisualEntity();
 
@@ -72,5 +70,5 @@ class VisualEntity {
 		void set_direction(float new_dx, float new_dy);
 
 		// Error
-		std::string sendObjectError(std::string error) const;
+		void sendObjectError(std::string error);
 };

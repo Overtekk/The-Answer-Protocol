@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Enemy.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:10:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:02:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:58:32 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Enemy : public Entity {
     public :
         // --- CONSTRUCTOR ---
         Enemy(
-			const std::string& name, const std::string& description, const fs::path& sprite,
+			const std::string& name, const std::string& description,
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
         // --- DESTRUCTOR ---
