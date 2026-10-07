@@ -6,20 +6,21 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 09:42:56 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 09:41:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cmath>
 # include "gui/entities/VisualEntity.hpp"
+# include "utils.h"
 
 # define FRAME_DURATION 0.18f
 
 VisualEntity::VisualEntity(
-	const Entity& entity, std::tuple<int, int> sprite_dim, float scale
+	const Entity& entity, std::string sprite, std::tuple<int, int> sprite_dim, float scale
 ):
 	_entity(entity),
-	_texture(LoadTexture(entity.getSpritePath().string().c_str())),
+	_texture(LoadTexture(sprite.c_str())),
 	_sprite_dim(sprite_dim),
 	_sprite_scale_mult(scale) {}
 
@@ -117,7 +118,5 @@ void VisualEntity::set_direction(float new_dx, float new_dy) {
 
 // Error
 std::string VisualEntity::sendObjectError(std::string error) const {
-	std::ostringstream oss;
-    oss << this << " object error: " << error << "\n";
-    return oss.str();
+   print_log(" ERROR: " + error + "\n");
 }

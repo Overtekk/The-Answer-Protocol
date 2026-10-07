@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 15:48:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 09:45:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server/manager/GasterManager.hpp"
 # include "base_class/rooms/Room.hpp"
+# include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "base_class/entities/Enemy.hpp"
 # include "base_class/entities/Boss.hpp"
@@ -37,9 +38,15 @@ GasterManager::GasterManager(
 		create_items();
 	}
 
+// --- PLAYER MANAGEMENTS ---
+// CREATE PLAYER
+bool	GasterManager::create_player(const std::string& player_name) {
+	Player new_player = Player(player_name, 100);
+}
 
-// --- CREATE OBJECTS ---
-void GasterManager::create_room() {
+// --- OBJECTS MANAGEMENTS ---
+// CREATE OBJECTS
+void	GasterManager::create_room() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
 			loc.name, loc.description, loc.tile_map, loc.special
@@ -48,7 +55,7 @@ void GasterManager::create_room() {
 	}
 }
 
-void GasterManager::create_entities() {
+void	GasterManager::create_entities() {
 	for (const auto& [entity_id, entity] : _world_data.entities) {
 		std::unique_ptr<Entity> new_entity;
 
@@ -83,7 +90,7 @@ void GasterManager::create_entities() {
 	}
 }
 
-void GasterManager::create_items() {
+void	GasterManager::create_items() {
 	for (const auto& [item_id, item] : _world_data.items) {
 		std::unique_ptr<Item> new_item;
 
@@ -116,12 +123,12 @@ void GasterManager::create_items() {
 
 // --- DEBUG ---
 // Print the structure of WorldData
-void GasterManager::debug_print_structure_data(bool show_gui_data) {
+void	GasterManager::debug_print_structure_data(bool show_gui_data) {
 	debug_print_structure(_world_data, show_gui_data);
 }
 
 // Print the structure of WorldState
-void GasterManager::debug_print_structure_state() {
+void	GasterManager::debug_print_structure_state() {
 	std::cout << RED << "ROOMS:\n" << RESET;
 	for (const auto& [id, room] : _world_state.rooms) {
 		std::cout << id << " is at " << room.get() << " and is named " << CYN << room->getName() << RESET << ".\n";
