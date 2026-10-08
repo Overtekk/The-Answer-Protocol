@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 10:19:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 09:59:55 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ class Player : public Entity {
 
 	public :
 		// --- CONSTRUCTOR ---
-		Player(const std::string& name);
+		Player(
+			const std::string& name, int health);
 		// --- DESTRUCTOR ---
         ~Player() = default;
 
@@ -47,4 +48,3 @@ class Player : public Entity {
 		// --- UUID ---
 		std::string	generate_uuid_v4() const;
 };
-

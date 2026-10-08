@@ -6,15 +6,17 @@
 /* By: roandrie <roandrie@student.42lehavre.fr   +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/09/21 14:06:43 by roandrie        #+#    #+#              */
-/* Updated: 2026/10/07 10:23:29 by roandrie        ###   ########.fr       */
+/* Updated: 2026/10/07 09:36:13 by roandrie        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
 # include "base_class/entities/Player.hpp"
 
 // --- CONSTRUCTOR ---
-Player::Player(const std::string& name):
-	Entity(name, "", EnemyType::UNKNOWN, 100) {}
+Player::Player(
+	const std::string& name, int health
+):
+	Entity(name, "", EnemyType::UNKNOWN, health) {}
 
 // --- SETTER ---
 bool	Player::setName(std::string& new_name) {

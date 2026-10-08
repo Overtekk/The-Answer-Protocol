@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 09:41:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:53:27 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,18 @@
 # define FRAME_DURATION 0.18f
 
 VisualEntity::VisualEntity(
-	const Entity& entity, std::string sprite, std::tuple<int, int> sprite_dim, float scale
+	const Entity& entity, const std::string texture, std::tuple<int, int> sprite_dim, float scale
 ):
 	_entity(entity),
-	_texture(LoadTexture(sprite.c_str())),
+	_img(LoadTexture(texture.c_str())),
 	_sprite_dim(sprite_dim),
-	_sprite_scale_mult(scale) {}
+	_sprite_scale(scale) 
+	{
+		if (this->_img.id == 0)
+			this->sendObjectError("Error while loading texture");
+	}
 
-VisualEntity::~VisualEntity() { UnloadTexture(_texture); }
+VisualEntity::~VisualEntity() { UnloadTexture(this->_img); }
 
 // Update
 void VisualEntity::update(float delta_time) {
@@ -81,11 +85,11 @@ void VisualEntity::on_draw() {
     Rectangle source = init_sprite_rect();
 	auto [px, py] = getPos();
     Rectangle dest = {
-        px, py, (std::abs(source.width) * _sprite_scale_mult), source.height * _sprite_scale_mult
+        px, py, (std::abs(source.width) * _sprite_scale), source.height * _sprite_scale
     };
     Vector2 origin = {0.0f, 0.0f};
 
-    DrawTexturePro(_texture, source, dest, origin, 0.0f, WHITE);
+    DrawTexturePro(_img, source, dest, origin, 0.0f, WHITE);
 }
 
 // Utils
@@ -117,6 +121,6 @@ void VisualEntity::set_direction(float new_dx, float new_dy) {
 }
 
 // Error
-std::string VisualEntity::sendObjectError(std::string error) const {
+void VisualEntity::sendObjectError(std::string error) {
    print_log(" ERROR: " + error + "\n");
 }
