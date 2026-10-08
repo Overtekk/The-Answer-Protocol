@@ -33,6 +33,7 @@ target_include_directories(project_warnings INTERFACE
 # -------------#
 
 set(COMMON_SOURCES
+	src/server/protocol/TCP_responses.cpp
     src/items/Item.cpp
     src/items/ItemWeapon.cpp
 	src/items/ItemKey.cpp
@@ -46,29 +47,35 @@ set(COMMON_SOURCES
     src/rooms/Room.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
-	src/utils/files.cpp
-	src/server/protocol/TCP_responses.cpp
 	src/debug/debug_structure.cpp
 )
 
-set(SERVER_MAIN     src/main.cpp)
-set(CLI_MAIN        src/cli/cli_main.cpp)
-set(GUI_MAIN        src/gui/gui_main.cpp)
+set(SERVER_MAIN		src/main.cpp)
+set(CLI_MAIN		src/cli/cli_main.cpp)
+set(GUI_MAIN		src/gui/gui_main.cpp)
 
-set(SERVER_SOURCES  ${SERVER_MAIN} ${COMMON_SOURCES}
+set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 	src/server/parser/parser.cpp
 	src/server/manager/GasterManager.cpp
+	src/server/tcp_socket.cpp
+	src/server/tcp_session.cpp
+	src/server/tcp_server.cpp
+	src/server/command_handler.cpp
+	src/server/logger.cpp
+	src/utils/files.cpp
 )
 
-set(CLI_SOURCES     ${CLI_MAIN}    ${COMMON_SOURCES}
+set(CLI_SOURCES	${CLI_MAIN}
+	src/server/connect_client.cpp
+	src/utils/print.cpp
 )
 
-set(GUI_SOURCES
-    ${GUI_MAIN}
-    ${COMMON_SOURCES}
+set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
+	src/server/connect_client.cpp
 	src/gui/parser/gui_parser.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
+	src/utils/files.cpp
 )
 
 # -------------#
@@ -80,6 +87,7 @@ add_executable(tap_server ${SERVER_SOURCES})
 target_link_libraries(tap_server PRIVATE
     project_warnings
     Threads::Threads
+	uuid
     yaml-cpp
     nlohmann_json::nlohmann_json
 )
@@ -89,7 +97,6 @@ add_executable(tap_cli_client ${CLI_SOURCES})
 target_link_libraries(tap_cli_client PRIVATE
     project_warnings
     Threads::Threads
-    nlohmann_json::nlohmann_json
 )
 
 # 3. Client GUI
@@ -100,6 +107,7 @@ target_include_directories(tap_gui_client PRIVATE
 target_link_libraries(tap_gui_client PRIVATE
     project_warnings
     Threads::Threads
+	uuid
 	yaml-cpp
     nlohmann_json::nlohmann_json
     raylib

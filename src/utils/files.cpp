@@ -10,7 +10,7 @@
 /*                                                                         */
 /* *********************************************************************** */
 
-# include <yaml-cpp/yaml.h>
+# include "yaml-cpp/yaml.h"
 # include "config/WorldConfig.hpp"
 # include "utils.h"
 

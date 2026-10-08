@@ -1,34 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_code.hpp                                     :+:      :+:    :+:   */
+/*   common.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 15:27:15 by roandrie         ###   ########.fr       */
+/*   Created: 2026/10/08 14:41:15 by roandrie          #+#    #+#             */
+/*   Updated: 2026/10/08 14:41:30 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
-
-enum class TCPErrorCode {
-	NAME_IN_USE,
-	NO_EXIT,
-	NOT_IN_GROUP,
-	ALREADY_IN_GROUP,
-	ITEM_NOT_FOUND,
-	ITEM_NOT_IN_INVENTORY,
-	NPC_NOT_FOUND,
-	NPC_NOT_HOSTILE,
-	NO_QUEST_AVAILABLE,
-	CONNECTION_FAILED,
-	SEND_FAILED,
-	INVALID_USERNAME,
-};
-
-
-std::string getTCP_error(TCPErrorCode error_code, bool add_description = false);
-std::string	getTCP_OK_operation(const std::string& msg);
+int	connect_client_to_tcp(int argc, char **argv);

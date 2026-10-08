@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   GasterManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:02:09 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/08 15:58:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server/manager/GasterManager.hpp"
 # include "base_class/rooms/Room.hpp"
+# include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "base_class/entities/Enemy.hpp"
 # include "base_class/entities/Boss.hpp"
@@ -21,6 +22,7 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
+# include "protocol/TCP_error.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -37,8 +39,26 @@ GasterManager::GasterManager(
 		create_items();
 	}
 
-// --- CREATE OBJECTS ---
-void GasterManager::create_room() {
+// --- PLAYER MANAGEMENTS ---
+// CREATE PLAYER
+bool	GasterManager::create_player(const std::string& player_name) {
+	print_log("GasterManager: player '" + player_name + "' spawned into world.");
+	return true;
+}
+
+// --- CHECKER ---
+// * Check if the user exist, return true if yes. *
+bool	GasterManager::checkIfUserExist(const std::string& username) const {
+	auto	search = _world_state.players.find(username);
+	if (search != _world_state.players.end()) {
+		return true;
+	}
+	return false;
+}
+
+// --- OBJECTS MANAGEMENTS ---
+// CREATE OBJECTS
+void	GasterManager::create_room() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
 			loc.name, loc.description, loc.tile_map, loc.special
@@ -47,29 +67,29 @@ void GasterManager::create_room() {
 	}
 }
 
-void GasterManager::create_entities() {
+void	GasterManager::create_entities() {
 	for (const auto& [entity_id, entity] : _world_data.entities) {
 		std::unique_ptr<Entity> new_entity;
 
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity.name, entity.description, entity.sprite, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			default:
@@ -82,7 +102,7 @@ void GasterManager::create_entities() {
 	}
 }
 
-void GasterManager::create_items() {
+void	GasterManager::create_items() {
 	for (const auto& [item_id, item] : _world_data.items) {
 		std::unique_ptr<Item> new_item;
 
@@ -107,7 +127,7 @@ void GasterManager::create_items() {
 		}
 
 		if (new_item) {
-			_world_state.items[new_item->getId()] = std::move(new_item);
+			_world_state.items[new_item->getID()] = std::move(new_item);
 		}
 	}
 }
@@ -115,12 +135,12 @@ void GasterManager::create_items() {
 
 // --- DEBUG ---
 // Print the structure of WorldData
-void GasterManager::debug_print_structure_data(bool show_gui_data) {
+void	GasterManager::debug_print_structure_data(bool show_gui_data) {
 	debug_print_structure(_world_data, show_gui_data);
 }
 
 // Print the structure of WorldState
-void GasterManager::debug_print_structure_state() {
+void	GasterManager::debug_print_structure_state() {
 	std::cout << RED << "ROOMS:\n" << RESET;
 	for (const auto& [id, room] : _world_state.rooms) {
 		std::cout << id << " is at " << room.get() << " and is named " << CYN << room->getName() << RESET << ".\n";
@@ -133,6 +153,6 @@ void GasterManager::debug_print_structure_state() {
 
 	std::cout << RED << "ITEMS:\n" << RESET;
 	for (const auto& [id, item] : _world_state.items) {
-		std::cout << id << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << " and his id is: " << YEL << item->getId() << RESET << ".\n";
+		std::cout << item->getID() << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << ".\n";
 	}
 }
