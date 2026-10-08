@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:31:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 13:27:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ enum class TCPErrorCode {
 	INVALID_USERNAME,
 	SYSTEM_ERROR,
 	CONNEXION_ERROR,
+	COMMAND_NOT_FOUND,
+	MISSING_USERNAME,
 };
 
 
-std::string getTCP_error(TCPErrorCode error_code, bool add_description = false);
+std::string getTCP_error(TCPErrorCode e);
 std::string	getTCP_OK_operation(const std::string& msg);

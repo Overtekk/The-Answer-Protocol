@@ -6,131 +6,46 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:32:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 13:19:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "protocol/TCP_error.hpp"
 
-std::string getTCP_errorDescription(TCPErrorCode error_code);
+namespace {
+	struct ErrorInfo { int code; const char* name; const char* description; };
 
-// (PUBLIC)
-// * Return a string that matches the specified error code. *
-std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
-	std::string err_message;
-
-	switch (error_code) {
-		case TCPErrorCode::NAME_IN_USE:
-			err_message = "201 NAME_IN_USE";
-			break;
-		case TCPErrorCode::INVALID_USERNAME:
-			err_message = "202 INVALID_USERNAME";
-			break;
-		case TCPErrorCode::NO_EXIT:
-			err_message = "301 NO_EXIT";
-			break;
-		case TCPErrorCode::NOT_IN_GROUP:
-			err_message = "401 NOT_IN_GROUP";
-			break;
-		case TCPErrorCode::ALREADY_IN_GROUP:
-			err_message = "402 ALREADY_IN_GROUP";
-			break;
-		case TCPErrorCode::ITEM_NOT_FOUND:
-			err_message = "404 ITEM_NOT_FOUND";
-			break;
-		case TCPErrorCode::ITEM_NOT_IN_INVENTORY:
-			err_message = "404 ITEM_NOT_IN_INVENTORY";
-			break;
-		case TCPErrorCode::NPC_NOT_FOUND:
-			err_message = "404 NPC_NOT_FOUND";
-			break;
-		case TCPErrorCode::NPC_NOT_HOSTILE:
-			err_message = "405 NPC_NOT_HOSTILE";
-			break;
-		case TCPErrorCode::NO_QUEST_AVAILABLE:
-			err_message = "406 NO_QUEST_AVAILABLE";
-			break;
-		case TCPErrorCode::CONNECTION_FAILED:
-			err_message = "900 CONNECTION_FAILED";
-			break;
-		case TCPErrorCode::SEND_FAILED:
-			err_message = "901 SEND_FAILED";
-			break;
-		case TCPErrorCode::SYSTEM_ERROR:
-			err_message = "904 SYSTEM_ERROR";
-			break;
-		case TCPErrorCode::CONNEXION_ERROR:
-			err_message = "900 CONNEXION ERROR";
-			break;
-		default:
-			err_message = "Invalid error code";
+	ErrorInfo getErrorInfo(TCPErrorCode e) {
+		switch (e) {
+			case TCPErrorCode::NAME_IN_USE:				return {201, "NAME_IN_USE",				"Requested username already taken."};
+			case TCPErrorCode::INVALID_USERNAME:		return {202, "INVALID_USERNAME",		"Username length is 3-20 characters."};
+			case TCPErrorCode::NO_EXIT:					return {301, "NO_EXIT",					"Invalid movement direction."};
+			case TCPErrorCode::NOT_IN_GROUP:			return {401, "NOT_IN_GROUP",			"Group operation requires group membership."};
+			case TCPErrorCode::ALREADY_IN_GROUP:		return {402, "ALREADY_IN_GROUP",		"Player already belongs to a group."};
+			case TCPErrorCode::ITEM_NOT_FOUND:			return {404, "ITEM_NOT_FOUND",			"Requested item not available in room."};
+			case TCPErrorCode::ITEM_NOT_IN_INVENTORY:	return {404, "ITEM_NOT_IN_INVENTORY",	"Requested item not in player inventory."};
+			case TCPErrorCode::NPC_NOT_FOUND:			return {404, "NPC_NOT_FOUND",			"Requested NPC not present in room."};
+			case TCPErrorCode::NPC_NOT_HOSTILE:			return {405, "NPC_NOT_HOSTILE",			"NPC cannot be attacked (not an enemy)."};
+			case TCPErrorCode::NO_QUEST_AVAILABLE:		return {406, "NO_QUEST_AVAILABLE",		"NPC has no quests or quest already completed."};
+			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
+			case TCPErrorCode::SEND_FAILED:				return {901, "SEND_FAILED",				"Message transmission failed."};
+			case TCPErrorCode::SYSTEM_ERROR:			return {904, "SYSTEM_ERROR",			"Server can't be opened due to system error. Please retry."};
+			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
+			case TCPErrorCode::COMMAND_NOT_FOUND:		return {127, "COMMAND_NOT_FOUND",		"This command doesn't exist."};
+			case TCPErrorCode::MISSING_USERNAME:		return {203, "MISSING_USERNAME",		"Username is missing after the command."};
+		}
+		return {999, "UNKNOWN_ERROR", "Unknown error code"};
 	}
-
-	if (add_description) {
-		return ("ERR " + err_message + "\n" + getTCP_errorDescription(error_code));
-	}
-
-	return ("ERR " + err_message + "\n");
 }
 
+// ===== PUBLIC =====
+// * Return the error and the description to the client. *
+std::string getTCP_error(TCPErrorCode e) {
+	ErrorInfo i = getErrorInfo(e);
+	return "ERR " + std::to_string(i.code) + " " + i.name + " : " + i.description + "\n";
+}
 
-// (PUBLIC)
 // * Return a string with an 'ok' at the start for successfully operation. *
 std::string	getTCP_OK_operation(const std::string& msg) {
 	return ("OK " + msg + "\n");
-}
-
-
-// * Get the description of an error *
-std::string getTCP_errorDescription(TCPErrorCode error_code) {
-	std::string err_desc;
-
-	switch (error_code) {
-		case TCPErrorCode::NAME_IN_USE:
-			err_desc = "Requested username already taken";
-			break;
-		case TCPErrorCode::INVALID_USERNAME:
-			err_desc = "Username lenght is 3-20 characters.";
-			break;
-		case TCPErrorCode::NO_EXIT:
-			err_desc = "Invalid movement direction";
-			break;
-		case TCPErrorCode::NOT_IN_GROUP:
-			err_desc = "Group operation requires group membership";
-			break;
-		case TCPErrorCode::ALREADY_IN_GROUP:
-			err_desc = "Player already belongs to a group";
-			break;
-		case TCPErrorCode::ITEM_NOT_FOUND:
-			err_desc = "Requested item not available in room";
-			break;
-		case TCPErrorCode::ITEM_NOT_IN_INVENTORY:
-			err_desc = "Requested item not in player inventory";
-			break;
-		case TCPErrorCode::NPC_NOT_FOUND:
-			err_desc = "Requested NPC not present in room";
-			break;
-		case TCPErrorCode::NPC_NOT_HOSTILE:
-			err_desc = "NPC cannot be attacked (not an enemy)";
-			break;
-		case TCPErrorCode::NO_QUEST_AVAILABLE:
-			err_desc = "NPC has no quests or quest already completed";
-			break;
-		case TCPErrorCode::CONNECTION_FAILED:
-			err_desc = "Connection establishment failed";
-			break;
-		case TCPErrorCode::SEND_FAILED:
-			err_desc = "Message transmission failed";
-			break;
-		case TCPErrorCode::SYSTEM_ERROR:
-			err_desc = "Server can't be opened due to system error. Please retry.";
-			break;
-		case TCPErrorCode::CONNEXION_ERROR:
-			err_desc = "You have been disconnected.";
-			break;
-		default:
-			err_desc = "Invalid error code. No description.";
-	}
-
-	return err_desc;
 }

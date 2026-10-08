@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 12:03:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 13:14:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,18 @@ GasterManager::GasterManager(
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
 bool	GasterManager::create_player(const std::string& player_name) {
-	// Check name lenght
-	if (player_name.length() < 3 && player_name.length() > 20) {
-		std::cout << getTCP_error(TCPErrorCode::INVALID_USERNAME, true);
-		return false;
-	}
-
-	std::unique_ptr<Player> new_player = std::make_unique<Player>(player_name);
-	std::string player_uuid = new_player->generate_uuid_v4();
-	_world_state.players[player_uuid] = std::move(new_player);
+	std::cout << "Created " + player_name + "\n";
 	return true;
+}
+
+// --- CHECKER ---
+// * Check if the user exist, return true if yes. *
+bool	GasterManager::checkIfUserExist(const std::string& username) const {
+	auto	search = _world_state.players.find(username);
+	if (username == search->second->getName()) {
+		return true;
+	}
+	return false;
 }
 
 // --- OBJECTS MANAGEMENTS ---

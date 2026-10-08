@@ -6,16 +6,20 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:54:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:10:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server/TCPServer.hpp"
+# include "server/CommandHandler.hpp"
+# include "utils.h"
 
 // --- CONSTRUCTOR ---
-TCPServer::TCPServer(std::uint16_t port) :
+TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log) :
 	_listen_socket(-1),
-	_is_running(false)
+	_cmd_handler(cmd_handler),
+	_is_running(false),
+	_save_log_in_file(save_log)
 {
 	init(port);
 }
@@ -79,7 +83,7 @@ void	TCPServer::init(std::uint16_t port) {
 	// 0 = let the system choose which protocol to use by default.
 	int	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd == -1) {
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR);
 		throw std::system_error();
 	}
 
@@ -100,14 +104,14 @@ void	TCPServer::init(std::uint16_t port) {
 	// attach the socket to the machine IP and port (error if -1).
 	if (bind(fd, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr)) == -1) {
     	close(fd);
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR);
 		throw std::system_error();
 	}
 	// put the socket in passive mode to accept incoming client connections.
 	// SOMAXCONN = (Socket Maximum Connections) use max queue allowed by the OS.
 	if (listen(fd, SOMAXCONN) == -1) {
     	close(fd);
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR);
 		throw std::system_error();
 	}
 
@@ -149,7 +153,7 @@ void	TCPServer::handleNewConnection() {
 		_listen_socket.getFD(), reinterpret_cast<struct sockaddr*>(&client_addr), &client_len);
 
 	if (client_fd == -1) {
-		std::cout << getTCP_error(TCPErrorCode::CONNECTION_FAILED, true);
+		std::cout << getTCP_error(TCPErrorCode::CONNECTION_FAILED);
 		return;
 	}
 
@@ -175,16 +179,16 @@ void	TCPServer::handleClientRead(int fd) {
 	OperationState state = it->second->readData();
 	if (state == OperationState::DECONNEXION || state == OperationState::NETWORK_ERROR) {
 		disconnectedClient(fd);
-		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR);
 		return;
 	}
 
 	// Extract the lines
 	auto lines = it->second->extractCompleteLines();
 
-	// TEST. COMMANDHANDLER NEED TO DO THAT
+	// Send the line to the command handler
 	for (const auto& line : lines) {
-		std::cout << line;
+		_cmd_handler.processCommand(*(it->second), line);
 	}
 }
 
@@ -199,11 +203,36 @@ void	TCPServer::handleClientWrite(int fd) {
 	//
 	OperationState state = it->second->sendPendingData();
 	if (state == OperationState::ERROR) {
+		printLogMessage(*(it->second), "User have been disconnected due to an error.");
 		disconnectedClient(fd);
-		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR, true);
+		return;
+	}
+
+	// Handle question asking to disconnect
+	if (!it->second->hasDataToSend() and it->second->getSessionState() == SessionState::CLOSING) {
+		printLogMessage(*(it->second), "left the game.");
+		disconnectedClient(fd);
 		return;
 	}
 }
 
 // * Disconnect a client. *
 void	TCPServer::disconnectedClient(int fd) { _sessions.erase(fd); }
+
+// * Print a log in the console terminal and save it to the log file.*
+void	TCPServer::printLogMessage(TCPSession& session, const std::string& log_msg) {
+	std::string	formatted_log_msg = "";
+
+	if (session.getUsername().empty()) {
+		formatted_log_msg = "[" + session.getIP() + "]: " + log_msg;
+	}
+	else {
+		formatted_log_msg = "[" + session.getIP() + "](" + session.getUsername() + "):" + log_msg;
+	}
+
+	if (_save_log_in_file) {
+
+	}
+
+	print_log(formatted_log_msg);
+}

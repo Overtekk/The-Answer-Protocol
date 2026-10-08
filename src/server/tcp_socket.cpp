@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 11:23:08 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:54:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 13:28:36 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ ssize_t	TCPSocket::receiveData(char* buffer, size_t size) {
 bool	TCPSocket::setNonBlocking() {
 	int flags = fcntl(_fd, F_GETFL, 0);	// get the flags of the socket
 	if (flags == -1) {
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR);
 		return false;
 	}
 	int return_flag = fcntl(_fd, F_SETFL, flags | O_NONBLOCK);	// apply the flag '0_NONBLOCK' without erase other flags
 	if (return_flag == -1) {
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
+		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR);
 		return false;
 	}
 	return true;
