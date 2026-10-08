@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 14:12:37 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/07 16:46:38 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/08 14:55:51 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,35 @@ Animation::~Animation() {UnloadTexture(this->_img); }
 // ===========================                =================================
 // ============================================================================
 
-void    Animation::update_frame()
+Rectangle   Animation::get_frame()
+{
+    int x = (this->_curent_frame % this->_frames_per_row) * std::get<0>(this->_frame_size);
+    int y = (this->_curent_frame / this->_frames_per_row) * std::get<1>(this->_frame_size);
+
+    return ((Rectangle) {
+        .x = (float)x,
+        .y = (float)y,
+        .width = std::get<0>(this->_frame_size),
+        .height =  std::get<1>(this->_frame_size)
+    });
+}
+
+void        Animation::reset()
+{
+    this->_curent_frame = this->_first_frame;
+}
+
+void        Animation::reset_time_left()
+{
+    this->_time_left = this->_speed;
+}
+
+void        Animation::set_frame(int frame)
+{
+    this->_curent_frame = this->_first_frame + frame;
+}
+
+void        Animation::update_frame()
 {
     this->_time_left -= GetFrameTime();
 
@@ -61,39 +89,51 @@ void    Animation::update_frame()
         if (this->_curent_frame >= this->_frames_number + this->_first_frame)
         {
             // we restart from the first frame
-            this->_curent_frame = this->_first_frame;
+            this->reset();
         }
     }
 }
 
-Rectangle    Animation::get_frame()
-{
-    int x = (this->_curent_frame % this->_frames_per_row) * std::get<0>(this->_frame_size);
-    int y = (this->_curent_frame / this->_frames_per_row) * std::get<0>(this->_frame_size);
-
-    return ((Rectangle) {
-        .x = (float)x,
-        .y = (float)y,
-        .width = std::get<0>(this->_frame_size),
-        .height =  std::get<1>(this->_frame_size)
-    });
-}
-
-void        Animation::draw_animation(float x, float y, float width = -1, float height = -1)
+void        Animation::draw_curent_frame(float x, float y, float scale, bool flip, float width, float height)
 {
     if (width < 0)
         width = std::get<0>(this->_frame_size);
     if (height < 0)
-        height = std::get<0>(this->_frame_size);
+        height = std::get<1>(this->_frame_size);
+
+    Rectangle origin = this->get_frame();
+    if (flip == true)
+        origin.width *= -1;
 
     Rectangle dest = Rectangle {
         .x = x,
         .y = y,
-        .width = width,
-        .height = height
+        .width = width * scale,
+        .height = height * scale
     };
 
-    DrawTexturePro(this->_img, this->get_frame(), dest, {0, 0}, 0.0f, WHITE);
+    DrawTexturePro(this->_img, origin, dest, {0, 0}, 0.0f, WHITE);
+}
+
+void        Animation::play_animation(float x, float y, float scale, bool flip, float width, float height)
+{
+    if (width < 0)
+        width = std::get<0>(this->_frame_size);
+    if (height < 0)
+        height = std::get<1>(this->_frame_size);
+
+    Rectangle origin = this->get_frame();
+    if (flip == true)
+        origin.width *= -1;
+
+    Rectangle dest = Rectangle {
+        .x = x,
+        .y = y,
+        .width = width * scale,
+        .height = height * scale
+    };
+
+    DrawTexturePro(this->_img, origin, dest, {0, 0}, 0.0f, WHITE);
     this->update_frame();
 }
 

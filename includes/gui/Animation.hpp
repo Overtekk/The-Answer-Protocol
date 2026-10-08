@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 14:12:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/07 16:49:09 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/08 14:54:50 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,19 @@ class Animation
         // return the _curent_frame rectangle
         Rectangle       get_frame();
         // play animation and update _curent_frame
-        void            draw_animation(float x, float y, float width = -1, float height = -1);
-        
+        void            play_animation(float x, float y, float scale = 1.0f, bool flip = false, float width = -1.0f, float height = -1.0f);
+        // draw curent frame
+        void            draw_curent_frame(float x, float y, float scale = 1.0f, bool flip = false, float width = -1.0f, float height = -1.0f);
+
+        // set the curent frame to the first frame
+        void            reset();
+
+        // reset the time_left befor switching frame
+        void            reset_time_left();
+
+        // manually set the curent frame (2 mean the third frame cause we start from 0)
+        void            set_frame(int frame);
+
         // Error
         void            sendObjectError(std::string error);
 };

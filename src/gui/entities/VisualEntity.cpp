@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:52:51 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/08 12:12:38 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,15 @@ VisualEntity::VisualEntity(
 	_entity(entity),
 	_img(LoadTexture(texture.c_str())),
 	_sprite_dim(sprite_dim),
-	_sprite_scale(scale) 
+	_sprite_scale(scale),
+	_idle(Animation(texture, sprite_dim, 4, 1, 0, FRAME_DURATION)),
+	_walk_down(Animation(texture, sprite_dim, 4, 4, 0, FRAME_DURATION)),
+	_walk_up(Animation(texture, sprite_dim, 4, 4, 8, FRAME_DURATION)),
+	_walk_lr(Animation(texture, sprite_dim, 4, 4, 4, FRAME_DURATION))
 	{
 		if (this->_img.id == 0)
 			this->sendObjectError("Error while loading texture");
+		std::cout << this->_entity.getName() << " Created\n";
 	}
 
 VisualEntity::~VisualEntity() { UnloadTexture(this->_img); }
@@ -33,34 +38,35 @@ VisualEntity::~VisualEntity() { UnloadTexture(this->_img); }
 // Update
 void VisualEntity::update(float delta_time) {
 	update_movement(delta_time);
-	// Normalize vector
+	// Normalize vector (unit vector when you go on )
 	float length = sqrt((_dx * _dx) + (_dy * _dy));
 	if (length > 0) {
 		_dx = _dx / length;
 		_dy = _dy / length;
 	}
+
 	if (_dy > 0) {
 		_direction_row = EntityDirection::DOWN;
 	}
 	else if (_dy < 0) {
 		_direction_row = EntityDirection::UP;
 	}
-	else if (_dx != 0) {
+	else if (_dx > 0) {
+		_direction_row = EntityDirection::RIGHT;
+	}
+	else if (_dx < 0) {
 		_direction_row = EntityDirection::LEFT;
-		if (_dx > 0) {
-			_facing_left = false;
-		}
-		else {
-			_facing_left = true;
-		}
 	}
 
-	// update_sprite(delta_time);
+	update_sprite();
 
 	_position.x += _dx * _speed * delta_time;
 	_position.y += _dy * _speed * delta_time;
-	_dx = 0.0f;
-	_dy = 0.0f;
+	// std::cout << delta_time << "\n";
+	// std::cout << "x = " <<(_dx * _speed * delta_time) << "\n";
+	// std::cout << "y = " <<(_dy * _speed * delta_time) << "\n\n";
+	// _dx = 0.0f;
+	// _dy = 0.0f;
 };
 
 void VisualEntity::update_movement(float) {}
@@ -88,9 +94,50 @@ void VisualEntity::update_movement(float) {}
 //         px, py, (std::abs(source.width) * _sprite_scale), source.height * _sprite_scale
 //     };
 //     Vector2 origin = {0.0f, 0.0f};
-
 //     DrawTexturePro(_img, source, dest, origin, 0.0f, WHITE);
 // }
+
+void VisualEntity::update_sprite()
+{
+	if (_dx != 0.0f || _dy != 0.0f)
+	{
+		this->_walk_up.update_frame();
+		this->_walk_down.update_frame();
+		this->_walk_lr.update_frame();
+	}
+	else
+	{
+		this->_walk_up.reset();
+		this->_walk_down.reset();
+		this->_walk_lr.reset();
+	}
+}
+
+void 	VisualEntity::on_draw()
+{
+	switch (this->_direction_row)
+	{
+	case EntityDirection::UP :
+		this->_walk_up.draw_curent_frame(this->_position.x, this->_position.y, this->_sprite_scale);
+		break;
+
+	case EntityDirection::DOWN :
+		this->_walk_down.draw_curent_frame(this->_position.x, this->_position.y, this->_sprite_scale);
+		break;
+
+	case EntityDirection::LEFT :
+		this->_walk_lr.draw_curent_frame(this->_position.x, this->_position.y, this->_sprite_scale);
+		break;
+
+	case EntityDirection::RIGHT :
+		this->_walk_lr.draw_curent_frame(this->_position.x, this->_position.y, this->_sprite_scale, true);
+		break;
+
+	default:
+		this->_idle.draw_curent_frame(this->_position.x, this->_position.y, this->_sprite_scale);
+		break;
+	}
+}
 
 // Utils
 // Rectangle VisualEntity::init_sprite_rect() {
