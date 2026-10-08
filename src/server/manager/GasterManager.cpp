@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 13:14:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:58:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ GasterManager::GasterManager(
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
 bool	GasterManager::create_player(const std::string& player_name) {
-	std::cout << "Created " + player_name + "\n";
+	print_log("GasterManager: player '" + player_name + "' spawned into world.");
 	return true;
 }
 
@@ -50,7 +50,7 @@ bool	GasterManager::create_player(const std::string& player_name) {
 // * Check if the user exist, return true if yes. *
 bool	GasterManager::checkIfUserExist(const std::string& username) const {
 	auto	search = _world_state.players.find(username);
-	if (username == search->second->getName()) {
+	if (search != _world_state.players.end()) {
 		return true;
 	}
 	return false;

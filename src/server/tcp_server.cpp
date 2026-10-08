@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:10:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:56:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
+# include "server/logger.hpp"
 # include "utils.h"
 
 // --- CONSTRUCTOR ---
@@ -22,6 +23,7 @@ TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_
 	_save_log_in_file(save_log)
 {
 	init(port);
+	std::ignore=_save_log_in_file; //todo with the logger
 }
 
 // * Run the server. *
@@ -57,6 +59,10 @@ void	TCPServer::run() {
 			}
 			// client wants to disconnected
 			else if (revents & (POLLERR | POLLHUP | POLLNVAL)) {
+				auto it = _sessions.find(fd);
+				if (it != _sessions.end()) {
+					print_log_message(*(it->second), "connection dropped (poll error/hangup).");
+				}
 				disconnectedClient(fd);
 			}
 			// read client message
@@ -165,6 +171,7 @@ void	TCPServer::handleNewConnection() {
 
 	TCPSocket client_socket(client_fd);
 	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
+	print_log_message(*_sessions[client_fd], "connected to server (socket " + std::to_string(client_fd) + ").");
 }
 
 // * Read incoming data from a client. *
@@ -178,6 +185,7 @@ void	TCPServer::handleClientRead(int fd) {
 	// Read the message
 	OperationState state = it->second->readData();
 	if (state == OperationState::DECONNEXION || state == OperationState::NETWORK_ERROR) {
+		print_log_message(*(it->second), "connection closed by client.");
 		disconnectedClient(fd);
 		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR);
 		return;
@@ -203,14 +211,14 @@ void	TCPServer::handleClientWrite(int fd) {
 	//
 	OperationState state = it->second->sendPendingData();
 	if (state == OperationState::ERROR) {
-		printLogMessage(*(it->second), "User have been disconnected due to an error.");
+		print_log_message(*(it->second), "User have been disconnected due to an error.");
 		disconnectedClient(fd);
 		return;
 	}
 
 	// Handle question asking to disconnect
 	if (!it->second->hasDataToSend() and it->second->getSessionState() == SessionState::CLOSING) {
-		printLogMessage(*(it->second), "left the game.");
+		print_log_message(*(it->second), "left the game.");
 		disconnectedClient(fd);
 		return;
 	}
@@ -218,21 +226,3 @@ void	TCPServer::handleClientWrite(int fd) {
 
 // * Disconnect a client. *
 void	TCPServer::disconnectedClient(int fd) { _sessions.erase(fd); }
-
-// * Print a log in the console terminal and save it to the log file.*
-void	TCPServer::printLogMessage(TCPSession& session, const std::string& log_msg) {
-	std::string	formatted_log_msg = "";
-
-	if (session.getUsername().empty()) {
-		formatted_log_msg = "[" + session.getIP() + "]: " + log_msg;
-	}
-	else {
-		formatted_log_msg = "[" + session.getIP() + "](" + session.getUsername() + "):" + log_msg;
-	}
-
-	if (_save_log_in_file) {
-
-	}
-
-	print_log(formatted_log_msg);
-}

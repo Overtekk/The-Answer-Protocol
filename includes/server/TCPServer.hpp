@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:21:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:52:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,4 @@ class TCPServer {
 
 		void	run();
 		void	stop();
-		void	printLogMessage(TCPSession& session, const std::string& log_msg);
 };

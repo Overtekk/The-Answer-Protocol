@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:53:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:58:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "server/TCPSession.hpp"
 # include "server/TCP_EnumsType.hpp"
 # include "server/manager/GasterManager.hpp"
+# include "server/logger.hpp"
 # include "protocol/TCP_error.hpp"
 # include "utils.h"
 
@@ -111,13 +112,7 @@ void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_
 void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw_line) {
 	std::string raw_command = clean_line(raw_line);
 
-	if (session.getUsername().empty()) {
-		print_log("[" + session.getIP() + "] entered command: " + raw_command);
-	}
-	else {
-		print_log("[" + session.getIP() + "](" + session.getUsername() + ") entered command: " + raw_command);
-	}
-
+	print_log_message(session, "entered command: " + raw_command);
 
 	// Substring the argument from the command (ex: 'CONNECT KRIS')
 	std::string command = raw_command;
@@ -126,54 +121,59 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 	size_t	index_arg = raw_command.find_first_of(' ');
 	if (index_arg != std::string::npos) {
 		command = raw_command.substr(0, index_arg);
-		argument = clean_line(raw_command.substr(index_arg + 1));;
+		argument = clean_line(raw_command.substr(index_arg + 1));
 	}
 
 	// Check if it's the connect command
 	HandshakeCommand cmd;
-	if (parseHandshakeCommand(command, cmd))
-	{
-		if (cmd == HandshakeCommand::CONNECT) {
-			// No argument provided
-			if (argument.empty()) {
-				session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_USERNAME));
-				return;
-			}
-			// Username too short/too long
-			if (argument.length() < 3 || argument.length() > 20) {
-				session.add_msg_to_buffer(getTCP_error(TCPErrorCode::INVALID_USERNAME));
-				return;
-			}
-			// Duplicated username
-			if (_manager.checkIfUserExist(argument)) {
-				session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NAME_IN_USE));
-				return;
-			}
-			// GOOD
-			session.setUsername(argument);
-			session.setSessionState(SessionState::AUTHENTICATED);
-			session.add_msg_to_buffer(getTCP_OK_operation("CONNECTED"));
-			_manager.create_player(argument);
-			print_log("New player created: '" + argument + "'");
-			return;
-		}
-		// Check if it's the quit command
-		else if (cmd == HandshakeCommand::QUIT) {
-			session.setSessionState(SessionState::CLOSING);
-			session.add_msg_to_buffer(getTCP_OK_operation("bye"));
-			return;
-		}
-		// Unkown command
-		else {
-			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
-			return;
-		}
+	if (!parseHandshakeCommand(command, cmd)) {
+		print_log_message(session, "rejected command: '" + command + "'");
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
+		return;
 	}
+
+	// Connect command
+	if (cmd == HandshakeCommand::CONNECT) {
+		// No argument provided
+		if (argument.empty()) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_USERNAME));
+			print_log_message(session, "error: 203 MISSING_USERNAME");
+			return;
+		}
+		// Username too short/too long
+		if (argument.length() < 3 || argument.length() > 20) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::INVALID_USERNAME));
+			print_log_message(session, "error: 202 INVALID_USERNAME");
+			return;
+		}
+		// Duplicated username
+		if (_manager.checkIfUserExist(argument)) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NAME_IN_USE));
+			print_log_message(session, "error: 201 NAME_IN_USE");
+			return;
+		}
+		// GOOD
+		session.setUsername(argument);
+		session.setSessionState(SessionState::AUTHENTICATED);
+		session.add_msg_to_buffer(getTCP_OK_operation("CONNECTED"));
+		_manager.create_player(argument);
+		print_log_message(session, "new player created: '" + argument + "'");
+		return;
+	}
+
+	// Check if it's the quit command
+	else if (cmd == HandshakeCommand::QUIT) {
+		print_log_message(session, "requested graceful disconnect (QUIT).");
+		session.setSessionState(SessionState::CLOSING);
+		session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+		return;
+	}
+
 	return;
 }
 
 // * Handling commands when the client is in game. *
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
-	std::ignore = session;
-	std::ignore = raw_line;
+	std::string clean_cmd = clean_line(raw_line);
+	print_log_message(session, "in-game command: " + clean_cmd);
 }
