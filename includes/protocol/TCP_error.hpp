@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:31:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:26:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ enum class TCPErrorCode {
 	INVALID_USERNAME,
 	SYSTEM_ERROR,
 	CONNEXION_ERROR,
+	LINE_TOO_LONG,
 };
 
 

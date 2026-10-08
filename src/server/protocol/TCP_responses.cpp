@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:32:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:27:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,9 @@ std::string getTCP_error(TCPErrorCode error_code, bool add_description) {
 			break;
 		case TCPErrorCode::CONNEXION_ERROR:
 			err_message = "900 CONNEXION ERROR";
+			break;
+		case TCPErrorCode::LINE_TOO_LONG:
+			err_message = "905 LINE TOO LONG";
 			break;
 		default:
 			err_message = "Invalid error code";
@@ -127,6 +130,9 @@ std::string getTCP_errorDescription(TCPErrorCode error_code) {
 			break;
 		case TCPErrorCode::CONNEXION_ERROR:
 			err_desc = "You have been disconnected.";
+			break;
+		case TCPErrorCode::LINE_TOO_LONG:
+			err_desc = "Line is too long to be read.";
 			break;
 		default:
 			err_desc = "Invalid error code. No description.";

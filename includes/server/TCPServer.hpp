@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:24:30 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 09:31:04 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <cstring>
 # include <netinet/in.h>
 # include <arpa/inet.h>
+# include <csignal>
 
 # include "server/TCPSocket.hpp"
 # include "server/TCPSession.hpp"
@@ -31,8 +32,10 @@ class TCPServer {
 
 		std::unordered_map<int, std::unique_ptr<TCPSession>>	_sessions;
 		std::vector<struct pollfd>	_poll_fds;
+		static volatile std::sig_atomic_t	_stop_requested;
 
 		bool	_is_running;
+
 		// CommandHandler&	_cmd_handler;
 
 		// --- INIT SOCKET ---
@@ -44,6 +47,7 @@ class TCPServer {
 		void	handleClientRead(int fd);
 		void	handleClientWrite(int fd);
 		void	disconnectedClient(int fd);
+		void	reapClosingSessions();
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -53,4 +57,5 @@ class TCPServer {
 
 		void	run();
 		void	stop();
+		static void	requestStop();
 };

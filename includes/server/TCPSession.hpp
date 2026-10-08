@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 15:52:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:26:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 # include <vector>
 # include <cstdint>
+# include <string>
+# include <utility>
 
 # include "server/TCPSocket.hpp"
-# include "config/Enums.hpp"
+# include "server/TCPTypes.hpp"
 
 
 // * Listen to a socket and respond. *
@@ -38,20 +40,22 @@ class TCPSession {
 		std::string	_username = "";
 
 	public :
+		static constexpr std::size_t	MAX_LINE_LENGTH = 1024;
+
 		// --- CONSTRUCTOR ---
 		TCPSession(TCPSocket&& socket, const std::string& ip, std::uint16_t port);
 		// --- DESTRUCTOR ---
-		virtual ~TCPSession() = default;
+		~TCPSession() = default;
 		// prevent copy of the instance
 		TCPSession(const TCPSession&) = delete;
 		TCPSession& operator=(const TCPSession&) = delete;
 
 		// --- GETTER ---
-		std::string			getIP() const;
+		const std::string&	getIP() const;
 		std::uint16_t		getPort() const;
 		int					getSocketDescriptor() const;
 		SessionState		getSessionState() const;
-		std::string			getUsername() const;
+		const std::string&	getUsername() const;
 		// --- SETTER ---
 		void			setSessionState(SessionState new_state);
 		void			setUsername(const std::string& username);
@@ -62,4 +66,6 @@ class TCPSession {
 		void						add_msg_to_buffer(const std::string& msg);
 		bool						hasDataToSend() const;
 		OperationState				sendPendingData();
+
+		bool	inputOverflow() const;
 };

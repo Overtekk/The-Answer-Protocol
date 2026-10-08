@@ -6,11 +6,22 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 16:54:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:25:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <unistd.h>
+# include <cerrno>
+# include <cstring>
+# include <system_error>
+# include <sys/socket.h>
+
 # include "server/TCPServer.hpp"
+# include "protocol/TCP_error.hpp"
+# include "utils.h"
+
+
+volatile std::sig_atomic_t TCPServer::_stop_requested = 0;
 
 // --- CONSTRUCTOR ---
 TCPServer::TCPServer(std::uint16_t port) :
@@ -21,54 +32,60 @@ TCPServer::TCPServer(std::uint16_t port) :
 }
 
 // * Run the server. *
+// 'revents' is a BIT MASK: several events can be set at once (e.g. POLLIN | POLLHUP when a
+// client sends "QUIT\n" then closes). That's why these are independent 'if', not 'else if'.
+// POLLHUP is handled like POLLIN: recv() still returns the pending bytes, then 0.
+// After handleClientRead() the session may have been destroyed, hence the _sessions.count(fd).
 void	TCPServer::run() {
 	_is_running = true;
 
-	while (_is_running) {
+	while (_is_running && !_stop_requested) {
 		buildPollFds();
 
-		int return_value = poll(_poll_fds.data(), _poll_fds.size(), 100);
-		if (return_value == -1) {
-			// ctrl + c
+		int ret = poll(_poll_fds.data(), _poll_fds.size(), 100);
+		if (ret == -1) {
 			if (errno == EINTR) {
 				continue;
 			}
-			std::cerr << "poll error: " << std::strerror(errno) << '\n';
+			print_error(std::string("poll: ") + std::strerror(errno));
+			break;
 		}
-		// timeout
-		else if (return_value == 0) {
+		if (ret == 0) {
 			continue;
 		}
 
-		for (auto& pfd : _poll_fds) {
-			int fd = pfd.fd;
-			short revents = pfd.revents;
-			// nothing
-			if (revents == 0) {
+		for (const auto& pfd : _poll_fds) {
+			const int   fd = pfd.fd;
+			const short ev = pfd.revents;
+			if (ev == 0) {
 				continue;
 			}
-			// new client
-			else if (fd == _listen_socket.getFD() && revents & POLLIN) {
-				handleNewConnection();
+			if (fd == _listen_socket.getFD()) {
+				if (ev & POLLIN) {
+					handleNewConnection();
+				}
+				continue;
 			}
-			// client wants to disconnected
-			else if (revents & (POLLERR | POLLHUP | POLLNVAL)) {
+			if (ev & (POLLERR | POLLNVAL)) {
 				disconnectedClient(fd);
+				continue;
 			}
-			// read client message
-			else if (revents & POLLIN) {
+			if (ev & (POLLIN | POLLHUP)) {
 				handleClientRead(fd);
 			}
-			// send buffered client data
-			else if (revents & POLLOUT) {
+			if ((ev & POLLOUT) && _sessions.count(fd)) {
 				handleClientWrite(fd);
 			}
 		}
+		reapClosingSessions();
 	}
 }
 
 // * Stop the server. *
 void	TCPServer::stop() { _is_running = false; }
+
+// * Request to stop the server. *
+void TCPServer::requestStop() { _stop_requested = 1; }
 
 // ==== PRIVATE ===
 // --- INIT SOCKET ---
@@ -77,19 +94,19 @@ void	TCPServer::init(std::uint16_t port) {
 	// AF_INET = Address Family: Internet (protocol IPv4).
 	// SOCK_STREAM = TCP protocol (packages arrives in order, no duplicated, no loses).
 	// 0 = let the system choose which protocol to use by default.
-	int	fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (fd == -1) {
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
-		throw std::system_error();
+	TCPSocket sock(socket(AF_INET, SOCK_STREAM, 0));
+	if (sock.getFD() == -1) {
+		throw std::system_error(errno, std::generic_category(), "socket");
 	}
 
 	// SOL_SOCKET = set option at the socket API level.
 	// SO_REUSEADDR = allows immediate reuse of local address/port.
 	int opt = 1;
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	if (setsockopt(sock.getFD(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1) {
+		throw std::system_error(errno, std::generic_category(), "setsockopt");
+	}
 
-	struct sockaddr_in addr;
-	std::memset(&addr, 0, sizeof(addr));
+	sockaddr_in addr{};
 
 	addr.sin_family = AF_INET;
 	// htons() = Host To Network Short (converts 16-bit integer from host byte order to network byte order)
@@ -98,21 +115,17 @@ void	TCPServer::init(std::uint16_t port) {
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// attach the socket to the machine IP and port (error if -1).
-	if (bind(fd, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr)) == -1) {
-    	close(fd);
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
-		throw std::system_error();
+	if (bind(sock.getFD(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1) {
+		throw std::system_error(errno, std::generic_category(), "bind");
 	}
 	// put the socket in passive mode to accept incoming client connections.
 	// SOMAXCONN = (Socket Maximum Connections) use max queue allowed by the OS.
-	if (listen(fd, SOMAXCONN) == -1) {
-    	close(fd);
-		std::cout << getTCP_error(TCPErrorCode::SYSTEM_ERROR, true);
-		throw std::system_error();
+	if (listen(sock.getFD(), SOMAXCONN) == -1) {
+		throw std::system_error(errno, std::generic_category(), "listen");
 	}
 
 	// Transfert fd to the class socket.
-	_listen_socket = TCPSocket(fd);
+	_listen_socket = std::move(sock);
 }
 
 // -- HANDLE NETWORK ---
@@ -131,7 +144,9 @@ void	TCPServer::buildPollFds() {
 	for (const auto& [fd, session] : _sessions) {
 		struct pollfd client_pfd;
 		client_pfd.fd = fd;
-		client_pfd.events = POLLIN;
+		// A closing session only needs to flush its output: we stop listening to it.
+		// poll() still reports POLLERR/POLLHUP even when 'events' is 0.
+		client_pfd.events = (session->getSessionState() == SessionState::CLOSING) ? 0 : POLLIN;
 		if (session->hasDataToSend()) {
 			client_pfd.events |= POLLOUT;
 		}
@@ -143,67 +158,109 @@ void	TCPServer::buildPollFds() {
 
 // * Connect a client to the server. *
 void	TCPServer::handleNewConnection() {
-	struct sockaddr_in client_addr;
-	socklen_t client_len = sizeof(client_addr);
-	int client_fd = accept(
-		_listen_socket.getFD(), reinterpret_cast<struct sockaddr*>(&client_addr), &client_len);
-
+	int client_fd = accept(_listen_socket.getFD(), reinterpret_cast<sockaddr*>(&client_addr), &client_len);
 	if (client_fd == -1) {
-		std::cout << getTCP_error(TCPErrorCode::CONNECTION_FAILED, true);
+		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) {
+			print_error(std::string("accept: ") + std::strerror(errno));
+		}
 		return;
 	}
 
-	// INET_ADDRSTRLEN = the maximum number of characters needed to hold an IPv4 address string in presentation format.
-	// Get client IP and port
-	char ip_str[INET_ADDRSTRLEN];
-	inet_ntop(AF_INET, &client_addr.sin_addr, ip_str, sizeof(ip_str));
-	uint16_t client_port = ntohs(client_addr.sin_port);
-
-	TCPSocket client_socket(client_fd);
-	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
+	auto session = std::make_unique<TCPSession>(TCPSocket(client_fd), ip_str, client_port);
+	session->add_msg_to_buffer("OK hello proto=1");     // RFC 3.2
+	_sessions[client_fd] = std::move(session);
+	print_log(std::string(ip_str) + ":" + std::to_string(client_port) + " connected");
 }
 
 // * Read incoming data from a client. *
 void	TCPServer::handleClientRead(int fd) {
-	// Find the client
 	auto it = _sessions.find(fd);
 	if (it == _sessions.end()) {
 		return;
 	}
+	TCPSession& session = *it->second;
 
-	// Read the message
-	OperationState state = it->second->readData();
-	if (state == OperationState::DECONNEXION || state == OperationState::NETWORK_ERROR) {
-		disconnectedClient(fd);
-		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR, true);
-		return;
+	switch (session.readData()) {
+		case OperationState::PEER_CLOSED:
+			print_log(session.getIP() + " disconnected");
+			disconnectedClient(fd);
+			return;
+		case OperationState::FAILURE:
+			print_error(session.getIP() + ": network error");
+			disconnectedClient(fd);
+			return;
+		case OperationState::WOULD_BLOCK:
+			return;
+		case OperationState::SUCCESS:
+			break;
 	}
 
-	// Extract the lines
-	auto lines = it->second->extractCompleteLines();
+	bool too_long = false;
+	for (const auto& line : session.extractCompleteLines()) {
+		if (line.size() > TCPSession::MAX_LINE_LENGTH) {
+			too_long = true;
+			break;
+		}
+		if (line.empty()) { continue; }
+		print_log("recv: " + line);   // later: _handler->onLine(fd, line);
+	}
 
-	// TEST. COMMANDHANDLER NEED TO DO THAT
-	for (const auto& line : lines) {
-		std::cout << line;
+	// Two cases: a complete line that is too long (checked above),
+	// or an unfinished line that keeps growing without any '\n' (checked here).
+	if (too_long || session.inputOverflow()) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::LINE_TOO_LONG));
+		session.setSessionState(SessionState::CLOSING);   // flushed, then closed by reapClosingSessions()
+	}
+}
+
+// * Handle the data from a client. *
+void	TCPServer::handleClientWrite(int fd) {
+	auto it = _sessions.find(fd);
+	if (it == _sessions.end()) {
+		return;
+	}
+	if (it->second->sendPendingData() == OperationState::FAILURE) {
+		disconnectedClient(fd);
 	}
 }
 
 // * Empty the buffer of the client when socket is ready to be written (POLLOUT). *
-void	TCPServer::handleClientWrite(int fd) {
-	// Find the client
-	auto it = _sessions.find(fd);
-	if (it == _sessions.end()) {
+void	TCPServer::handleNewConnection() {
+	sockaddr_in client_addr{};
+	socklen_t   client_len = sizeof(client_addr);   // in/out: accept() writes the real size back
+
+	int client_fd = accept(_listen_socket.getFD(),
+		reinterpret_cast<sockaddr*>(&client_addr), &client_len);
+	if (client_fd == -1) {
+		// The listen socket is non-blocking: EAGAIN just means "nobody is waiting anymore".
+		if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) {
+			print_error(std::string("accept: ") + std::strerror(errno));
+		}
 		return;
 	}
 
-	//
-	OperationState state = it->second->sendPendingData();
-	if (state == OperationState::ERROR) {
-		disconnectedClient(fd);
-		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR, true);
-		return;
-	}
+	char ip_str[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &client_addr.sin_addr, ip_str, sizeof(ip_str));
+	const std::uint16_t client_port = ntohs(client_addr.sin_port);   // network -> host byte order
+
+	auto session = std::make_unique<TCPSession>(TCPSocket(client_fd), ip_str, client_port);
+	session->add_msg_to_buffer("OK hello proto=1");   // RFC 3.2
+	_sessions[client_fd] = std::move(session);
+	print_log(std::string(ip_str) + ":" + std::to_string(client_port) + " connected");
 }
 
 // * Disconnect a client. *
 void	TCPServer::disconnectedClient(int fd) { _sessions.erase(fd); }
+
+// * Closing client session. *
+void	TCPServer::reapClosingSessions() {
+	for (auto it = _sessions.begin(); it != _sessions.end(); ) {
+		if (it->second->getSessionState() == SessionState::CLOSING
+			&& !it->second->hasDataToSend()) {
+			it = _sessions.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+}
