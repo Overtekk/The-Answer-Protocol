@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 15:52:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:33:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <cstdint>
 
 # include "server/TCPSocket.hpp"
-# include "config/Enums.hpp"
+# include "server/TCP_EnumsType.hpp"
 
 
 // * Listen to a socket and respond. *
