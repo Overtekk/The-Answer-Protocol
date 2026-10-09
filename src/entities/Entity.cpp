@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 11:56:05 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:24:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Entity::Entity(const std::string& id, const std::string& name, const std::string
 	_name(name) {}
 
 // --- GETTER ---
-const std::string&	Entity::getName() const { return _id; }
+const std::string&	Entity::getID() const { return _id; }
 const std::string&	Entity::getName() const { return _name; }
 int 		Entity::getHealth() const { return _health;  }
 EnemyType 	Entity::getType() const { return _type; }

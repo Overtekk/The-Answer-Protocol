@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 13:40:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:01:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,13 @@ nlohmann::json	Room::getRoomData() {
 	for (const auto& it : _items) {
 		list_items.push_back(it.second->getID());
 	}
-	room_data[_id]["players"] = list_items;
-	// List of npcs
+	room_data[_id]["items"] = list_items;
+	// List of entities
 	std::vector<std::string>	list_npcs;
-	for (const auto& it : _npc) {
+	for (const auto& it : _entity) {
 		list_npcs.push_back(it.second->getID());
 	}
-	room_data[_id]["players"] = list_npcs;
+	room_data[_id]["npcs"] = list_npcs;
 
 	return room_data;
 }
@@ -172,41 +172,41 @@ Player*	Room::getPlayer(const std::string& name) {
 }
 
 // ============================================================================
-// =============================   npc   ======================================
+// ===========================   Entity   =====================================
 // ============================================================================
 
-bool	Room::addNPC(NPC* npc) {
-	if (npc == nullptr)
+bool	Room::addEntity(Entity* entity) {
+	if (entity == nullptr)
 	{
-		this->sendObjectError("npc's pointer point to null");
+		this->sendObjectError("entity's pointer point to null");
 		return (false);
 	}
 
-	const std::string name = npc->getName();
-	if (this->_npc.count(name) == 1)
+	const std::string name = entity->getName();
+	if (this->_entity.count(name) == 1)
 	{
-		this->sendObjectError("npc already in room");
+		this->sendObjectError("entity already in room");
 		return (false);
 	}
-	this->_npc[name] = npc;
+	this->_entity[name] = entity;
 	return (true);
 }
 
-NPC*	Room::popNPC(const std::string& name) {
-	if (this->_npc.count(name) == 1)
+Entity	*	Room::popEntity(const std::string& name) {
+	if (this->_entity.count(name) == 1)
 	{
-		NPC  *npc = this->_npc[name];
-		this->_npc.erase(name);
-		return (npc);
+		Entity  *entity = this->_entity[name];
+		this->_entity.erase(name);
+		return (entity);
 	}
-	this->sendObjectError("Invalide npc name key (npc not in room)");
+	this->sendObjectError("Invalide entity name key (entity not in room)");
 	return (nullptr);
 }
 
-NPC*	Room::getNPC(const std::string& name) {
-	if (this->_npc.count(name) == 1)
-		return (this->_npc[name]);
-	this->sendObjectError("Invalide npc name key (npc not in room)");
+Entity*	Room::getEntity(const std::string& name) {
+	if (this->_entity.count(name) == 1)
+		return (this->_entity[name]);
+	this->sendObjectError("Invalide entity name key (entity not in room)");
 	return (nullptr);
 }
 

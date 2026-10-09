@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 14:16:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:01:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool	GasterManager::checkIfUserExist(const std::string& username) const {
 void	GasterManager::create_room() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
-			loc_id, loc.name, loc.description, loc.tile_map, loc.special
+			loc.name, loc.description, loc.tile_map, loc.special
 		);
 		_world_state.rooms[loc_id] = std::move(new_room);
 	}
@@ -87,22 +87,22 @@ void	GasterManager::create_entities() {
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			default:
@@ -123,17 +123,17 @@ void	GasterManager::create_items() {
 		switch (item.type) {
 			case ItemType::CONSUMABLE:
 				new_item = std::make_unique<ItemConsumable>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			case ItemType::KEY:
 				new_item = std::make_unique<ItemKey>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			case ItemType::WEAPON:
 				new_item = std::make_unique<ItemWeapon>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			default:
@@ -149,16 +149,38 @@ void	GasterManager::create_items() {
 // FILL OBJECTS
 void	GasterManager::fill_rooms_data() {
 	for (const auto& [room_id, data] : _world_state.rooms) {
-		// Fill the exits
-		for (const auto& it : _world_data.locations) {
-			for (const auto& [exit_id, exit] : it.second.exits) {
+		auto loc = _world_data.locations.find(room_id);
+		if (loc == _world_data.locations.end()) {
+			continue;
+		}
+		const auto& config = loc->second;
 
+		// Fill the exits
+		for (const auto& [dir, target_id] : config.exits) {
+			if (dir == Direction::NORTH) {
+				data->setExitNorth(_world_state.rooms[target_id].get());
 			}
+			if (dir == Direction::SOUTH) {
+				data->setExitSouth(_world_state.rooms[target_id].get());
+			}
+			if (dir == Direction::EAST) {
+				data->setExitEast(_world_state.rooms[target_id].get());
+			}
+			if (dir == Direction::WEST) {
+				data->setExitWest(_world_state.rooms[target_id].get());
+			}
+		}
+		// Fill the items
+		for (const auto& item : config.items) {
+			data->placeItem(_world_state.items[item].get());
+		}
+		// Fill entities
+		for (const auto& entity : config.spawns) {
+			data->addEntity(_world_state.entities[entity].get());
 		}
 	}
 }
 
-// ===== PUBLIC =====
 // --- DEBUG ---
 // Print the structure of WorldData
 void	GasterManager::debug_print_structure_data(bool show_gui_data) {
@@ -166,7 +188,7 @@ void	GasterManager::debug_print_structure_data(bool show_gui_data) {
 }
 
 // Print the structure of WorldState
-void	GasterManager::debug_print_structure	_state() {
+void	GasterManager::debug_print_structure_state() {
 	std::cout << RED << "ROOMS:\n" << RESET;
 	for (const auto& [id, room] : _world_state.rooms) {
 		std::cout << id << " is at " << room.get() << " and is named " << CYN << room->getName() << RESET << ".\n";
