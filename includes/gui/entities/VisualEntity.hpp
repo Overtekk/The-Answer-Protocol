@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:40:49 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 15:15:08 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,27 +42,30 @@ class VisualEntity {
 		Vector2 _position = {0.0f, 0.0f};
 
 		// Sprite frame
-		// Rectangle init_sprite_rect();
-		// int _current_frame = 0;
-		// float _frame_timer;
 		Animation				_idle;
 		Animation				_walk_down;
 		Animation				_walk_up;
 		Animation				_walk_lr; // Animation when you walk on the right or left (it will be flipped)
-		//bool 					_facing_left = true;
-		EntityDirection 		_direction_row = EntityDirection::NONE;
+		EntityDirection 		_orientation = EntityDirection::NONE;
 
 		// Movement
 		float _speed = 100.0f;
-		float _dx = 0; // entity x direction -1 = left, 1 = right, 0 = None
-		float _dy = 0; // entity y direction -1 = up, 1 = down, 0 = None
+		float _dx = 0; // entity x direction dx < 0 left, dx > 0 right, 0 = None
+		float _dy = 0; // entity y direction dy < 0 up, dy > 0 down, 0 = None
 
 	protected :
-		virtual void update_movement(float delta_time);
-		virtual void update_sprite();
+		// update direction (dx and dy) depending on your needs (key pressed...)
+		virtual void updateMovement() = 0;
+
+		// Update entity sprite
+		virtual void updateSprite();
 
 	public :
-		VisualEntity(const Entity& entity, std::string texture, std::tuple<int, int> sprite_dim, float scale = 1.0f);
+		VisualEntity(const Entity& entity,
+			const std::string &texture,
+			std::tuple<int, int>
+			sprite_dim,
+			float scale = 1.0f);
 
 		virtual ~VisualEntity();
 
@@ -70,17 +73,32 @@ class VisualEntity {
 		VisualEntity(const VisualEntity&) = delete;
 		VisualEntity& operator=(const VisualEntity&) = delete;
 
-		virtual void update(float delta_time);
+		// Update entity position, orientation, and sprite
+		virtual void update();
 
+		// Utils
+
+		// Return entity orientation (UP DOWN LEFT RIGHT NONE)
+		EntityDirection getOrientation() const;
+		// Set entity orientation 
+		void setOrientation(EntityDirection orientation);
+		
 		// Draw
-		void on_draw();
-		// void unload_texture();
+		
+		// Draw entity sprits
+		void onDraw();
 
 		// Position
-		Vector2 getPos() const;
-		bool setPos(Vector2 new_pos);
-		void set_direction(float new_dx, float new_dy);
+
+		// Return entity postion x en y
+		const Vector2 &getPos() const;
+
+		// Set entity position x and y
+		void setPos(const Vector2 &new_pos);
+
+		// Set entity direction (dx and dy)
+		void setDirection(float new_dx, float new_dy);
 
 		// Error
-		void sendObjectError(std::string error);
+		void sendObjectError(const std::string &error);
 };

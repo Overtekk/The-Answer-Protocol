@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:48:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:46:58 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 15:16:08 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@
 
 class VisualPlayer : public VisualEntity {
 	private:
-		std::vector<int> activeKeys;
+		std::vector<int> 	_activeKeys;
+		int 				_keys[8] = {KEY_UP, KEY_W ,KEY_DOWN, KEY_S ,KEY_LEFT, KEY_A ,KEY_RIGHT, KEY_D};
 
-		virtual void update_movement(float delta_time) override;
+		virtual void updateMovement() override;
 
 	public:
 		VisualPlayer(
@@ -29,5 +30,5 @@ class VisualPlayer : public VisualEntity {
 			const std::string texture,
 			std::tuple<int, int> sprite_dim,
 			float scale
-		) : VisualEntity(player, texture, sprite_dim, scale) {}
+		);
 };

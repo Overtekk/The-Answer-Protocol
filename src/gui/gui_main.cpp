@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:40:58 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 15:14:47 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,42 +62,26 @@ void graphic()
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
 
+	Texture2D		test_texture = LoadTexture("assets/sprites/player/kris_walk.png");
+	Animation		test_animation(test_texture, {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
 	Player			kris("Kris", 20);
     VisualPlayer 	v_kris(kris, "assets/sprites/player/kris_walk.png", {19, 38}, 2.0f);
+
+	v_kris.setPos(Vector2 {400, 225});
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
-			v_kris.update(GetFrameTime());
-			v_kris.on_draw();
+			v_kris.update();
+			v_kris.onDraw();
+
+			test_animation.playAnimation(50, 50, 2, false, 90.0);
 
         EndDrawing();
     }
-
+	
+	UnloadTexture(test_texture);
     CloseWindow();
-}
-
-void room_tester()
-{
-	gui_parser();
-
-	Player			kris("Kris", 20);
-    VisualPlayer 	v_kris(kris, "assets/sprites/player/kris_walk.png", {19, 38}, 2.0f);
-
-    // NPC ralsei("Ralsei", "He like chocolate", "None/None/stil/None",100);
-
-    std::unique_ptr wooden_sword = std::make_unique<ItemWeapon>("Wooden Sword", "t", ItemType::WEAPON, 100000, 0);
-
-    Room room1("Spawn", "I don't have any description yet", "assets/sprites/player/kris_walk.png", false);
-    Room room2("Elevator", "It's the Regretevator elevator !!!", "oiia/oiia", false);
-
-	room1.setExitNorth(&room2);
-    room1.addPlayer(&kris);
-    std::cout << room1.getPlayer(kris.getName())->getName() << "\n\n";
-
-	room2.setExitSouth(&room1);
-	std::cout << room2.getFromDirection(Direction::SOUTH)->getName() << "\n\n";
-	std::cout << room2.getFromDirection(Direction::EAST) << "\n\n";
 }
