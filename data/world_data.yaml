@@ -3,7 +3,7 @@ world:
   locations:
   # SPAWN
     spawn:
-      name: "Cyber-City"
+      name: "Kris Home"
       description: "A city made of cyber things with a cyber sky."
       tile_map: "assets/sprites/player/kris_walk.png"
       exits:

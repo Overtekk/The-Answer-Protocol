@@ -18,19 +18,15 @@
 
 
 // --- CONSTRUCTOR ---
-Player::Player(
-	const std::string& name, int health
-):
-	Entity(name, "", EnemyType::UNKNOWN, health) {}
+Player::Player(const std::string& name):
+	Entity(name, "", EnemyType::UNKNOWN, 100) {}
+
+// --- GETTER ---
+const std::string&	Player::getZone() const { return _zone; }
 
 // --- SETTER ---
-bool	Player::setName(std::string& new_name) {
-	if (new_name.length() >= 3 && new_name.length() <= 20) {
-		_name = new_name;
-		return true;
-	}
-	sendObjectError("Can't modify name. Minimum 3 and maximum 20 characters.");
-	return false;
+void	Player::setZone(const std::string& new_zone) {
+	_zone = new_zone;
 }
 
 // --- INVENTORY SYSTEM ---

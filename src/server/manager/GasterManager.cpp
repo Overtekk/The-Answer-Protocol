@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:47:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:17:58 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,12 @@ GasterManager::GasterManager(
 
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
-bool	GasterManager::create_player(const std::string& player_name) {
-	print_log("GasterManager: player '" + player_name + "' spawned into world.");
-	return true;
+void	GasterManager::create_player(const std::string& player_name) {
+	auto new_player = std::make_unique<Player>(player_name);
+	new_player->setZone(_world_state.rooms["spawn"]->getName());
+	_world_state.players[player_name] = std::move(new_player);
+
+	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
 }
 
 // --- CHECKER ---
@@ -62,6 +65,7 @@ bool	GasterManager::checkIfUserExist(const std::string& username) const {
 
 // --- OBJECTS MANAGEMENTS ---
 // CREATE OBJECTS
+// * Create the rooms and add them to the world state. *
 void	GasterManager::create_room() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
@@ -71,6 +75,7 @@ void	GasterManager::create_room() {
 	}
 }
 
+// * Create the entities and add them to the world state. *
 void	GasterManager::create_entities() {
 	for (const auto& [entity_id, entity] : _world_data.entities) {
 		std::unique_ptr<Entity> new_entity;
@@ -106,6 +111,7 @@ void	GasterManager::create_entities() {
 	}
 }
 
+// * Create the items and add them to the world state. *
 void	GasterManager::create_items() {
 	for (const auto& [item_id, item] : _world_data.items) {
 		std::unique_ptr<Item> new_item;

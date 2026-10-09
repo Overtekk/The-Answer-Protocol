@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:24:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 10:36:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class GasterManager {
 		~GasterManager() = default;
 
 		// --- CREATE PLAYER ---
-		bool	create_player(const std::string& player_name);
+		void	create_player(const std::string& player_name);
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
