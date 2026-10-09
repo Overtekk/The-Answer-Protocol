@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cli_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:14:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:32:25 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 13:49:16 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ int main(int argc, char** argv) {
 	}
 
 	// todo: while(1) and get std::cin of client and sent to socket. Read what server send.
+	// while(1){
+	// 	std::cin;
+	// }
 
 	close(client_fd);
 
