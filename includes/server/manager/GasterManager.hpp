@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 10:36:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:25:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class GasterManager {
 	void	create_room();
 	void	create_entities();
 	void	create_items();
+	void	fill_rooms_data();
 
 	public :
 		// --- CONSTRUCTOR ---

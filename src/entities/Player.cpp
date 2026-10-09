@@ -19,7 +19,7 @@
 
 // --- CONSTRUCTOR ---
 Player::Player(const std::string& name):
-	Entity(name, "", EnemyType::UNKNOWN, 100) {}
+	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {}
 
 // --- GETTER ---
 const std::string&	Player::getZone() const { return _zone; }
@@ -43,7 +43,7 @@ Item*	Player::addItemToInventory(std::unique_ptr<Item> item) {
 		return nullptr;
 	}
 
-	ItemID id = item->getID();
+	ItemID id = item->getUniqueID();
 	Item* item_ptr = item.get();
 	_inventory[id] = std::move(item);
 	return item_ptr;
@@ -96,16 +96,4 @@ std::string	Player::getItemInInventory() const {
 		inventory += entry.second->getName() + "\n";
 	}
 	return (inventory);
-}
-
-// --- UUID SYSTEM ---
-// * Generate an unique UUID. *
-std::string	Player::generate_uuid_v4() const {
-	uuid_t	uuid;
-	uuid_generate_random(uuid);
-
-	char str_uuid[37]; // 36 characters + '\0'
-	uuid_unparse_lower(uuid, str_uuid);
-
-	return std::string(str_uuid);
 }

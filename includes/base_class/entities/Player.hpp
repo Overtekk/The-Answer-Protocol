@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 11:09:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 12:55:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 # include <map>
 # include <memory>
-# include <uuid/uuid.h>
 
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
@@ -31,13 +30,13 @@ class Player : public Entity {
 		// Information
 		std::string	_zone;
 
-		inline static	PlayerID _next_id = 1;
+		inline static	PlayerID _id = 1;
 
 	public :
 		// --- CONSTRUCTOR ---
 		Player(const std::string& name);
 		// --- DESTRUCTOR ---
-        ~Player() = default;
+        ~Player() override = default;
 
 		// --- GETTER ---
 		const std::string&	getZone() const;
@@ -52,7 +51,4 @@ class Player : public Entity {
 		Item* 			getItem(ItemID id) const;
 		ItemID 			getItemIdByName(const std::string& name) const;
 		std::string		getItemInInventory() const;
-
-		// --- UUID ---
-		std::string	generate_uuid_v4() const;
 };
