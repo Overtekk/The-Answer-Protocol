@@ -6,20 +6,18 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 14:13:57 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:48:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
-# include <algorithm>
-# include <filesystem>
-# include <tuple>
+
 # include "config/Enums.hpp"
 
-namespace fs = std::filesystem;
 using ItemID = uint64_t;
+
 
 // * ABSTRACT CLASS *
 class Item {
@@ -42,14 +40,14 @@ class Item {
 		virtual ~Item() = default;
 
 		// --- GETTER ---
-		std::string getName() const;
-		ItemID 		getID() const;
-		std::string getDescription() const;
-		ItemType 	getType() const;
-		int 		getDamage() const;
-		int 		getHP() const;
+		std::string		getName() const;
+		ItemID 			getID() const;
+		std::string		getDescription() const;
+		ItemType 		getType() const;
+		int 			getDamage() const;
+		int 			getHP() const;
 
 		// Error
-		std::string sendObjectError(std::string error) const;
+		void	sendObjectError(const std::string& error) const;
 };
 

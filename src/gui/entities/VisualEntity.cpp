@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:53:27 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:56:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cmath>
+# include <algorithm>
+
 # include "gui/entities/VisualEntity.hpp"
 # include "utils.h"
 
@@ -22,7 +24,7 @@ VisualEntity::VisualEntity(
 	_entity(entity),
 	_img(LoadTexture(texture.c_str())),
 	_sprite_dim(sprite_dim),
-	_sprite_scale(scale) 
+	_sprite_scale(scale)
 	{
 		if (this->_img.id == 0)
 			this->sendObjectError("Error while loading texture");

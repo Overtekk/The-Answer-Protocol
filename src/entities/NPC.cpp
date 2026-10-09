@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   NPC.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:04:23 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/07 11:59:07 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:33:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <string>
+
 # include "base_class/entities/NPC.hpp"
+
 
 // --- CONSTRUCTOR ---
 NPC::NPC(

@@ -10,7 +10,12 @@
 /*                                                                         */
 /* *********************************************************************** */
 
+# include <iostream>
+# include <memory>
+# include <uuid/uuid.h>
+
 # include "base_class/entities/Player.hpp"
+
 
 // --- CONSTRUCTOR ---
 Player::Player(

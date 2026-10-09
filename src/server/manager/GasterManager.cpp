@@ -6,9 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:58:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:47:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+# include <iostream>
+# include <memory>
 
 # include "server/manager/GasterManager.hpp"
 # include "base_class/rooms/Room.hpp"
@@ -26,6 +29,7 @@
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
+
 
 // --- CONSTRUCTOR ---
 GasterManager::GasterManager(
@@ -49,7 +53,7 @@ bool	GasterManager::create_player(const std::string& player_name) {
 // --- CHECKER ---
 // * Check if the user exist, return true if yes. *
 bool	GasterManager::checkIfUserExist(const std::string& username) const {
-	auto	search = _world_state.players.find(username);
+	auto search = _world_state.players.find(username);
 	if (search != _world_state.players.end()) {
 		return true;
 	}

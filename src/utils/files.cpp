@@ -10,9 +10,12 @@
 /*                                                                         */
 /* *********************************************************************** */
 
+# include <string>
+
 # include "yaml-cpp/yaml.h"
 # include "config/WorldConfig.hpp"
 # include "utils.h"
+
 
 // Try to load a YAML file.
 YAML::Node load_file(const std::string& filepath) {

@@ -6,10 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:07:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:03:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <iostream>
+
+# include <yaml-cpp/yaml.h>
 # include "server/manager/GasterManager.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/TCPServer.hpp"
@@ -18,6 +21,7 @@
 # include "utils.h"
 # include "parser.h"
 # include "debug.h"
+
 
 int main() {
 	// Check if world data file is valid or exist.

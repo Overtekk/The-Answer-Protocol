@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 09:27:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 10:25:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:23:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 # include <iostream>
 # include <unordered_map>
+# include <memory>
+
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "base_class/entities/Player.hpp"

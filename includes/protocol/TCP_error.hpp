@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 13:27:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:24:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
+
 
 enum class TCPErrorCode {
 	NAME_IN_USE,
@@ -34,5 +35,5 @@ enum class TCPErrorCode {
 };
 
 
-std::string getTCP_error(TCPErrorCode e);
+std::string	getTCP_error(TCPErrorCode e);
 std::string	getTCP_OK_operation(const std::string& msg);
