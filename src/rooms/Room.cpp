@@ -3,16 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   Room.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
+/*   Updated: 2026/10/12 11:05:11 by nbuchy           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Room.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 09:50:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:01:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <filesystem>
+# include <unordered_map>
+# include <vector>
 
+# include <nlohmann/json.hpp>
 # include "base_class/rooms/Room.hpp"
 # include "config/Enums.hpp"
 # include "utils.h"
@@ -21,9 +36,10 @@ namespace fs = std::filesystem;
 
 
 Room::Room(
-	const std::string& name, const std::string& description, const fs::path& background,
-	const bool special
+	const std::string& id, const std::string& name, const std::string& description,
+	const fs::path& background, const bool special
 ):
+	_id(id),
 	_name(name),
 	_description(description),
 	_background(background),
@@ -34,6 +50,57 @@ Room::Room(
 		this->_exits[Direction::EAST] = nullptr;
 		this->_exits[Direction::WEST] = nullptr;
 	}
+
+// ============================================================================
+// =========================        DATA      =================================
+// ============================================================================
+
+nlohmann::json	Room::getRoomData() {
+	nlohmann::json	room_data;
+
+	room_data[_id]["id"] = this->getID();
+	room_data[_id]["name"] = this->getName();
+	room_data[_id]["description"] = this->getDescription();
+	if (this->getFromDirection(Direction::NORTH) != nullptr) {
+		room_data[_id]["exits"]["north"] = this->getFromDirection(Direction::NORTH)->getID();
+	}
+	if (this->getFromDirection(Direction::SOUTH) != nullptr) {
+		room_data[_id]["exits"]["south"] = this->getFromDirection(Direction::SOUTH)->getID();
+	}
+	if (this->getFromDirection(Direction::EAST) != nullptr) {
+		room_data[_id]["exits"]["east"] = this->getFromDirection(Direction::EAST)->getID();
+	}
+	if (this->getFromDirection(Direction::WEST) != nullptr) {
+		room_data[_id]["exits"]["west"] = this->getFromDirection(Direction::WEST)->getID();
+	}
+	// List of players
+	std::vector<std::string>	list_players;
+	for (const auto& it : _players) {
+		list_players.push_back(it.second->getName());
+	}
+	room_data[_id]["players"] = list_players;
+	// List of items
+	std::vector<std::string>	list_items;
+	for (const auto& it : _items) {
+		list_items.push_back(it.second->getID());
+	}
+	room_data[_id]["items"] = list_items;
+	// List of entities
+	std::vector<std::string>	list_npcs;
+	for (const auto& it : _entity) {
+		list_npcs.push_back(it.second->getID());
+	}
+	room_data[_id]["npcs"] = list_npcs;
+
+	return room_data;
+}
+
+// ============================================================================
+// ===========================       ID      ==================================
+// ============================================================================
+
+const std::string&	Room::getID() const { return _id; }
+
 
 // ============================================================================
 // ===========================      NAME      =================================
@@ -56,7 +123,7 @@ bool	Room::setName(const std::string& new_name) {
 // ===========================      DESC      =================================
 // ============================================================================
 
-std::string	Room::getDesription() const {
+std::string	Room::getDescription() const {
 	return (this->_description);
 }
 
@@ -117,41 +184,41 @@ Player*	Room::getPlayer(const std::string& name) {
 }
 
 // ============================================================================
-// =============================   npc   ======================================
+// ===========================   Entity   =====================================
 // ============================================================================
 
-bool	Room::addNPC(NPC* npc) {
-	if (npc == nullptr)
+bool	Room::addEntity(Entity* entity) {
+	if (entity == nullptr)
 	{
-		this->sendObjectError("npc's pointer point to null");
+		this->sendObjectError("entity's pointer point to null");
 		return (false);
 	}
 
-	const std::string name = npc->getName();
-	if (this->_npc.count(name) == 1)
+	const std::string name = entity->getName();
+	if (this->_entity.count(name) == 1)
 	{
-		this->sendObjectError("npc already in room");
+		this->sendObjectError("entity already in room");
 		return (false);
 	}
-	this->_npc[name] = npc;
+	this->_entity[name] = entity;
 	return (true);
 }
 
-NPC*	Room::popNPC(const std::string& name) {
-	if (this->_npc.count(name) == 1)
+Entity	*	Room::popEntity(const std::string& name) {
+	if (this->_entity.count(name) == 1)
 	{
-		NPC  *npc = this->_npc[name];
-		this->_npc.erase(name);
-		return (npc);
+		Entity  *entity = this->_entity[name];
+		this->_entity.erase(name);
+		return (entity);
 	}
-	this->sendObjectError("Invalide npc name key (npc not in room)");
+	this->sendObjectError("Invalide entity name key (entity not in room)");
 	return (nullptr);
 }
 
-NPC*	Room::getNPC(const std::string& name) {
-	if (this->_npc.count(name) == 1)
-		return (this->_npc[name]);
-	this->sendObjectError("Invalide npc name key (npc not in room)");
+Entity*	Room::getEntity(const std::string& name) {
+	if (this->_entity.count(name) == 1)
+		return (this->_entity[name]);
+	this->sendObjectError("Invalide entity name key (entity not in room)");
 	return (nullptr);
 }
 
@@ -165,7 +232,7 @@ bool	Room::placeItem(Item* item) {
 		this->sendObjectError("Item's pointer point to null");
 		return (false);
 	}
-	ItemID  item_id = item->getID();
+	ItemID  item_id = item->getUniqueID();
 	if (this->_items.count(item_id) == 1)
 	{
 		this->sendObjectError("Exact item already in room");

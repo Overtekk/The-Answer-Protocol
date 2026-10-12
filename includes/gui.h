@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 08:25:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:28:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:11:05 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 
 # include <yaml-cpp/yaml.h>
 # include "config/WorldConfig.hpp"
+# include "config/LoadedAssets.hpp"
 
 
 // - PARSING -
-bool	parse_file_for_gui(std::queue<YAML::Node>& nodes_list, WorldConfig& world);
+bool    parse_file_for_gui(std::queue<YAML::Node>& nodes_list, WorldConfig& world);
+bool	LoadAssets(WorldConfig& config, LoadedAssets& assets);
+void	UnloadAssets(LoadedAssets& assets);

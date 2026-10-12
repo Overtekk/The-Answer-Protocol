@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:22:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:25:32 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,26 @@
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/NPC.hpp"
 # include "base_class/items/ItemWeapon.hpp"
+# include "config/LoadedAssets.hpp"
 # include "parser.h"
 # include "gui.h"
 # include "utils.h"
 # include "debug.h"
 
-int gui_parser();
-void room_tester();
-void graphic();
+int gui_parser(WorldConfig& world_data);
+void graphic(WorldConfig& world_data);
 
 
 int main() {
-	gui_parser();
+	WorldConfig world_data;
+	gui_parser(world_data);
 
 	// room_tester();
-	graphic();
+	graphic(world_data);
     return 0;
 }
 
-int gui_parser() {
-	WorldConfig world_data;
-
+int gui_parser(WorldConfig& world_data) {
 	YAML::Node root = load_file("data/world_data.yaml");
 	YAML::Node root_sounds = load_file("data/sounds_data.yaml");
 	YAML::Node root_sprites = load_file("data/sprites_data.yaml");
@@ -58,12 +57,15 @@ int gui_parser() {
 	 return 0;
 }
 
-void graphic()
+void graphic(WorldConfig& world_data)
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
 
+	LoadedAssets	assets;
+	LoadAssets(world_data, assets);
+	
 	Texture2D		test_texture = LoadTexture("assets/sprites/player/kris_walk.png");
 	Animation		test_animation(test_texture, {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
 	Player			kris("Kris", 20);
@@ -85,5 +87,6 @@ void graphic()
     }
 
 	UnloadTexture(test_texture);
+	UnloadAssets(assets);
     CloseWindow();
 }
