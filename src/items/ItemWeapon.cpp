@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:07:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:36:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 13:14:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 // --- CONSTRUCTOR ---
 ItemWeapon::ItemWeapon(
-	const std::string& name, const std::string& description, ItemType type,
+	const std::string& id, const std::string& name, const std::string& description, ItemType type,
 	int damage, int hp
 ):
-	Item(name, description, type, damage, hp) {}
+	Item(id, name, description, type, damage, hp) {}

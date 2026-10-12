@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:58:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:05:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 		session.setUsername(argument);
 		session.setSessionState(SessionState::AUTHENTICATED);
 		session.add_msg_to_buffer(getTCP_OK_operation("CONNECTED"));
-		_manager.create_player(argument);
+		_manager.createPlayer(argument);
 		print_log_message(session, "new player created: '" + argument + "'");
 		return;
 	}
@@ -176,4 +176,9 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
 	std::string clean_cmd = clean_line(raw_line);
 	print_log_message(session, "in-game command: " + clean_cmd);
+}
+
+// --- DEBUG ---
+void	CommandHandler::debugTrySimulate(bool try_move) {
+	_manager.debugTrySimulate(try_move);
 }

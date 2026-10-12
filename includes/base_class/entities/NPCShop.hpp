@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 09:13:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:56:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class NPCShop : public NPC {
     public :
         // --- CONSTRUCTOR ---
         NPCShop(
-			const std::string& name, const std::string& description,
+			const std::string& id, const std::string& name, const std::string& description,
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
         // --- DESTRUCTOR ---

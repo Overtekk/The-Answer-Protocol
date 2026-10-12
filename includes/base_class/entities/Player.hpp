@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:32:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:11:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 # include <map>
 # include <memory>
-# include <uuid/uuid.h>
 
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
@@ -28,17 +27,22 @@ class Player : public Entity {
 	private :
 		std::map<ItemID, std::unique_ptr<Item>>	_inventory;
 
-		inline static	PlayerID _next_id = 1;
+		// Information
+		std::string	_zone;
+
+		inline static	PlayerID _id = 1;
 
 	public :
 		// --- CONSTRUCTOR ---
-		Player(
-			const std::string& name, int health);
+		Player(const std::string& name);
 		// --- DESTRUCTOR ---
-        ~Player() = default;
+        ~Player() override = default;
+
+		// --- GETTER ---
+		const std::string&	getZone() const;
 
 		// --- SETTER ---
-		bool setName(std::string& new_name);
+		void	setZone(const std::string& new_zone);
 
 		// --- INVENTORY SYSTEM ---
 		Item* 			addItemToInventory(std::unique_ptr<Item> item);
@@ -47,7 +51,4 @@ class Player : public Entity {
 		Item* 			getItem(ItemID id) const;
 		ItemID 			getItemIdByName(const std::string& name) const;
 		std::string		getItemInInventory() const;
-
-		// --- UUID ---
-		std::string	generate_uuid_v4() const;
 };

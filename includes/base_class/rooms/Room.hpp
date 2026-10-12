@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 11:03:44 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/12 14:42:42 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Room {
 		~Room() = default;
 
 		// Data
-		nlohmann::json	getRoomData();
+		std::string	getRoomData();
 
 		// ID
 		const std::string&	getID() const;

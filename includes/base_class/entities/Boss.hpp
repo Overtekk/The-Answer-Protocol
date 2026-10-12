@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:13:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:10:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:56:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Boss : public Entity {
     public :
         // --- CONSTRUCTOR ---
         Boss(
-			const std::string& name, const std::string& description,
+			const std::string& id, const std::string& name, const std::string& description,
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
         // --- DESTRUCTOR ---

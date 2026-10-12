@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:08:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 10:48:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,36 +228,48 @@ void check_locations_data(
 	std::unordered_set<std::string>& knows_items,
 	std::unordered_set<std::string>& knows_entities) {
 
-	for (const auto& [loc_id, loc] : world.locations) {
-		for (const auto& [dir, name] : loc.exits) {
+	bool	spawn_found = false;
 
-			// Check if a location exist in the directions maps
-			if (knows_locations.count(name) == 0) {
-				throw std::runtime_error(
-					loc_id + ": '" + direction_to_string(dir) + ": " + name + "' is not a valid location.");
+	for (const auto& [loc_id, loc] : world.locations) {
+	for (const auto& [dir, name] : loc.exits) {
+		// Check if "spawn" ID is found.
+		if (loc_id == "spawn") {
+			spawn_found = true;
+		}
+
+		// Check if a location exist in the directions maps
+		if (knows_locations.count(name) == 0) {
+			throw std::runtime_error(
+				loc_id + ": '" + direction_to_string(dir) + ": " + name + "' is not a valid location.");
 			}
-			else {
-				// Check if a location in a direction as not the same name that the location id
-				if (loc_id == name) {
-					throw std::runtime_error(
-						loc_id + ": '" + direction_to_string(dir) + ": " + name + "' is duplicated. You will broke the reality!");
+		else {
+			// Check if a location in a direction as not the same name that the location id
+			if (loc_id == name) {
+				throw std::runtime_error(
+					loc_id + ": '" + direction_to_string(dir) + ": " + name + "' is duplicated. You will broke the reality!");
 				}
 			}
 		}
+
+		// Check if the entity exist in the list of spawns
 		for (const auto& entity : loc.spawns) {
-			// Check if the entity exist in the list of spawns
 			if (knows_entities.count(entity) == 0) {
 				throw std::runtime_error(
 					loc_id + ": '" + entity + "' is not a valid entity.");
 			}
 		}
+
+		// Check if the item exist in the list of items
 		for (const auto& item : loc.items) {
-			// Check if the item exist in the list of items
 			if (knows_items.count(item) == 0) {
 				throw std::runtime_error(
 					loc_id + ": '" + item + "' is not a valid item.");
 			}
 		}
+	}
+
+	if (!spawn_found) {
+		throw std::runtime_error("spawn is missing. Make sure a zone ID is named 'spawn'.");
 	}
 }
 

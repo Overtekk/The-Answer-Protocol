@@ -6,9 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:56:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:06:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+# include <iostream>
+# include <unistd.h>
 
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
@@ -52,6 +55,10 @@ void	TCPServer::run() {
 			// nothing
 			if (revents == 0) {
 				continue;
+			}
+			// console input (stdin)
+			else if (fd == STDIN_FILENO && (revents & POLLIN)) {
+				handleStdinRead();
 			}
 			// new client
 			else if (fd == _listen_socket.getFD() && revents & POLLIN) {
@@ -130,6 +137,13 @@ void	TCPServer::init(std::uint16_t port) {
 void	TCPServer::buildPollFds() {
 	_poll_fds.clear();
 
+	// Add stdin for debug console commands
+	struct pollfd stdin_pfd;
+	stdin_pfd.fd = STDIN_FILENO;
+	stdin_pfd.events = POLLIN;
+	stdin_pfd.revents = 0;
+	_poll_fds.push_back(stdin_pfd);
+
 	// Add listen socket
 	struct pollfd listen_pdf;
 	listen_pdf.events = POLLIN;	// tell when a new client wants to connect
@@ -172,6 +186,23 @@ void	TCPServer::handleNewConnection() {
 	TCPSocket client_socket(client_fd);
 	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
 	print_log_message(*_sessions[client_fd], "connected to server (socket " + std::to_string(client_fd) + ").");
+}
+
+// * Handle standard input from console. *
+void	TCPServer::handleStdinRead() {
+	std::string command;
+	if (!std::getline(std::cin, command)) {
+		return;
+	}
+
+	if (command == "stop" || command == "quit") {
+		stop();
+		return;
+	}
+	else if (command == "!debug simulate") {
+		_cmd_handler.debugTrySimulate(true);
+		return;
+	}
 }
 
 // * Read incoming data from a client. *

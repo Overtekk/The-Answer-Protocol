@@ -6,19 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 11:05:11 by nbuchy           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Room.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 15:01:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:43:25 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,44 +43,46 @@ Room::Room(
 // =========================        DATA      =================================
 // ============================================================================
 
-nlohmann::json	Room::getRoomData() {
-	nlohmann::json	room_data;
+// Get the data of a room with a json structure dumped. *
+std::string	Room::getRoomData() {
+	nlohmann::ordered_json	room_data;
 
-	room_data[_id]["id"] = this->getID();
-	room_data[_id]["name"] = this->getName();
-	room_data[_id]["description"] = this->getDescription();
+	room_data[this->getName()]["id"] = this->getID();
+	room_data[this->getName()]["name"] = this->getName();
+	room_data[this->getName()]["description"] = this->getDescription();
 	if (this->getFromDirection(Direction::NORTH) != nullptr) {
-		room_data[_id]["exits"]["north"] = this->getFromDirection(Direction::NORTH)->getID();
+		room_data[this->getName()]["exits"]["north"] = this->getFromDirection(Direction::NORTH)->getID();
 	}
 	if (this->getFromDirection(Direction::SOUTH) != nullptr) {
-		room_data[_id]["exits"]["south"] = this->getFromDirection(Direction::SOUTH)->getID();
+		room_data[this->getName()]["exits"]["south"] = this->getFromDirection(Direction::SOUTH)->getID();
 	}
 	if (this->getFromDirection(Direction::EAST) != nullptr) {
-		room_data[_id]["exits"]["east"] = this->getFromDirection(Direction::EAST)->getID();
+		room_data[this->getName()]["exits"]["east"] = this->getFromDirection(Direction::EAST)->getID();
 	}
 	if (this->getFromDirection(Direction::WEST) != nullptr) {
-		room_data[_id]["exits"]["west"] = this->getFromDirection(Direction::WEST)->getID();
+		room_data[this->getName()]["exits"]["west"] = this->getFromDirection(Direction::WEST)->getID();
 	}
 	// List of players
 	std::vector<std::string>	list_players;
 	for (const auto& it : _players) {
 		list_players.push_back(it.second->getName());
 	}
-	room_data[_id]["players"] = list_players;
+	room_data["players"] = list_players;
 	// List of items
 	std::vector<std::string>	list_items;
 	for (const auto& it : _items) {
 		list_items.push_back(it.second->getID());
 	}
-	room_data[_id]["items"] = list_items;
+	room_data["items"] = list_items;
 	// List of entities
 	std::vector<std::string>	list_npcs;
 	for (const auto& it : _entity) {
 		list_npcs.push_back(it.second->getID());
 	}
-	room_data[_id]["npcs"] = list_npcs;
+	room_data["npcs"] = list_npcs;
 
-	return room_data;
+	std::string room_data_str = room_data.dump(4);
+	return room_data_str;
 }
 
 // ============================================================================
@@ -295,7 +285,9 @@ bool	Room::isSpecial() const {
 	return (this->_special);
 }
 
-
+// ============================================================================
+// =======================        ERRORS      =================================
+// ============================================================================
 void	Room::sendObjectError(const std::string& error) const {
 	print_log(" ERROR: " + error + "\n");
 }
