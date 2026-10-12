@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:22:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 10:32:25 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,11 @@ VisualEntity::VisualEntity(
 	_entity(entity),
 	_img(LoadTexture(texture.c_str())),
 	_sprite_dim(sprite_dim),
-	_sprite_scale(scale)
+	_sprite_scale(scale),
+	_idle(Animation(this->_img, sprite_dim, 1, 1, 0, FRAME_DURATION)),
+	_walk_down(Animation(this->_img, sprite_dim, 4, 4, 0, FRAME_DURATION)),
+	_walk_up(Animation(this->_img, sprite_dim, 4, 4, 8, FRAME_DURATION)),
+	_walk_lr(Animation(this->_img, sprite_dim, 4, 4, 4, FRAME_DURATION))
 	{
 		if (this->_img.id == 0)
 			this->sendObjectError("Error while loading texture");
