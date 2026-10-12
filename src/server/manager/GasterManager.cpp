@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 11:19:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:28:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,55 @@ GasterManager::GasterManager(
 	_world_data(world_data) {
 
 		// Create all the objects
-		create_room();
-		create_entities();
-		create_items();
+		createRoom();
+		createEntities();
+		createItems();
 		// Fill the rooms data
-		fill_rooms_data();
+		fillRoomsData();
 	}
 
 // ===== PUBLIC =====
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
-void	GasterManager::create_player(const std::string& player_name) {
+void	GasterManager::createPlayer(const std::string& player_name) {
 	auto new_player = std::make_unique<Player>(player_name);
-	new_player->setZone(_world_state.rooms["spawn"]->getName());
+	new_player->setZone(_world_state.rooms["spawn"]->getID());
 	_world_state.players[player_name] = std::move(new_player);
 	_world_state.rooms["spawn"]->addPlayer(_world_state.players[player_name].get());
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
-	// std::cout << "\n" << _world_state.rooms["spawn"]->getRoomData() << "\n";
+}
+
+// --- MOVEMENT ---
+// *Move a player to a direction. Take a player name and a Direction.*
+bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
+	// Find if player exist
+	auto player = _world_state.players.find(player_name);
+	if (player == _world_state.players.end()) {
+		print_log("GasterManager: can't find player '" + player->second->getName() + "' to move.");
+		return false;
+	}
+
+	// Get the room where the player is
+	std::string zone_player = player->second->getZone();
+	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
+		print_log("GasterManager: error when trying to find the zone of player '" + player_name + "'.");
+		return false;
+	}
+
+	// Get the direction from the room
+	Room* new_room = _world_state.rooms[zone_player]->getFromDirection(direction);
+	if (new_room == nullptr) {
+		print_log("GasterManager: bad direction '" + direction_to_string(direction)  + "' " + "for zone '" + zone_player + "'.");
+		return false;
+	}
+
+	// Move the player (delete it from the room and add it to the new one)
+	_world_state.rooms[zone_player]->popPlayer(player_name);
+	new_room->addPlayer(player->second.get());
+	player->second->setZone(player->second->getID());
+	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
+	return true;
 }
 
 // --- CHECKER ---
@@ -73,7 +104,7 @@ bool	GasterManager::checkIfUserExist(const std::string& username) const {
 // --- OBJECTS MANAGEMENTS ---
 // CREATE OBJECTS
 // * Create the rooms and add them to the world state. *
-void	GasterManager::create_room() {
+void	GasterManager::createRoom() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
 			loc_id, loc.name, loc.description, loc.tile_map, loc.special
@@ -83,7 +114,7 @@ void	GasterManager::create_room() {
 }
 
 // * Create the entities and add them to the world state. *
-void	GasterManager::create_entities() {
+void	GasterManager::createEntities() {
 	for (const auto& [entity_id, entity] : _world_data.entities) {
 		std::unique_ptr<Entity> new_entity;
 
@@ -119,7 +150,7 @@ void	GasterManager::create_entities() {
 }
 
 // * Create the items and add them to the world state. *
-void	GasterManager::create_items() {
+void	GasterManager::createItems() {
 	for (const auto& [item_id, item] : _world_data.items) {
 		std::unique_ptr<Item> new_item;
 
@@ -150,7 +181,7 @@ void	GasterManager::create_items() {
 }
 
 // FILL OBJECTS
-void	GasterManager::fill_rooms_data() {
+void	GasterManager::fillRoomsData() {
 	for (const auto& [room_id, data] : _world_state.rooms) {
 		auto loc = _world_data.locations.find(room_id);
 		if (loc == _world_data.locations.end()) {
@@ -186,12 +217,12 @@ void	GasterManager::fill_rooms_data() {
 
 // --- DEBUG ---
 // Print the structure of WorldData
-void	GasterManager::debug_print_structure_data(bool show_gui_data) {
+void	GasterManager::debugPrintStructureData(bool show_gui_data) {
 	debug_print_structure(_world_data, show_gui_data);
 }
 
 // Print the structure of WorldState
-void	GasterManager::debug_print_structure_state() {
+void	GasterManager::debugPrintStructureState() {
 	std::cout << RED << "ROOMS:\n" << RESET;
 	for (const auto& [id, room] : _world_state.rooms) {
 		std::cout << id << " is at " << room.get() << " and is named " << CYN << room->getName() << RESET << ".\n";
@@ -205,5 +236,29 @@ void	GasterManager::debug_print_structure_state() {
 	std::cout << RED << "ITEMS:\n" << RESET;
 	for (const auto& [id, item] : _world_state.items) {
 		std::cout << item->getID() << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << ".\n";
+	}
+}
+
+void	GasterManager::debugTrySimulate(bool try_move) {
+	std::string	test_player = "Nono la racaille";
+	createPlayer(test_player);
+
+	if (try_move) {
+		std::cout << RED << "State of Spawn:\n" << RESET;
+		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+
+		std::cout << RED << "Try to move player to an bad direction: \n" << RESET;
+		movePlayer(test_player, Direction::NORTH);
+		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+
+		std::cout << RED << "Try to move player to an good direction: \n" << RESET;
+		if (!movePlayer(test_player, Direction::EAST)) {
+			return;
+		}
+		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+		Room* room_east = _world_state.rooms["spawn"]->getFromDirection(Direction::EAST);
+		if (room_east != nullptr) {
+			std::cout << _world_state.rooms[room_east->getID()]->getRoomData() << "\n\n";
+		}
 	}
 }

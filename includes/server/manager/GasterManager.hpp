@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 11:25:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 13:49:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ class GasterManager {
 		WorldState	_world_state;
 
 	// --- CREATE OBJECTS ---
-	void	create_room();
-	void	create_entities();
-	void	create_items();
-	void	fill_rooms_data();
+	void	createRoom();
+	void	createEntities();
+	void	createItems();
+	void	fillRoomsData();
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -37,12 +37,16 @@ class GasterManager {
 		~GasterManager() = default;
 
 		// --- CREATE PLAYER ---
-		void	create_player(const std::string& player_name);
+		void	createPlayer(const std::string& player_name);
+
+		// --- MOVEMENT ---
+		bool	movePlayer(const std::string& player_name, const Direction direction);
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
 
 		// --- DEBUG ---
-		void	debug_print_structure_data(bool show_gui_data = false);
-		void	debug_print_structure_state();
+		void	debugPrintStructureData(bool show_gui_data = false);
+		void	debugPrintStructureState();
+		void	debugTrySimulate(bool try_move);
 };

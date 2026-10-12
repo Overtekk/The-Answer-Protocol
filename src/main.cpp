@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:03:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 13:52:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ int main() {
 	 TCPServer server(SERVER_PORT, cmd_handler);
 	 std::cout << "Server listening on port " << SERVER_PORT << "...\n";
 	 server.run();
-
-	//  gaster.debug_print_structure_state();
 
 	return 0;
 }
