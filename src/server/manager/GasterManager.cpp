@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:01:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 11:19:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
 
+# include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/Player.hpp"
@@ -52,8 +53,10 @@ void	GasterManager::create_player(const std::string& player_name) {
 	auto new_player = std::make_unique<Player>(player_name);
 	new_player->setZone(_world_state.rooms["spawn"]->getName());
 	_world_state.players[player_name] = std::move(new_player);
+	_world_state.rooms["spawn"]->addPlayer(_world_state.players[player_name].get());
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
+	// std::cout << "\n" << _world_state.rooms["spawn"]->getRoomData() << "\n";
 }
 
 // --- CHECKER ---
@@ -73,7 +76,7 @@ bool	GasterManager::checkIfUserExist(const std::string& username) const {
 void	GasterManager::create_room() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
 		auto new_room = std::make_unique<Room>(
-			loc.name, loc.description, loc.tile_map, loc.special
+			loc_id, loc.name, loc.description, loc.tile_map, loc.special
 		);
 		_world_state.rooms[loc_id] = std::move(new_room);
 	}
@@ -87,22 +90,22 @@ void	GasterManager::create_entities() {
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
 				break;
 
 			default:
@@ -123,17 +126,17 @@ void	GasterManager::create_items() {
 		switch (item.type) {
 			case ItemType::CONSUMABLE:
 				new_item = std::make_unique<ItemConsumable>(
-					item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			case ItemType::KEY:
 				new_item = std::make_unique<ItemKey>(
-					item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			case ItemType::WEAPON:
 				new_item = std::make_unique<ItemWeapon>(
-					item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp);
 				break;
 
 			default:

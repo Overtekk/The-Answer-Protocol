@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 14:58:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 11:05:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Room {
 		~Room() = default;
 
 		// Data
-		nlohmann::json	getRoomData();
+		std::string	getRoomData();
 
 		// ID
 		const std::string&	getID() const;
