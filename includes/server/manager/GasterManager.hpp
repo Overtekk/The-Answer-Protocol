@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 13:49:29 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:14:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
+# include <vector>
 
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
@@ -35,6 +36,9 @@ class GasterManager {
 		GasterManager(WorldConfig& world_data);
 		// --- DESTRUCTOR ---
 		~GasterManager() = default;
+
+		// --- GETTER ---
+		std::string	getListOfPlayers() const;
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);

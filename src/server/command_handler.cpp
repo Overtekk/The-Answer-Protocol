@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:05:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:30:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,8 +174,19 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 
 // * Handling commands when the client is in game. *
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
-	std::string clean_cmd = clean_line(raw_line);
-	print_log_message(session, "in-game command: " + clean_cmd);
+	std::string raw_command = clean_line(raw_line);
+	print_log_message(session, "in-game command: " + raw_command);
+
+	GameCommand cmd;
+	if (!parseGameCommand(raw_command, cmd)) {
+		print_log_message(session, "rejected command: '" + raw_command + "'");
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
+		return;
+	}
+
+	if (cmd == GameCommand::WHO) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
+	}
 }
 
 // --- DEBUG ---

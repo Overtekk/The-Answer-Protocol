@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:28:56 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:42:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,28 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	_world_state.rooms["spawn"]->addPlayer(_world_state.players[player_name].get());
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
+}
+
+// --- GETTER ---
+std::string	GasterManager::getListOfPlayers() const {
+	std::string	list_players = "[";
+
+	int	nb_players = 0;
+	for (const auto& it : _world_state.players) {
+		list_players += it.first + ", ";
+		nb_players++;
+	}
+
+	if (nb_players == 0) {
+		list_players = "[]";
+	}
+	else {
+		list_players.pop_back();
+		list_players.pop_back();
+		list_players += "]";
+	}
+
+	return "Players Connected: " + std::to_string(nb_players) + ":\n" + list_players + "\n";
 }
 
 // --- MOVEMENT ---
