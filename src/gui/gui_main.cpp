@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:25:32 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/12 15:07:16 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,8 @@ void graphic(WorldConfig& world_data)
 	LoadedAssets	assets;
 	LoadAssets(world_data, assets);
 	
-	Texture2D		test_texture = LoadTexture("assets/sprites/player/kris_walk.png");
-	Animation		test_animation(test_texture, {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
-	Player			kris("Kris", 20);
+	Animation		test_animation(assets.sprits["player"], {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
+	Player			kris("Kris");
     VisualPlayer 	v_kris(kris, "assets/sprites/player/kris_walk.png", {19, 38}, 2.0f);
 
 	v_kris.setPos(Vector2 {400, 225});
@@ -86,7 +85,6 @@ void graphic(WorldConfig& world_data)
         EndDrawing();
     }
 
-	UnloadTexture(test_texture);
 	UnloadAssets(assets);
     CloseWindow();
 }

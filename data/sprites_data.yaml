@@ -6,3 +6,7 @@ sprites:
   test2:
     name: "test2"
     path: "assets/sprites/player/kris_walk.png"
+  
+  chest:
+    name: "chest"
+    path: "assets/sprites/items/chest.png"
