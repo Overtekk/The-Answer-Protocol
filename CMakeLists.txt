@@ -75,6 +75,7 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/parser/gui_parser.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
+    src/gui/Animation.cpp
 	src/utils/files.cpp
 )
 
