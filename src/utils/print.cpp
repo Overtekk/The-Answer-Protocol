@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:16:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/02 15:24:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:48:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # include <iomanip>
 # include <chrono>
 # include <ctime>
+
 # include "utils/colored_text.h"
 
 # define TIME_FORMAT "%H:%M:%S"
+
 
 void print_error(const std::string& error_msg) {
 	std::cerr << RED << "[ERROR]: " << error_msg << RESET << "\n";

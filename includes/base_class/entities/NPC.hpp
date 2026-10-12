@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   NPC.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/07 11:59:15 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:13:04 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <unordered_map>
+
 # include "Entity.hpp"
 # include "config/Enums.hpp"
+
 
 // * Represent a NPC *
 class NPC : public Entity {
@@ -28,5 +30,5 @@ class NPC : public Entity {
 			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
 		);
         // --- DESTRUCTOR ---
-        ~NPC() = default;
+        ~NPC() override = default;
 };

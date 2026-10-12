@@ -1,6 +1,6 @@
 sprites:
-  test:
-    name: "test"
+  player:
+    name: "player"
     path: "assets/sprites/player/kris_walk.png"
 
   test2:

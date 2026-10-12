@@ -3,27 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:14:47 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/12 10:22:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <typeinfo>
-# include "raylib.h"
-# include "gui.h"
-# include "utils.h"
-# include "debug.h"
 
+# include "raylib.h"
 # include "gui/entities/VisualPlayer.hpp"
 # include "base_class/rooms/Room.hpp"
 # include "base_class/entities/NPC.hpp"
 # include "base_class/items/ItemWeapon.hpp"
+# include "parser.h"
+# include "gui.h"
+# include "utils.h"
+# include "debug.h"
 
 int gui_parser();
 void room_tester();
 void graphic();
+
 
 int main() {
 	gui_parser();
@@ -81,7 +83,7 @@ void graphic()
 
         EndDrawing();
     }
-	
+
 	UnloadTexture(test_texture);
     CloseWindow();
 }

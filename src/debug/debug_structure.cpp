@@ -6,11 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 16:36:01 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/05 12:02:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:30:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
+
+# include "config/WorldConfig.hpp"
 # include "utils.h"
 
 void debug_print_structure(WorldConfig& world, bool show_gui_info = false) {

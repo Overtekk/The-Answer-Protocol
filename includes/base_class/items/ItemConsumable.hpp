@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/19 10:35:34 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:14:04 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:16:59 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "Item.hpp"
 # include "config/Enums.hpp"
 
+
 class ItemConsumable : public Item {
 	public:
 		// --- CONSTRUCTOR ---
@@ -22,5 +23,5 @@ class ItemConsumable : public Item {
 			const std::string& name, const std::string& description, ItemType type,
 			int damage, int hp);
 		// --- DESTRUCTOR ---
-		virtual ~ItemConsumable() = default;
+		~ItemConsumable() override = default;
 };

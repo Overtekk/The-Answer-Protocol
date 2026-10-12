@@ -6,16 +6,18 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 10:31:07 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:23:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
 
-# include <string>
+# include <iostream>
 # include <unordered_map>
 # include <vector>
+
 # include "config/Enums.hpp"
+
 
 /// ** Structures that hold raws data for the manager to create the objects later on. **
 // Contains the data for the locations.

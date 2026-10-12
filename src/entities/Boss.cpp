@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Boss.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:14:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:58:04 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:30:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <string>
+
 # include "base_class/entities/Boss.hpp"
+
 
 // --- CONSTRUCTOR ---
 Boss::Boss(

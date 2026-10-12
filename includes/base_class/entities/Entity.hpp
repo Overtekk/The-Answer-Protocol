@@ -3,28 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   Entity.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:56:19 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:32:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
-# include <algorithm>
-# include <string>
-# include <tuple>
+
 # include "config/Enums.hpp"
+
 
 // * ABSTRACT CLASS *
 class Entity {
 	protected :
-		std::string _name;
+		std::string	_name;
 
 	private :
-		std::string _description;
+		std::string	_description;
 		int 		_health;
 		EnemyType	_type;
 
@@ -44,5 +43,5 @@ class Entity {
 		void				setHealth(int new_value);
 
 		// --- ERROR ---
-		void sendObjectError(std::string error) const;
+		void sendObjectError(const std::string& error) const;
 };

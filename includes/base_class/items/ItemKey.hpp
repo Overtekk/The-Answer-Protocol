@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/19 10:35:34 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/06 13:14:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:17:09 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "Item.hpp"
 # include "config/Enums.hpp"
 
+
 class ItemKey : public Item {
 	public:
 		// --- CONSTRUCTOR ---
@@ -22,5 +23,5 @@ class ItemKey : public Item {
 			const std::string& name, const std::string& description, ItemType type,
 			int damage, int hp);
 		// --- DESTRUCTOR ---
-		virtual ~ItemKey() = default;
+		~ItemKey() override = default;
 };

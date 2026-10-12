@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_code.hpp                                     :+:      :+:    :+:   */
+/*   TCP_error.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 14:08:08 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/12 10:22:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
+
 
 enum class TCPErrorCode {
 	NAME_IN_USE,
@@ -27,8 +28,12 @@ enum class TCPErrorCode {
 	CONNECTION_FAILED,
 	SEND_FAILED,
 	INVALID_USERNAME,
+	SYSTEM_ERROR,
+	CONNEXION_ERROR,
+	COMMAND_NOT_FOUND,
+	MISSING_USERNAME,
 };
 
 
-std::string getTCP_error(TCPErrorCode error_code, bool add_description = false);
+std::string	getTCP_error(TCPErrorCode e);
 std::string	getTCP_OK_operation(const std::string& msg);

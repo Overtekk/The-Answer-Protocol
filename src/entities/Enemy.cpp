@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Enemy.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:11:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 11:58:47 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/09 09:30:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <string>
+
 # include "base_class/entities/Enemy.hpp"
+
 
 // --- CONSTRUCTOR ---
 Enemy::Enemy(
