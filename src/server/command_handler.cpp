@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:58:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 13:37:34 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,20 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 
 // * Handling commands when the client is in game. *
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
+	GameCommand cmd;
 	std::string clean_cmd = clean_line(raw_line);
+	if (!parseGameCommand(clean_cmd, cmd)) {
+		print_log_message(session, "rejected command: '" + clean_cmd + "'");
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
+		return;
+	}
 	print_log_message(session, "in-game command: " + clean_cmd);
+
+	// Check if it's the quit command
+	if (cmd == GameCommand::QUIT) {
+		print_log_message(session, "requested graceful disconnect (QUIT).");
+		session.setSessionState(SessionState::CLOSING);
+		session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+		return;
+	}
 }

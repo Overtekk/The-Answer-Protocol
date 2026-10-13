@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:05:08 by npillet          ###   ########.fr       */
+/*   Updated: 2026/10/13 13:39:30 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int main() {
 	 // Create the server.
 	 TCPServer server(SERVER_PORT, cmd_handler);
 	 std::cout << "Server listening on port " << SERVER_PORT << "...\n";
-	 std::cout << "Server → Client: OK hello proto=1\n";
+	 std::cout << "[Server]: OK hello proto=1\n";
 	 server.run();
 
 	//  gaster.debug_print_structure_state();
