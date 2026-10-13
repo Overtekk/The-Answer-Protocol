@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:42:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:24:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 }
 
 // --- GETTER ---
-std::string	GasterManager::getListOfPlayers() const {
+// *Get a formatted list of players in game. *
+const std::string	GasterManager::getListOfPlayers() const {
 	std::string	list_players = "[";
 
 	int	nb_players = 0;
@@ -78,6 +79,26 @@ std::string	GasterManager::getListOfPlayers() const {
 	}
 
 	return "Players Connected: " + std::to_string(nb_players) + ":\n" + list_players + "\n";
+}
+
+// *Get the data of the current room of the player.*
+const std::string	GasterManager::getRoomData(const std::string& player_name) const {
+	// Find player
+	auto player = _world_state.players.find(player_name);
+	if (player == _world_state.players.end()) {
+		print_log("GasterManager: can't find player to give room state.");
+		return "";
+	}
+
+	// Get the zone of the player
+	std::string	zone_player = player->second->getZone();
+	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find the zone of player '" + player_name + "'.");
+		return "";
+	}
+
+	std::string room_data = _world_state.rooms.at(zone_player)->getRoomData();
+	return room_data;
 }
 
 // --- MOVEMENT ---

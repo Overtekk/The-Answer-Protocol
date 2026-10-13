@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:30:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:21:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,8 +184,14 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		return;
 	}
 
+	// WHO command
 	if (cmd == GameCommand::WHO) {
 		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
+	}
+
+	// LOOK command
+	else if (cmd == GameCommand::LOOK) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getRoomData(session.getUsername())));
 	}
 }
 
