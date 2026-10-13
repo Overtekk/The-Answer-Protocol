@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 14:33:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 13:37:34 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,9 +205,17 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
 		return;
 	}
+  
+  // QUIT command
+	if (cmd == GameCommand::QUIT) {
+		  print_log_message(session, "requested graceful disconnect (QUIT).");
+		  session.setSessionState(SessionState::CLOSING);
+		  session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+		  return;
+	}
 
 	// WHO command
-	if (cmd == GameCommand::WHO) {
+	else if (cmd == GameCommand::WHO) {
 		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
 		return;
 	}

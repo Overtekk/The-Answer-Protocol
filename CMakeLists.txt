@@ -67,6 +67,8 @@ set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 
 set(CLI_SOURCES	${CLI_MAIN}
 	src/server/connect_client.cpp
+	src/server/tcp_socket.cpp
+	src/server/protocol/TCP_responses.cpp
 	src/utils/print.cpp
 )
 
@@ -75,6 +77,7 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/parser/gui_parser.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
+    src/gui/Animation.cpp
 	src/utils/files.cpp
 )
 
