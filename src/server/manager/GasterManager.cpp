@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:24:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 10:08:18 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,40 +83,40 @@ const std::string	GasterManager::getListOfPlayers() const {
 
 // *Get the data of the current room of the player.*
 const std::string	GasterManager::getRoomData(const std::string& player_name) const {
-	// Find player
+	// Get the zone of the player
+	std::string	zone_player = getPlayerRoom(player_name);
+
+	// Get the data of the room
+	std::string room_data = _world_state.rooms.at(zone_player)->getRoomData();
+	return room_data;
+}
+
+// *Get the room of of the player.*
+const std::string	GasterManager::getPlayerRoom(const std::string& player_name) const {
+	// Find the player
 	auto player = _world_state.players.find(player_name);
 	if (player == _world_state.players.end()) {
 		print_log("GasterManager: can't find player to give room state.");
 		return "";
 	}
 
-	// Get the zone of the player
+	// Get the room of the player
 	std::string	zone_player = player->second->getZone();
 	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
 		print_log("GasterManager: can't find the zone of player '" + player_name + "'.");
 		return "";
 	}
-
-	std::string room_data = _world_state.rooms.at(zone_player)->getRoomData();
-	return room_data;
+	return zone_player;
 }
 
 // --- MOVEMENT ---
 // *Move a player to a direction. Take a player name and a Direction.*
 bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
-	// Find if player exist
-	auto player = _world_state.players.find(player_name);
-	if (player == _world_state.players.end()) {
-		print_log("GasterManager: can't find player '" + player->second->getName() + "' to move.");
-		return false;
-	}
+	// Get the zone of the player
+	std::string	zone_player = getPlayerRoom(player_name);
 
-	// Get the room where the player is
-	std::string zone_player = player->second->getZone();
-	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
-		print_log("GasterManager: error when trying to find the zone of player '" + player_name + "'.");
-		return false;
-	}
+	// get player
+	auto player = _world_state.players.find(player_name);
 
 	// Get the direction from the room
 	Room* new_room = _world_state.rooms[zone_player]->getFromDirection(direction);
@@ -128,7 +128,7 @@ bool	GasterManager::movePlayer(const std::string& player_name, const Direction d
 	// Move the player (delete it from the room and add it to the new one)
 	_world_state.rooms[zone_player]->popPlayer(player_name);
 	new_room->addPlayer(player->second.get());
-	player->second->setZone(player->second->getID());
+	player->second->setZone(new_room->getID());
 	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
 	return true;
 }
