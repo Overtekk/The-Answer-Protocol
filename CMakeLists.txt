@@ -67,6 +67,8 @@ set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 
 set(CLI_SOURCES	${CLI_MAIN}
 	src/server/connect_client.cpp
+	src/server/tcp_socket.cpp
+	src/server/protocol/TCP_responses.cpp
 	src/utils/print.cpp
 )
 
