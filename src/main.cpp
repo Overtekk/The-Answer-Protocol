@@ -48,7 +48,5 @@ int main() {
 	 std::cout << "[Server]: OK hello proto=1\n";
 	 server.run();
 
-	//  gaster.debug_print_structure_state();
-
 	return 0;
 }

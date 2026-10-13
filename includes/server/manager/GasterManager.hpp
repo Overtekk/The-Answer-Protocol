@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:24:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:29:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <iostream>
+# include <vector>
 
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
@@ -25,9 +26,18 @@ class GasterManager {
 		WorldState	_world_state;
 
 	// --- CREATE OBJECTS ---
-	void	create_room();
-	void	create_entities();
-	void	create_items();
+	void	createRoom();
+	void	createEntities();
+	void	createItems();
+	void	fillRoomsData();
+
+	// --- GETTER ---
+	const Player*	getPlayer(const std::string& player_name) const;
+	Player*			getPlayer(const std::string& player_name);
+	const Item*		getItem(const std::string& item_name) const;
+	Item*			getItem(const std::string& item_name);
+	const Room*		getRoom(const std::string& room_id) const;
+	Room*			getRoom(const std::string& room_id);
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -35,13 +45,27 @@ class GasterManager {
 		// --- DESTRUCTOR ---
 		~GasterManager() = default;
 
+		// --- GETTER ---
+		const std::string	getListOfPlayers() const;
+		const std::string	getRoomData(const std::string& player_name) const;
+		const std::string	getPlayerRoom(const std::string& player_name) const;
+		const std::string	getPlayerInventory(const std::string& player_name) const;
+
 		// --- CREATE PLAYER ---
-		bool	create_player(const std::string& player_name);
+		void	createPlayer(const std::string& player_name);
+
+		// --- MOVEMENT ---
+		bool	movePlayer(const std::string& player_name, const Direction direction);
+
+		// --- ITEMS MANAGEMENT ---
+		bool	takeItem(const std::string& player_name, const std::string& item_name);
+		bool	dropItem(const std::string& player_name, const std::string& item_name);
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
 
 		// --- DEBUG ---
-		void	debug_print_structure_data(bool show_gui_data = false);
-		void	debug_print_structure_state();
+		void	debugPrintStructureData(bool show_gui_data = false);
+		void	debugPrintStructureState();
+		void	debugTrySimulate(bool try_move);
 };

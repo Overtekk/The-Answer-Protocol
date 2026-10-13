@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/19 10:35:34 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:17:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/09 12:58:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ class ItemWeapon : public Item {
 	public:
 		// --- CONSTRUCTOR ---
 		ItemWeapon(
-			const std::string& name, const std::string& description, ItemType type,
-			int damage, int hp);
+			const std::string& id, const std::string& name, const std::string& description,
+			ItemType type, int damage, int hp);
 		// --- DESTRUCTOR ---
 		~ItemWeapon() override = default;
 };

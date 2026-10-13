@@ -13,103 +13,99 @@
 # include <iostream>
 # include <memory>
 # include <uuid/uuid.h>
+# include <utility>
 
 # include "base_class/entities/Player.hpp"
 
 
 // --- CONSTRUCTOR ---
-Player::Player(
-	const std::string& name, int health
-):
-	Entity(name, "", EnemyType::UNKNOWN, health) {}
+Player::Player(const std::string& name):
+	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {}
+
+// --- GETTER ---
+const std::string&	Player::getZone() const { return _zone; }
 
 // --- SETTER ---
-bool	Player::setName(std::string& new_name) {
-	if (new_name.length() >= 3 && new_name.length() <= 20) {
-		_name = new_name;
-		return true;
-	}
-	sendObjectError("Can't modify name. Minimum 3 and maximum 20 characters.");
-	return false;
+void	Player::setZone(const std::string& new_zone) {
+	_zone = new_zone;
 }
 
 // --- INVENTORY SYSTEM ---
 // * Add an item to the player inventory. *
-Item*	Player::addItemToInventory(std::unique_ptr<Item> item) {
+Item* Player::addItemToInventory(Item* item) {
 	if (!item) {
 		sendObjectError("Can't add item: null pointer provided.");
 		return nullptr;
 	}
 
-	std::string item_name = item->getName();
-	if (item_name.empty()) {
-		sendObjectError("Can't add item because name is empty.");
-		return nullptr;
-	}
+	ItemID id = item->getUniqueID();
+	_inventory[id] = item;
+	return item;
+}
 
-	ItemID id = item->getID();
-	Item* item_ptr = item.get();
-	_inventory[id] = std::move(item);
-	return item_ptr;
+// * Pop item from inventory. *
+Item* Player::popItemFromInventory(ItemID id) {
+	auto it = _inventory.find(id);
+	if (it != _inventory.end()) {
+		Item* item = it->second;
+		_inventory.erase(it);
+		return item;
+	}
+	sendObjectError("Can't pop item: ID " + std::to_string(id) + " not in player inventory.");
+	return nullptr;
 }
 
 // * Remove an item from the player inventory. *
-bool	Player::removeItemFromInventory(ItemID id) {
-	if (_inventory.erase(id) > 0) {
-        return true;
-    }
-	sendObjectError("Can't remove item: ID " + std::to_string(id) + " not in player inventory.");
-    return false;
+bool Player::removeItemFromInventory(ItemID id) {
+	return _inventory.erase(id) > 0;
 }
 
 // * Check for an item in the player inventory. *
-bool	Player::checkItemInInventory(ItemID id) const {
-	if (_inventory.count(id)) {
-		return true;
-	}
-	return false;
+bool Player::checkItemInInventory(ItemID id) const {
+	return _inventory.find(id) != _inventory.end();
 }
 
 // * Get the item by ID from the player inventory. *
-Item*	Player::getItem(ItemID id) const {
-    auto it = _inventory.find(id);
-    if (it != _inventory.end()) {
-        return it->second.get();
-    }
-    return nullptr;
+const Item* Player::getItem(ItemID id) const {
+	auto it = _inventory.find(id);
+	if (it != _inventory.end()) {
+		return it->second;
+	}
+	return nullptr;
+	}
+
+	// * Get the item by ID from the player inventory. *
+Item* Player::getItem(ItemID id) {
+	return const_cast<Item*>(std::as_const(*this).getItem(id));
 }
 
 // * Get the ID of an item by its name. *
-ItemID	Player::getItemIdByName(const std::string& name) const {
-	for (const auto& entry : _inventory) {
-		if (entry.second->getName() == name) {
-			return entry.first;
+std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
+	for (const auto& [id, item] : _inventory) {
+		if (item && item->getName() == name) {
+			return id;
 		}
 	}
-	return 0;
+	return std::nullopt;
 }
 
 // * Get the inventory of the player. *
-std::string	Player::getItemInInventory() const {
-	if (_inventory.size() == 0) {
-		return ("No item in inventory.\n");
+std::string Player::getItemInInventory() const {
+	if (_inventory.empty()) {
+		return "No item in inventory.\n";
 	}
 
-	std::string inventory = "Item in " + this->getName() + ":\n";
-	for (const auto& entry : _inventory) {
-		inventory += entry.second->getName() + "\n";
+	std::string inventory = "Item in " + this->getName() + "'s inventory:\n[";
+	for (const auto& [id, item] : _inventory) {
+		if (item) {
+			inventory += "\"" + item->getName();
+			inventory += "\", ";
+		}
 	}
-	return (inventory);
-}
 
-// --- UUID SYSTEM ---
-// * Generate an unique UUID. *
-std::string	Player::generate_uuid_v4() const {
-	uuid_t	uuid;
-	uuid_generate_random(uuid);
+	inventory.pop_back();
+	inventory.pop_back();
+	inventory += "]\n";
 
-	char str_uuid[37]; // 36 characters + '\0'
-	uuid_unparse_lower(uuid, str_uuid);
-
-	return std::string(str_uuid);
+	return inventory;
 }

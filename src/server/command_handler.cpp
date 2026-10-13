@@ -12,6 +12,7 @@
 
 # include <string>
 # include <unordered_map>
+# include <cctype>
 
 # include "server/CommandHandler.hpp"
 # include "server/TCPSession.hpp"
@@ -124,6 +125,11 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 		argument = clean_line(raw_command.substr(index_arg + 1));
 	}
 
+	// Capitalize the command
+	for (char& c : command) {
+		c = std::toupper(static_cast<unsigned char>(c));
+	}
+
 	// Check if it's the connect command
 	HandshakeCommand cmd;
 	if (!parseHandshakeCommand(command, cmd)) {
@@ -156,7 +162,7 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 		session.setUsername(argument);
 		session.setSessionState(SessionState::AUTHENTICATED);
 		session.add_msg_to_buffer(getTCP_OK_operation("CONNECTED"));
-		_manager.create_player(argument);
+		_manager.createPlayer(argument);
 		print_log_message(session, "new player created: '" + argument + "'");
 		return;
 	}
@@ -174,20 +180,115 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 
 // * Handling commands when the client is in game. *
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
+	std::string raw_command = clean_line(raw_line);
+
+	print_log_message(session, "entered in-game command: " + raw_command);
+
+	// Substring the argument from the command (ex: 'MOVE NORTH')
+	std::string command = raw_command;
+	std::string argument = "";
+
+	size_t	index_arg = raw_command.find_first_of(' ');
+	if (index_arg != std::string::npos) {
+		command = raw_command.substr(0, index_arg);
+		argument = clean_line(raw_command.substr(index_arg + 1));
+	}
+
+	// Capitalize the command
+	for (char& c : command) {
+		c = std::toupper(static_cast<unsigned char>(c));
+	}
+
 	GameCommand cmd;
-	std::string clean_cmd = clean_line(raw_line);
-	if (!parseGameCommand(clean_cmd, cmd)) {
-		print_log_message(session, "rejected command: '" + clean_cmd + "'");
+	if (!parseGameCommand(command, cmd)) {
+		print_log_message(session, "rejected command: '" + command + "'");
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
 		return;
 	}
-	print_log_message(session, "in-game command: " + clean_cmd);
-
-	// Check if it's the quit command
+  
+  // QUIT command
 	if (cmd == GameCommand::QUIT) {
-		print_log_message(session, "requested graceful disconnect (QUIT).");
-		session.setSessionState(SessionState::CLOSING);
-		session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+		  print_log_message(session, "requested graceful disconnect (QUIT).");
+		  session.setSessionState(SessionState::CLOSING);
+		  session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+		  return;
+	}
+
+	// WHO command
+	else if (cmd == GameCommand::WHO) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
 		return;
 	}
+
+	// LOOK command
+	else if (cmd == GameCommand::LOOK) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getRoomData(session.getUsername())));
+		return;
+	}
+
+	// MOVE command
+	else if (cmd == GameCommand::MOVE) {
+		// Lower the arguemt
+		for (char& c : argument) {
+			c = std::tolower(static_cast<unsigned char>(c));
+		}
+
+		if (argument != direction_to_string(Direction::NORTH) && argument != direction_to_string(Direction::SOUTH) &&
+			argument != direction_to_string(Direction::EAST) && argument != direction_to_string(Direction::WEST)) {
+				session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NO_EXIT));
+				print_log_message(session, "error: 301 Invalid movement direction (bad input).");
+				return;
+			}
+		if (!_manager.movePlayer(session.getUsername(), direction_str_to_enum(argument))) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NO_EXIT));
+			print_log_message(session, "error: 301 Invalid movement direction (bad direction).");
+			return;
+		}
+		session.add_msg_to_buffer(getTCP_OK_operation("room=" + _manager.getPlayerRoom(session.getUsername())));
+		return;
+	}
+
+	// TAKE command
+	else if (cmd == GameCommand::TAKE) {
+		// Lower the arguemt
+		for (char& c : argument) {
+			c = std::tolower(static_cast<unsigned char>(c));
+		}
+
+		if (!_manager.takeItem(session.getUsername(), argument)) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_FOUND));
+			print_log_message(session, "error: 404 Requested item not available in room..");
+			return;
+		}
+
+		session.add_msg_to_buffer(getTCP_OK_operation("taken=" + argument));
+		return;
+	}
+
+	// DROP command
+	else if (cmd == GameCommand::DROP) {
+		// Lower the arguemt
+		for (char& c : argument) {
+			c = std::tolower(static_cast<unsigned char>(c));
+		}
+
+		if (!_manager.dropItem(session.getUsername(), argument)) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY));
+			print_log_message(session, "error: 404 Requested item not in player inventory..");
+			return;
+		}
+
+		session.add_msg_to_buffer(getTCP_OK_operation("dropped=" + argument));
+		return;
+	}
+
+	// INVENTORY command
+	else if (cmd == GameCommand::INVENTORY) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername())));
+	}
+}
+
+// --- DEBUG ---
+void	CommandHandler::debugTrySimulate(bool try_move) {
+	_manager.debugTrySimulate(try_move);
 }

@@ -3,14 +3,14 @@ world:
   locations:
   # SPAWN
     spawn:
-      name: "Cyber-City"
+      name: "Cyber City"
       description: "A city made of cyber things with a cyber sky."
       tile_map: "assets/sprites/player/kris_walk.png"
       exits:
         west: "road_traffic"
         east: "carnival"
       spawns: []
-      items: []
+      items: ["pipis", "trefoil"]
 
   # CITY ROAD TRAFFIC
     road_traffic:

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:32:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:04:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 # include <map>
 # include <memory>
-# include <uuid/uuid.h>
+# include <optional>
+# include <unordered_map>
 
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
@@ -26,28 +27,33 @@ using PlayerID = uint64_t;
 // * Represent a player *
 class Player : public Entity {
 	private :
-		std::map<ItemID, std::unique_ptr<Item>>	_inventory;
+		std::map<ItemID, Item*>	_inventory;
 
-		inline static	PlayerID _next_id = 1;
+		// Information
+		std::string	_zone;
+
+		inline static	PlayerID _id = 1;
 
 	public :
 		// --- CONSTRUCTOR ---
-		Player(
-			const std::string& name, int health);
+		Player(const std::string& name);
 		// --- DESTRUCTOR ---
-        ~Player() = default;
+        ~Player() override = default;
+
+		// --- GETTER ---
+		const std::string&	getZone() const;
 
 		// --- SETTER ---
-		bool setName(std::string& new_name);
+		void	setZone(const std::string& new_zone);
 
 		// --- INVENTORY SYSTEM ---
-		Item* 			addItemToInventory(std::unique_ptr<Item> item);
-		bool 			removeItemFromInventory(ItemID id);
-		bool 			checkItemInInventory(ItemID id) const;
-		Item* 			getItem(ItemID id) const;
-		ItemID 			getItemIdByName(const std::string& name) const;
-		std::string		getItemInInventory() const;
+		Item* 			addItemToInventory(Item* item);
+		Item* 			popItemFromInventory(ItemID id);
+		bool			removeItemFromInventory(ItemID id);
+		const Item*		getItem(ItemID id) const;
+		Item* 			getItem(ItemID id);
+		std::optional<ItemID>	getItemIdByName(const std::string& name) const;
 
-		// --- UUID ---
-		std::string	generate_uuid_v4() const;
+		bool 			checkItemInInventory(ItemID id) const;
+		std::string		getItemInInventory() const;
 };

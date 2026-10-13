@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 15:52:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/12 13:58:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class TCPServer {
 		// -- HANDLE NETWORK ---
 		void	buildPollFds();
 		void	handleNewConnection();
+		void	handleStdinRead();
 		void	handleClientRead(int fd);
 		void	handleClientWrite(int fd);
 		void	disconnectedClient(int fd);

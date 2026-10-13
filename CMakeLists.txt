@@ -90,7 +90,6 @@ add_executable(tap_server ${SERVER_SOURCES})
 target_link_libraries(tap_server PRIVATE
     project_warnings
     Threads::Threads
-	uuid
     yaml-cpp
     nlohmann_json::nlohmann_json
 )
@@ -99,7 +98,6 @@ target_link_libraries(tap_server PRIVATE
 add_executable(tap_cli_client ${CLI_SOURCES})
 target_link_libraries(tap_cli_client PRIVATE
     project_warnings
-    Threads::Threads
 )
 
 # 3. Client GUI
@@ -110,7 +108,6 @@ target_include_directories(tap_gui_client PRIVATE
 target_link_libraries(tap_gui_client PRIVATE
     project_warnings
     Threads::Threads
-	uuid
 	yaml-cpp
     nlohmann_json::nlohmann_json
     raylib
