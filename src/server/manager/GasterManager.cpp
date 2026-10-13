@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:28:56 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:38:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
+# include <utility>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -33,9 +34,7 @@
 
 
 // --- CONSTRUCTOR ---
-GasterManager::GasterManager(
-	WorldConfig& world_data
-):
+GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data) {
 
 		// Create all the objects
@@ -50,42 +49,108 @@ GasterManager::GasterManager(
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
 void	GasterManager::createPlayer(const std::string& player_name) {
+	// Get the spawn zone
+	Room* spawn = _world_state.rooms["spawn"].get();
+
+	// Create the player
 	auto new_player = std::make_unique<Player>(player_name);
-	new_player->setZone(_world_state.rooms["spawn"]->getID());
+
+	// Place the player in the spawn
+	new_player->setZone(spawn->getID());
+	Player* player = new_player.get();
 	_world_state.players[player_name] = std::move(new_player);
-	_world_state.rooms["spawn"]->addPlayer(_world_state.players[player_name].get());
+	spawn->addPlayer(player);
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
+}
+
+// --- GETTER ---
+// * Get a formatted list of players in game. *
+const std::string	GasterManager::getListOfPlayers() const {
+	std::string	list_players = "[";
+
+	int	nb_players = 0;
+	for (const auto& it : _world_state.players) {
+		list_players += it.first + ", ";
+		nb_players++;
+	}
+
+	if (nb_players == 0) {
+		list_players = "[]";
+	}
+	else {
+		list_players.pop_back();
+		list_players.pop_back();
+		list_players += "]";
+	}
+
+	return "Players Connected: " + std::to_string(nb_players) + ":\n" + list_players + "\n";
+}
+
+// * Get the data of the current room of the player.*
+const std::string	GasterManager::getRoomData(const std::string& player_name) const {
+	// Get the zone of the player
+	std::string zone_player = getPlayerRoom(player_name);
+	if (zone_player.empty())
+		return "ERROR: Player room not found.\n";
+
+	return _world_state.rooms.at(zone_player)->getRoomData();
+}
+
+// * Get the room of of the player.*
+const std::string	GasterManager::getPlayerRoom(const std::string& player_name) const {
+	// Find the player
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "\n";
+
+	// Get the room of the player
+	const std::string& zone_player = player->getZone();
+	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find the zone of player '" + player_name + "'.");
+		return "\n";
+	}
+	return zone_player;
+}
+
+// * Get the inventory of a player. *
+const std::string	GasterManager::getPlayerInventory(const std::string& player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "\n";
+
+	return player->getItemInInventory();
 }
 
 // --- MOVEMENT ---
 // *Move a player to a direction. Take a player name and a Direction.*
 bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
-	// Find if player exist
-	auto player = _world_state.players.find(player_name);
-	if (player == _world_state.players.end()) {
-		print_log("GasterManager: can't find player '" + player->second->getName() + "' to move.");
+	// Get player
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return false;
+
+	// Get the zone of the player
+	const std::string& zone_player = player->getZone();
+	auto room_it = _world_state.rooms.find(zone_player);
+	if (zone_player.empty() || room_it == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find zone '" + zone_player + "'.");
 		return false;
 	}
 
-	// Get the room where the player is
-	std::string zone_player = player->second->getZone();
-	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
-		print_log("GasterManager: error when trying to find the zone of player '" + player_name + "'.");
+	// Get the direction
+	Room* current_room = room_it->second.get();
+	Room* new_room = current_room->getFromDirection(direction);
+	if (!new_room) {
+		print_log("GasterManager: bad direction '" + direction_to_string(direction) + "' for zone '" + zone_player + "'.");
 		return false;
 	}
 
-	// Get the direction from the room
-	Room* new_room = _world_state.rooms[zone_player]->getFromDirection(direction);
-	if (new_room == nullptr) {
-		print_log("GasterManager: bad direction '" + direction_to_string(direction)  + "' " + "for zone '" + zone_player + "'.");
-		return false;
-	}
+	// Move the player
+	current_room->popPlayer(player_name);
+	new_room->addPlayer(player);
+	player->setZone(new_room->getID());
 
-	// Move the player (delete it from the room and add it to the new one)
-	_world_state.rooms[zone_player]->popPlayer(player_name);
-	new_room->addPlayer(player->second.get());
-	player->second->setZone(player->second->getID());
 	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
 	return true;
 }
@@ -93,14 +158,111 @@ bool	GasterManager::movePlayer(const std::string& player_name, const Direction d
 // --- CHECKER ---
 // * Check if the user exist, return true if yes. *
 bool	GasterManager::checkIfUserExist(const std::string& username) const {
-	auto search = _world_state.players.find(username);
-	if (search != _world_state.players.end()) {
-		return true;
+	return _world_state.players.find(username) != _world_state.players.end();
+}
+
+// --- ITEM MANAGEMENT --
+// * Take a requested item and put in player inventory. *
+bool	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
+	// Get the player
+	Player*	player = getPlayer(player_name);
+	if (!player)
+		return false;
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room)
+		return false;
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item)
+		return false;
+
+	// Pop item from the room
+	Item* item_room = player_room->popItem(item->getUniqueID());
+	if (!item_room) {
+		print_log("GasterManager: item '" + item_name + "' not in room.");
+		return false;
 	}
-	return false;
+
+	// Add to inventory
+	player->addItemToInventory(item_room);
+	return true;
+}
+
+// * Drop a requested item and put in player inventory. *
+bool	GasterManager::dropItem(const std::string& player_name, const std::string& item_name) {
+	// Get the player
+	Player*	player = getPlayer(player_name);
+	if (!player)
+		return false;
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room)
+		return false;
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item)
+		return false;
+
+	// Pop item from player inventory
+	Item *item_player = player->popItemFromInventory(item->getUniqueID());
+	if (!item_player) {
+		print_log("GasterManager: item '" + item_name + "' not in player inventory.");
+		return false;
+	}
+
+	// Add to the room
+	player_room->placeItem(item_player);
+	return true;
 }
 
 // ===== PRIVATE =====
+// --- Getter ---
+// * Get a player. *
+const Player*	GasterManager::getPlayer(const std::string& player_name) const {
+	auto it = _world_state.players.find(player_name);
+	if (it == _world_state.players.end()) {
+		print_log("GasterManager: can't find player '" + player_name + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get a player. *
+Player* GasterManager::getPlayer(const std::string& player_name) {
+    return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
+}
+
+// * Get an item. *
+const Item*	GasterManager::getItem(const std::string& item_name) const {
+	auto it = _world_state.items.find(item_name);
+	if (it == _world_state.items.end()) {
+		print_log("GasterManager: can't find item '" + item_name + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get an item. *
+Item* GasterManager::getItem(const std::string& item_name) {
+	return const_cast<Item*>(std::as_const(*this).getItem(item_name));
+}
+
+// * Get a room. *
+const Room*	GasterManager::getRoom(const std::string& room_id) const {
+	auto it = _world_state.rooms.find(room_id);
+	if (it == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find room '" + room_id + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get a room. *
+Room*	GasterManager::getRoom(const std::string& room_id) {
+	return const_cast<Room*>(std::as_const(*this).getRoom(room_id));
+}
+
 // --- OBJECTS MANAGEMENTS ---
 // CREATE OBJECTS
 // * Create the rooms and add them to the world state. *

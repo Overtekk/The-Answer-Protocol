@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:14:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:29:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:37:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	print_log(const std::string& log_msg);
 std::string	direction_to_string(Direction dir);
 std::string	enemy_type_to_string(EnemyType type);
 std::string	item_type_to_string(ItemType type);
+// - String to enum convert -
+Direction direction_str_to_enum(const std::string& direction_str);
 
 // Extract a element from a queue, pop it and return the value
 template <typename T>
