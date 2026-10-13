@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:58:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 10:17:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,6 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		for (char& c : argument) {
 			c = std::tolower(static_cast<unsigned char>(c));
 		}
-		print_log(argument);
 
 		if (argument != direction_to_string(Direction::NORTH) && argument != direction_to_string(Direction::SOUTH) &&
 			argument != direction_to_string(Direction::EAST) && argument != direction_to_string(Direction::WEST)) {
@@ -238,6 +237,11 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 			return;
 		}
 		session.add_msg_to_buffer(getTCP_OK_operation("room=" + _manager.getPlayerRoom(session.getUsername())));
+		return;
+	}
+
+	// TAKE command
+	else if (cmd == GameCommand::TAKE) {
 		return;
 	}
 }

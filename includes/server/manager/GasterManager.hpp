@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:38:24 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 11:03:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ class GasterManager {
 	void	createItems();
 	void	fillRoomsData();
 
+	// --- GETTER ---
+	const Player*	getPlayer(const std::string& player_name) const;
+	Player*			getPlayer(const std::string& player_name);
+
 	public :
 		// --- CONSTRUCTOR ---
 		GasterManager(WorldConfig& world_data);
@@ -47,6 +51,9 @@ class GasterManager {
 
 		// --- MOVEMENT ---
 		bool	movePlayer(const std::string& player_name, const Direction direction);
+
+		// --- ITEMS MANAGEMENT ---
+		bool	takeItem(const std::string& player_name, const std::string& item_name);
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;

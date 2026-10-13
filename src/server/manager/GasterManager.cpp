@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 10:08:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 11:18:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@
 
 
 // --- CONSTRUCTOR ---
-GasterManager::GasterManager(
-	WorldConfig& world_data
-):
+GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data) {
 
 		// Create all the objects
@@ -50,10 +48,17 @@ GasterManager::GasterManager(
 // --- PLAYER MANAGEMENTS ---
 // CREATE PLAYER
 void	GasterManager::createPlayer(const std::string& player_name) {
+	// Get the spawn zone
+	Room* spawn = _world_state.rooms["spawn"].get();
+
+	// Create the player
 	auto new_player = std::make_unique<Player>(player_name);
-	new_player->setZone(_world_state.rooms["spawn"]->getID());
+
+	// Place the player in the spawn
+	new_player->setZone(spawn->getID());
+	Player* player = new_player.get();
 	_world_state.players[player_name] = std::move(new_player);
-	_world_state.rooms["spawn"]->addPlayer(_world_state.players[player_name].get());
+	spawn->addPlayer(player);
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
 }
@@ -84,24 +89,22 @@ const std::string	GasterManager::getListOfPlayers() const {
 // *Get the data of the current room of the player.*
 const std::string	GasterManager::getRoomData(const std::string& player_name) const {
 	// Get the zone of the player
-	std::string	zone_player = getPlayerRoom(player_name);
+	std::string zone_player = getPlayerRoom(player_name);
+	if (zone_player.empty())
+		return "ERROR: Player room not found.\n";
 
-	// Get the data of the room
-	std::string room_data = _world_state.rooms.at(zone_player)->getRoomData();
-	return room_data;
+	return _world_state.rooms.at(zone_player)->getRoomData();
 }
 
 // *Get the room of of the player.*
 const std::string	GasterManager::getPlayerRoom(const std::string& player_name) const {
 	// Find the player
-	auto player = _world_state.players.find(player_name);
-	if (player == _world_state.players.end()) {
-		print_log("GasterManager: can't find player to give room state.");
+	const Player* player = getPlayer(player_name);
+	if (!player)
 		return "";
-	}
 
 	// Get the room of the player
-	std::string	zone_player = player->second->getZone();
+	const std::string& zone_player = player->getZone();
 	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
 		print_log("GasterManager: can't find the zone of player '" + player_name + "'.");
 		return "";
@@ -112,23 +115,32 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 // --- MOVEMENT ---
 // *Move a player to a direction. Take a player name and a Direction.*
 bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
+	// Get player
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return false;
+
 	// Get the zone of the player
-	std::string	zone_player = getPlayerRoom(player_name);
-
-	// get player
-	auto player = _world_state.players.find(player_name);
-
-	// Get the direction from the room
-	Room* new_room = _world_state.rooms[zone_player]->getFromDirection(direction);
-	if (new_room == nullptr) {
-		print_log("GasterManager: bad direction '" + direction_to_string(direction)  + "' " + "for zone '" + zone_player + "'.");
+	const std::string& zone_player = player->getZone();
+	auto room_it = _world_state.rooms.find(zone_player);
+	if (zone_player.empty() || room_it == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find zone '" + zone_player + "'.");
 		return false;
 	}
 
-	// Move the player (delete it from the room and add it to the new one)
-	_world_state.rooms[zone_player]->popPlayer(player_name);
-	new_room->addPlayer(player->second.get());
-	player->second->setZone(new_room->getID());
+	// Get the direction
+	Room* current_room = room_it->second.get();
+	Room* new_room = current_room->getFromDirection(direction);
+	if (!new_room) {
+		print_log("GasterManager: bad direction '" + direction_to_string(direction) + "' for zone '" + zone_player + "'.");
+		return false;
+	}
+
+	// Move the player
+	current_room->popPlayer(player_name);
+	new_room->addPlayer(player);
+	player->setZone(new_room->getID());
+
 	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
 	return true;
 }
@@ -136,14 +148,37 @@ bool	GasterManager::movePlayer(const std::string& player_name, const Direction d
 // --- CHECKER ---
 // * Check if the user exist, return true if yes. *
 bool	GasterManager::checkIfUserExist(const std::string& username) const {
-	auto search = _world_state.players.find(username);
-	if (search != _world_state.players.end()) {
-		return true;
-	}
-	return false;
+	return _world_state.players.find(username) != _world_state.players.end();
+}
+
+// --- ITEM MANAGEMENT --
+bool	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
+	// Get the player
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return false;
+	if (!item_name.empty())
+		return false;
+
+	return true;
 }
 
 // ===== PRIVATE =====
+// --- Getter ---
+// * Get a player *
+const Player*	GasterManager::getPlayer(const std::string& player_name) const {
+	auto it = _world_state.players.find(player_name);
+	if (it == _world_state.players.end()) {
+		print_log("GasterManager: can't find player '" + player_name + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+Player* GasterManager::getPlayer(const std::string& player_name) {
+    return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
+}
+
 // --- OBJECTS MANAGEMENTS ---
 // CREATE OBJECTS
 // * Create the rooms and add them to the world state. *
