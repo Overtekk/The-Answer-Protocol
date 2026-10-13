@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 11:03:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:10:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ class GasterManager {
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
 	Player*			getPlayer(const std::string& player_name);
+	const Item*		getItem(const std::string& item_name) const;
+	Item*			getItem(const std::string& item_name);
+	const Room*		getRoom(const std::string& room_id) const;
+	Room*			getRoom(const std::string& room_id);
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -54,6 +58,7 @@ class GasterManager {
 
 		// --- ITEMS MANAGEMENT ---
 		bool	takeItem(const std::string& player_name, const std::string& item_name);
+		bool	dropItem(const std::string& player_name, const std::string& item_name);
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;

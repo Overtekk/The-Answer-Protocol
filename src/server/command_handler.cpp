@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 10:17:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:18:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 
 	// MOVE command
 	else if (cmd == GameCommand::MOVE) {
-		// Lower the command
+		// Lower the arguemt
 		for (char& c : argument) {
 			c = std::tolower(static_cast<unsigned char>(c));
 		}
@@ -242,6 +242,35 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 
 	// TAKE command
 	else if (cmd == GameCommand::TAKE) {
+		// Lower the arguemt
+		for (char& c : argument) {
+			c = std::tolower(static_cast<unsigned char>(c));
+		}
+
+		if (!_manager.takeItem(session.getUsername(), argument)) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_FOUND));
+			print_log_message(session, "error: 404 Requested item not available in room..");
+			return;
+		}
+
+		session.add_msg_to_buffer(getTCP_OK_operation("taken=" + argument));
+		return;
+	}
+
+	// DROP command
+	else if (cmd == GameCommand::DROP) {
+		// Lower the arguemt
+		for (char& c : argument) {
+			c = std::tolower(static_cast<unsigned char>(c));
+		}
+
+		if (!_manager.dropItem(session.getUsername(), argument)) {
+			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY));
+			print_log_message(session, "error: 404 Requested item not in player inventory..");
+			return;
+		}
+
+		session.add_msg_to_buffer(getTCP_OK_operation("dropped=" + argument));
 		return;
 	}
 }

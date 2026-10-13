@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 11:18:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:14:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
+# include <utility>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -154,18 +155,59 @@ bool	GasterManager::checkIfUserExist(const std::string& username) const {
 // --- ITEM MANAGEMENT --
 bool	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
 	// Get the player
-	Player* player = getPlayer(player_name);
+	Player*	player = getPlayer(player_name);
 	if (!player)
 		return false;
-	if (!item_name.empty())
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room)
+		return false;
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item)
 		return false;
 
+	// Pop item from the room
+	Item* item_room = player_room->popItem(item->getUniqueID());
+	if (!item_room) {
+		print_log("GasterManager: item '" + item_name + "' not in room.");
+		return false;
+	}
+
+	// Add to inventory
+	player->addItemToInventory(item_room);
+	return true;
+}
+
+bool	GasterManager::dropItem(const std::string& player_name, const std::string& item_name) {
+	// Get the player
+	Player*	player = getPlayer(player_name);
+	if (!player)
+		return false;
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room)
+		return false;
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item)
+		return false;
+
+	// Pop item from player inventory
+	Item *item_player = player->popItemFromInventory(item->getUniqueID());
+	if (!item_player) {
+		print_log("GasterManager: item '" + item_name + "' not in player inventory.");
+		return false;
+	}
+
+	// Add to the room
+	player_room->placeItem(item_player);
 	return true;
 }
 
 // ===== PRIVATE =====
 // --- Getter ---
-// * Get a player *
+// * Get a player. *
 const Player*	GasterManager::getPlayer(const std::string& player_name) const {
 	auto it = _world_state.players.find(player_name);
 	if (it == _world_state.players.end()) {
@@ -175,8 +217,39 @@ const Player*	GasterManager::getPlayer(const std::string& player_name) const {
 	return it->second.get();
 }
 
+// * Get a player. *
 Player* GasterManager::getPlayer(const std::string& player_name) {
     return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
+}
+
+// * Get an item. *
+const Item*	GasterManager::getItem(const std::string& item_name) const {
+	auto it = _world_state.items.find(item_name);
+	if (it == _world_state.items.end()) {
+		print_log("GasterManager: can't find item '" + item_name + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get an item. *
+Item* GasterManager::getItem(const std::string& item_name) {
+	return const_cast<Item*>(std::as_const(*this).getItem(item_name));
+}
+
+// * Get a room. *
+const Room*	GasterManager::getRoom(const std::string& room_id) const {
+	auto it = _world_state.rooms.find(room_id);
+	if (it == _world_state.rooms.end()) {
+		print_log("GasterManager: can't find room '" + room_id + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get a room. *
+Room*	GasterManager::getRoom(const std::string& room_id) {
+	return const_cast<Room*>(std::as_const(*this).getRoom(room_id));
 }
 
 // --- OBJECTS MANAGEMENTS ---

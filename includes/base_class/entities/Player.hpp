@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:11:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:04:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 # include <map>
 # include <memory>
+# include <optional>
+# include <unordered_map>
 
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
@@ -25,7 +27,7 @@ using PlayerID = uint64_t;
 // * Represent a player *
 class Player : public Entity {
 	private :
-		std::map<ItemID, std::unique_ptr<Item>>	_inventory;
+		std::map<ItemID, Item*>	_inventory;
 
 		// Information
 		std::string	_zone;
@@ -45,10 +47,13 @@ class Player : public Entity {
 		void	setZone(const std::string& new_zone);
 
 		// --- INVENTORY SYSTEM ---
-		Item* 			addItemToInventory(std::unique_ptr<Item> item);
-		bool 			removeItemFromInventory(ItemID id);
+		Item* 			addItemToInventory(Item* item);
+		Item* 			popItemFromInventory(ItemID id);
+		bool			removeItemFromInventory(ItemID id);
+		const Item*		getItem(ItemID id) const;
+		Item* 			getItem(ItemID id);
+		std::optional<ItemID>	getItemIdByName(const std::string& name) const;
+
 		bool 			checkItemInInventory(ItemID id) const;
-		Item* 			getItem(ItemID id) const;
-		ItemID 			getItemIdByName(const std::string& name) const;
 		std::string		getItemInInventory() const;
 };

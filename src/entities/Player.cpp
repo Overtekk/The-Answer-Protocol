@@ -13,6 +13,7 @@
 # include <iostream>
 # include <memory>
 # include <uuid/uuid.h>
+# include <utility>
 
 # include "base_class/entities/Player.hpp"
 
@@ -31,69 +32,74 @@ void	Player::setZone(const std::string& new_zone) {
 
 // --- INVENTORY SYSTEM ---
 // * Add an item to the player inventory. *
-Item*	Player::addItemToInventory(std::unique_ptr<Item> item) {
+Item* Player::addItemToInventory(Item* item) {
 	if (!item) {
 		sendObjectError("Can't add item: null pointer provided.");
 		return nullptr;
 	}
 
-	std::string item_name = item->getName();
-	if (item_name.empty()) {
-		sendObjectError("Can't add item because name is empty.");
-		return nullptr;
-	}
-
 	ItemID id = item->getUniqueID();
-	Item* item_ptr = item.get();
-	_inventory[id] = std::move(item);
-	return item_ptr;
+	_inventory[id] = item;
+	return item;
+}
+
+// * Pop item from inventory. *
+Item* Player::popItemFromInventory(ItemID id) {
+	auto it = _inventory.find(id);
+	if (it != _inventory.end()) {
+		Item* item = it->second;
+		_inventory.erase(it);
+		return item;
+	}
+	sendObjectError("Can't pop item: ID " + std::to_string(id) + " not in player inventory.");
+	return nullptr;
 }
 
 // * Remove an item from the player inventory. *
-bool	Player::removeItemFromInventory(ItemID id) {
-	if (_inventory.erase(id) > 0) {
-        return true;
-    }
-	sendObjectError("Can't remove item: ID " + std::to_string(id) + " not in player inventory.");
-    return false;
+bool Player::removeItemFromInventory(ItemID id) {
+	return _inventory.erase(id) > 0;
 }
 
 // * Check for an item in the player inventory. *
-bool	Player::checkItemInInventory(ItemID id) const {
-	if (_inventory.count(id)) {
-		return true;
-	}
-	return false;
+bool Player::checkItemInInventory(ItemID id) const {
+	return _inventory.find(id) != _inventory.end();
 }
 
 // * Get the item by ID from the player inventory. *
-Item*	Player::getItem(ItemID id) const {
-    auto it = _inventory.find(id);
-    if (it != _inventory.end()) {
-        return it->second.get();
-    }
-    return nullptr;
+const Item* Player::getItem(ItemID id) const {
+	auto it = _inventory.find(id);
+	if (it != _inventory.end()) {
+		return it->second;
+	}
+	return nullptr;
+	}
+
+	// * Get the item by ID from the player inventory. *
+Item* Player::getItem(ItemID id) {
+	return const_cast<Item*>(std::as_const(*this).getItem(id));
 }
 
 // * Get the ID of an item by its name. *
-ItemID	Player::getItemIdByName(const std::string& name) const {
-	for (const auto& entry : _inventory) {
-		if (entry.second->getName() == name) {
-			return entry.first;
+std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
+	for (const auto& [id, item] : _inventory) {
+		if (item && item->getName() == name) {
+			return id;
 		}
 	}
-	return 0;
+	return std::nullopt;
 }
 
 // * Get the inventory of the player. *
-std::string	Player::getItemInInventory() const {
-	if (_inventory.size() == 0) {
-		return ("No item in inventory.\n");
+std::string Player::getItemInInventory() const {
+	if (_inventory.empty()) {
+		return "No item in inventory.\n";
 	}
 
 	std::string inventory = "Item in " + this->getName() + ":\n";
-	for (const auto& entry : _inventory) {
-		inventory += entry.second->getName() + "\n";
+	for (const auto& [id, item] : _inventory) {
+		if (item) {
+			inventory += item->getName() + "\n";
+		}
 	}
-	return (inventory);
+	return inventory;
 }
