@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 14:18:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:33:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,6 +272,11 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 
 		session.add_msg_to_buffer(getTCP_OK_operation("dropped=" + argument));
 		return;
+	}
+
+	// INVENTORY command
+	else if (cmd == GameCommand::INVENTORY) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername())));
 	}
 }
 

@@ -10,7 +10,7 @@ world:
         west: "road_traffic"
         east: "carnival"
       spawns: []
-      items: ["pipis"]
+      items: ["pipis", "trefoil"]
 
   # CITY ROAD TRAFFIC
     road_traffic:

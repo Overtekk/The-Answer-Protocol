@@ -95,11 +95,17 @@ std::string Player::getItemInInventory() const {
 		return "No item in inventory.\n";
 	}
 
-	std::string inventory = "Item in " + this->getName() + ":\n";
+	std::string inventory = "Item in " + this->getName() + "'s inventory:\n[";
 	for (const auto& [id, item] : _inventory) {
 		if (item) {
-			inventory += item->getName() + "\n";
+			inventory += "\"" + item->getName();
+			inventory += "\", ";
 		}
 	}
+
+	inventory.pop_back();
+	inventory.pop_back();
+	inventory += "]\n";
+
 	return inventory;
 }
