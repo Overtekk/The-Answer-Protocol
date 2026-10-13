@@ -10,3 +10,7 @@ sprites:
   chest:
     name: "chest"
     path: "assets/sprites/items/chest.png"
+
+  ItemsIcons:
+    name: "ItemsIcons"
+    path: "assets/HUD/Item_icons.png"

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:15:08 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/13 14:30:17 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,7 @@ class VisualEntity {
 	public :
 		VisualEntity(const Entity& entity,
 			const std::string &texture,
-			std::tuple<int, int>
-			sprite_dim,
+			std::tuple<int, int> sprite_dim,
 			float scale = 1.0f);
 
 		virtual ~VisualEntity();
@@ -81,12 +80,12 @@ class VisualEntity {
 		// Return entity orientation (UP DOWN LEFT RIGHT NONE)
 		EntityDirection getOrientation() const;
 		// Set entity orientation 
-		void setOrientation(EntityDirection orientation);
+		void 		setOrientation(EntityDirection orientation);
 		
 		// Draw
 		
 		// Draw entity sprits
-		void onDraw();
+		void 		onDraw();
 
 		// Position
 
@@ -94,10 +93,19 @@ class VisualEntity {
 		const Vector2 &getPos() const;
 
 		// Set entity position x and y
-		void setPos(const Vector2 &new_pos);
+		void 		setPos(const Vector2 &new_pos);
 
 		// Set entity direction (dx and dy)
-		void setDirection(float new_dx, float new_dy);
+		void 		setDirection(float new_dx, float new_dy);
+
+		// return sprite width
+		int		getWidth() const;
+
+		// return sprite height
+		int		getHeight() const;
+
+		// took an item from the room, open the chest, ask if the player want to take the item then send the commende to the sever
+		void	getItem();
 
 		// Error
 		void sendObjectError(const std::string &error);

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 15:27:08 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 16:42:14 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/13 16:27:21 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,42 +17,42 @@
 
 VisualItem::VisualItem(
     const Item &item,
-	const Texture2D &obj_texture,
-	std::tuple<float, float> obj_size,
-	const Texture2D &chest_texture,
+	const LoadedAssets &assets,
 	float sprite_scale
 ):
     _item(item),
-    _obj_texture(obj_texture),
-    _obj_size(obj_size),
-    _chest_sprits(Animation(chest_texture, {42, 20}, 2, 2, 0, 0.0f, false)),
+    _chest_sprits(Animation(assets.sprits.at("chest"),
+                            {this->_CHEST_WIDTH, this->_CHEST_HEIGHT,},
+                            2, 2, 0, 0.0f, false)),
     _sprite_scale(sprite_scale) {}
 
     void VisualItem::DrawInRoom()
     {
-        this->_chest_sprits.drawCurentFrame(this->_position.x, this->_position.y);
+        this->_chest_sprits.drawCurentFrame(this->_position.x, this->_position.y, this->_sprite_scale);
     }
+    
+const Item& VisualItem::ItemPicked()
+{
+    this->_chest_sprits.setFrame(1);
+    return (this->_item);
+}
 
-    void VisualItem::DrawItem(float x, float y, float width, float height)
-    {
-        if (width < 0)
-            width = std::get<0>(this->_obj_size);
-        if (height < 0)
-            height = std::get<1>(this->_obj_size);
+void VisualItem::setPos(const Vector2 &new_pos)
+{
+    this->_position = new_pos;
+}
 
-        Rectangle src = Rectangle{
-            .x = 0,
-            .y = 0,
-            .width = std::get<0>(this->_obj_size),
-            .height = std::get<1>(this->_obj_size)
-        };
+const Vector2& VisualItem::getPos() const
+{
+    return (this->_position);
+}
 
-        Rectangle dest = Rectangle{
-            .x = x,
-            .y = y,
-            .width = width * this->_sprite_scale,
-            .height = height * this->_sprite_scale,
-        };
+int VisualItem::getChestWidth() const
+{
+    return (this->_CHEST_WIDTH);
+}
 
-        DrawTexturePro(this->_obj_texture, src, dest, {width / 2, height / 2}, 0, WHITE);
-    }
+int VisualItem::getChestHeight() const
+{
+    return (this->_CHEST_HEIGHT);
+}
