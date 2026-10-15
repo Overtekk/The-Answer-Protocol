@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 14:38:04 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/13 15:18:45 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/15 15:48:00 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 # include "gui/Items/VisualItemWeapon.hpp"
 
 VisualItemWeapon::VisualItemWeapon(
-    const Item &item,
+    const std::string &id,
 	const LoadedAssets &assets,
 	float sprite_scale
 ):
-	VisualItem(item, assets, sprite_scale),
+	VisualItem(id, assets, sprite_scale),
 	_obj_texture(assets.sprits.at("ItemsIcons")) {}
 
 void VisualItemWeapon::DrawWeaponIcon(float x, float y, float width, float height)

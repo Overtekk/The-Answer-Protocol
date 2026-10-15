@@ -77,8 +77,10 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/parser/gui_parser.cpp
 	src/gui/Loaders/AssetsLoader.cpp
 	src/gui/Loaders/AssetsUnloader.cpp
+	src/gui/Loaders/ObjectsLoader.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
+	src/gui/entities/User.cpp
 	src/gui/Items/VisualItem.cpp
 	src/gui/Items/VisualItemConsumable.cpp
 	src/gui/Items/VisualItemKey.cpp

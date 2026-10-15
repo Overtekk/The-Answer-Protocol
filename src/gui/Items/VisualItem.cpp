@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 15:27:08 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/13 16:27:21 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/15 15:45:53 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 
 
 VisualItem::VisualItem(
-    const Item &item,
+    const std::string &id,
 	const LoadedAssets &assets,
 	float sprite_scale
 ):
-    _item(item),
+    _id(id),
     _chest_sprits(Animation(assets.sprits.at("chest"),
                             {this->_CHEST_WIDTH, this->_CHEST_HEIGHT,},
                             2, 2, 0, 0.0f, false)),
@@ -31,10 +31,10 @@ VisualItem::VisualItem(
         this->_chest_sprits.drawCurentFrame(this->_position.x, this->_position.y, this->_sprite_scale);
     }
     
-const Item& VisualItem::ItemPicked()
+const std::string& VisualItem::ItemPicked()
 {
     this->_chest_sprits.setFrame(1);
-    return (this->_item);
+    return (this->_id);
 }
 
 void VisualItem::setPos(const Vector2 &new_pos)

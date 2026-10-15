@@ -6,12 +6,13 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 14:36:16 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/13 15:31:57 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/15 15:47:50 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
 
+# include <string>
 # include "raylib.h"
 # include "gui/Items/VisualItem.hpp"
 
@@ -22,7 +23,8 @@ class VisualItemWeapon: public VisualItem
 		const int					_OBJ_WIDTH = 13.0f;
 		const int					_OBJ_HEIGHT = 18.0f;
     public:
-        VisualItemWeapon(const Item &item,
+        VisualItemWeapon(
+            const std::string &id,
 			const LoadedAssets &assets,
 			float sprite_scale);
 

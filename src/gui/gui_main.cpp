@@ -6,14 +6,14 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 16:31:35 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/15 16:27:35 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <typeinfo>
 
 # include "raylib.h"
-# include "gui/entities/VisualPlayer.hpp"
+# include "gui/entities/User.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
 # include "base_class/rooms/Room.hpp"
@@ -77,16 +77,15 @@ void graphic(WorldConfig& world_data)
     SetTargetFPS(60);
 
 	LoadedAssets	assets;
+	
+
 	LoadAssets(world_data, assets);
 	
-	// Animation		test_animation(assets.sprits["player"], {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
-	ItemWeapon			sword("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10);
-	ItemConsumable		cookie("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10);
-	VisualItemWeapon	v_sword(sword, assets, 2.0f);
-	VisualItemConsumable	v_cookie(cookie, assets, 2.0f);
+	VisualItemWeapon	v_sword("basic sword", assets, 2.0f);
+	VisualItemConsumable	v_cookie("basic sword", assets, 2.0f);
 	bool				Icon = false;
-	Player				kris("Kris");
-    VisualPlayer 		v_kris(kris, "assets/sprites/player/kris_walk.png", {19, 38}, 2.0f);
+    User 				v_kris("Kris", assets.sprits.at("player"), {19, 38}, 2.0f);
+	// User				*v_kris = data.get_user();
 
 	v_kris.setPos(Vector2 {400, 225});
 	v_sword.setPos(Vector2 {500, 225});
@@ -116,7 +115,6 @@ void graphic(WorldConfig& world_data)
 				}
 			}
 
-			// test_animation.playAnimation(50, 50, 2, false, 90.0);
         EndDrawing();
     }
 
