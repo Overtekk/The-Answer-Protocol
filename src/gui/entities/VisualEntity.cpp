@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:32:25 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/13 13:55:03 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,23 +123,33 @@ void 	VisualEntity::onDraw()
 }
 
 // Getter
-const Vector2 &VisualEntity::getPos() const { return _position; }
+const 	Vector2 &VisualEntity::getPos() const { return _position; }
 
 EntityDirection VisualEntity::getOrientation() const { return(_orientation); }
 
 // Setter
-void VisualEntity::setPos(const Vector2 &new_pos) {
+void 	VisualEntity::setPos(const Vector2 &new_pos) {
 	_position = new_pos;
 }
 
-void VisualEntity::setOrientation(EntityDirection orientation)
+void 	VisualEntity::setOrientation(EntityDirection orientation)
 {
 	this->_orientation = orientation;
 };
 
-void VisualEntity::setDirection(float new_dx, float new_dy) {
+void 	VisualEntity::setDirection(float new_dx, float new_dy) {
 	_dx = std::clamp(new_dx, -1.0f, 1.0f);
 	_dy = std::clamp(new_dy, -1.0f, 1.0f);
+}
+
+int		VisualEntity::getWidth() const
+{
+	return (std::get<0>(this->_sprite_dim));
+}
+
+int		VisualEntity::getHeight() const
+{
+	return (std::get<1>(this->_sprite_dim));
 }
 
 // Error

@@ -75,8 +75,14 @@ set(CLI_SOURCES	${CLI_MAIN}
 set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/server/connect_client.cpp
 	src/gui/parser/gui_parser.cpp
+	src/gui/Loaders/AssetsLoader.cpp
+	src/gui/Loaders/AssetsUnloader.cpp
     src/gui/entities/VisualEntity.cpp
 	src/gui/entities/VisualPlayer.cpp
+	src/gui/Items/VisualItem.cpp
+	src/gui/Items/VisualItemConsumable.cpp
+	src/gui/Items/VisualItemKey.cpp
+	src/gui/Items/VisualItemWeapon.cpp
     src/gui/Animation.cpp
 	src/utils/files.cpp
 )

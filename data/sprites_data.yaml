@@ -6,3 +6,11 @@ sprites:
   test2:
     name: "test2"
     path: "assets/sprites/player/kris_walk.png"
+  
+  chest:
+    name: "chest"
+    path: "assets/sprites/items/chest.png"
+
+  ItemsIcons:
+    name: "ItemsIcons"
+    path: "assets/HUD/Item_icons.png"
