@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:23:43 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/15 14:12:53 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 
 /// ** Structures that hold raws data for the manager to create the objects later on. **
-// Contains the data for the locations.
+// Contains the data of a zone.
 struct LocationConfig {
 	std::string name;
 	std::string description;
@@ -31,7 +31,7 @@ struct LocationConfig {
 	bool special;
 };
 
-// Contains the data for the items.
+// Contains the data of an item.
 struct ItemConfig {
 	std::string name;
 	std::string description;
@@ -40,7 +40,7 @@ struct ItemConfig {
 	int hp;
 };
 
-// Contains the data for the entities.
+// Contains the data of an entity.
 struct EntityConfig {
 	std::string name;
 	std::string description;
@@ -50,19 +50,26 @@ struct EntityConfig {
 	int hp;
 };
 
-// Contains the data for the sprites (other than entities and tilesmap).
+// Contains the data of a quest.
+struct QuestConfig {
+	std::string name;
+	std::string description;
+	bool spawn_with_quest;
+};
+
+// Contains the data of a sprite (other than entity and tilesmap).
 struct SpriteConfig {
 	std::string name;
 	std::string path;
 };
 
-// Contains the data for the sounds/sfx.
+// Contains the data of a sound/sfx.
 struct SoundConfig {
 	std::string name;
 	std::string path;
 };
 
-// Contains the data for the musics.
+// Contains the data of a music.
 struct MusicConfig {
 	std::string name;
 	std::string path;
@@ -73,6 +80,7 @@ struct WorldConfig {
 	std::unordered_map<std::string, LocationConfig> locations;
 	std::unordered_map<std::string, ItemConfig> items;
     std::unordered_map<std::string, EntityConfig> entities;
+	std::unordered_map<std::string, QuestConfig> quests;
 	std::unordered_map<std::string, SpriteConfig> sprite;
 	std::unordered_map<std::string, SoundConfig> sound;
 	std::unordered_map<std::string, MusicConfig> music;

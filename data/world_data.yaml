@@ -364,3 +364,66 @@ entities:
       default: "Hello!"
     type: "shop"
     hp: 20
+
+# --- QUESTS ---
+quests:
+  defeat_queen:
+    name: "Defeat Queen"
+    description: "Find the Queen. She have taken your delicious and precious moss."
+    spawn_with_quest: true
+
+  find_queen_castle:
+    name: "Find a way to go in the Queen's Castle"
+    description: "The gate is closed... You can try to fight the Guard Dog or try something else?"
+
+  defeat_guard_dog:
+    name: "Fight the Guard Dog"
+    description: "Maybe you can try to defeat him and force your way trought?"
+
+  defeat_k_round:
+    name: "Defeat K.Round"
+    description: "You start the fight. Now it's time to pass!"
+
+  find_spamton:
+    name: "A strange sound..."
+    description: "Investigate the strange noise in the trash area."
+
+  buy_remote:
+    name: "Buy the 'Remote'"
+    description: "Spamton sell a strange remote that can, maybe, open the gates..."
+
+  bring_pipis:
+    name: "Get 7 'Pipis' to Spamton"
+    description: "He just want that in exchange of the remote... strange?"
+
+  talk_to_spamton:
+    name: "Return to Spamton"
+    description: "You've got the Pipis! Go see Spamton!"
+
+  find_key_b:
+    name: "Find the other key"
+    description: "You need a second key to open the castle doors. Find it!"
+
+  find_ralsei:
+    name: "Find Ralsei"
+    description: "Susie want's a chocolate cake and only Ralsei can do it. Find him."
+
+  find_chocolate_bar:
+    name: "Find the chocolate bar"
+    description: "todo"
+
+  find_milk:
+    name: "Find the milk"
+    description: "todo"
+
+  find_wheat:
+    name: "Find the milk"
+    description: "Maybe you can find a cow?"
+
+  talk_to_ralsei:
+    name: "Return talk to Ralsei"
+    description: "You gather the 3 ingredients. Go see Ralsei again."
+
+  talk_to_susie:
+    name: "Give the chocolate cake"
+    description: "Susie is hungry! Hurry up!"

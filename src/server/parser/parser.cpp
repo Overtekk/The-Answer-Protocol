@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 10:48:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/15 14:23:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ namespace fs = std::filesystem;
 LocationConfig parse_locationConfig(const std::string& loc_id, const YAML::Node& node, std::unordered_set<std::string>& knows_locations);
 ItemConfig parse_itemConfig(const std::string& item_id, const YAML::Node& node, std::unordered_set<std::string>& knows_items);
 EntityConfig parse_entityConfig(const std::string& entity_id, const YAML::Node& node, std::unordered_set<std::string>& knows_entities);
+QuestConfig parse_questConfig(const std::string& quest_id, const YAML::Node& node);
 Direction convert_direction(const std::string& direction_str);
 ItemType convert_itemType(const std::string& itemtype_str);
 EnemyType convert_enemyType(const std::string& enemytype_str);
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id);
 void check_int(int value, const std::string& id);
-void check_sprite(const std::string&  sprite, const std::string& id);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
 
@@ -38,7 +38,6 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 	std::unordered_set<std::string> knows_locations; // used to check if a location exist
 	std::unordered_set<std::string> knows_items; // used to check if a item exist
 	std::unordered_set<std::string> knows_entities; // used to check if a entity exist
-
 	try {
 		// Check LOCATIONS
 		if (root["world"] && root["world"]["locations"] && root["world"]["locations"].IsMap()) {
@@ -76,8 +75,22 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 			throw std::runtime_error("Missing entities. Did you forget? 😱");
 		}
 
+		// Check QUESTS
+		if (root["quests"] && root["quests"].IsMap()) {
+			for (const auto& entry : root["quests"]) {
+				std::string quest_id = entry.first.as<std::string>();
+				world.quests[quest_id] = parse_questConfig(quest_id, entry.second);
+			}
+		}
+		else {
+			throw std::runtime_error("Missing quests. Did you forget? 😱");
+		}
+
 		// Check if all data are valid
 		check_locations_data(world, knows_locations, knows_items, knows_entities);
+		// Check numbers of quests
+		if (world.quests.size() < 3)
+			throw std::runtime_error("You need to have a least 3 quests. Only " + std::to_string(world.quests.size() ) + " found.");
 
 	}
 	catch (const std::exception& e) {
@@ -171,6 +184,19 @@ EntityConfig parse_entityConfig(
 
 	config.hp = getValue<int>(node, "hp", 100);
 	check_int(config.hp, entity_id);
+	return config;
+}
+
+QuestConfig parse_questConfig(
+	const std::string& quest_id, const YAML::Node& node) {
+	QuestConfig config;
+
+	config.name = getValue<std::string>(node, "name", "");
+	config.description = getValue<std::string>(node, "description", "");
+	check_global_data_validation(config.name, config.description, quest_id);
+
+	config.spawn_with_quest = getValue<bool>(node, "spawn_with_quest", false);
+
 	return config;
 }
 
