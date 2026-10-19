@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 15:17:24 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 15:57:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ std::string	Room::getRoomData(bool add_details) {
 		+ "\", \"exits\": {" + exits + "} }"
 		+ ", \"players\": " + format_list(list_players)
 		+ ", \"items\": " + format_raw_list(list_items)
-		+ ", \"npcs\": " + format_list(list_npcs) + " }";
+		+ ", \"npcs\": " + format_raw_list(list_npcs) + " }";
 }
 
 // ============================================================================

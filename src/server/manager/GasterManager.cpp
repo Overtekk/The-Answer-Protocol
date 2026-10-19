@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 13:50:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 16:18:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ const std::string	GasterManager::getListOfPlayers() const {
 		list_players += "]";
 	}
 
-	return "Players Connected: " + std::to_string(nb_players) + ":\n" + list_players + "\n";
+	return "Players Connected: " + std::to_string(nb_players) + ": " + list_players;
 }
 
 // * Get the data of the current room of the player.*
@@ -102,7 +102,7 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 	// Find the player
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "\n";
+		return "";
 
 	// Get the room of the player
 	const std::string& zone_player = player->getZone();
@@ -114,12 +114,12 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 }
 
 // * Get the inventory of a player. *
-const std::string	GasterManager::getPlayerInventory(const std::string& player_name) const {
+const std::string	GasterManager::getPlayerInventory(const std::string& player_name, bool add_details) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "\n";
+		return "";
 
-	return player->getItemInInventory();
+	return player->getItemInInventory(add_details);
 }
 
 // --- MOVEMENT ---

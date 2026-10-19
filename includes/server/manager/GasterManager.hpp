@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 13:27:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 15:59:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class GasterManager {
 		const std::string	getListOfPlayers() const;
 		const std::string	getRoomData(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerRoom(const std::string& player_name) const;
-		const std::string	getPlayerInventory(const std::string& player_name) const;
+		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);

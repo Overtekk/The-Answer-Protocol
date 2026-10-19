@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 15:03:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 15:59:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,8 +325,14 @@ void	CommandHandler::commandDrop(TCPSession& session, std::string argument) {
 }
 
 void	CommandHandler::commandInventory(TCPSession& session, std::string argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername())));
+	lower_the_string(argument);
+
+	if (argument == "--details") {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername(), true)));
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername(), false)));
 }
 
 // ============================================================================
