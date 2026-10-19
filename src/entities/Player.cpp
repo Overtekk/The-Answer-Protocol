@@ -12,10 +12,10 @@
 
 # include <iostream>
 # include <memory>
-# include <uuid/uuid.h>
 # include <utility>
 
 # include "base_class/entities/Player.hpp"
+# include "utils.h"
 
 
 // --- CONSTRUCTOR ---
@@ -90,22 +90,30 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 }
 
 // * Get the inventory of the player. *
-std::string Player::getItemInInventory() const {
+std::string Player::getItemInInventory(bool add_details) const {
 	if (_inventory.empty()) {
 		return "No item in inventory.\n";
 	}
 
-	std::string inventory = "Item in " + this->getName() + "'s inventory:\n[";
+	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
 	for (const auto& [id, item] : _inventory) {
 		if (item) {
+			if (add_details)
+				inventory += "[";
+
 			inventory += "\"" + item->getName();
 			inventory += "\", ";
+
+			if (add_details) {
+				inventory += "\"" + item_type_to_string(item->getType());
+				inventory += "\"], ";
+			}
 		}
 	}
 
 	inventory.pop_back();
 	inventory.pop_back();
-	inventory += "]\n";
+	inventory += "]";
 
 	return inventory;
 }
