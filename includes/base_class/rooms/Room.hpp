@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Room.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 14:42:42 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/19 13:28:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Room {
 		~Room() = default;
 
 		// Data
-		std::string	getRoomData();
+		std::string	getRoomData(bool add_details);
 
 		// ID
 		const std::string&	getID() const;
