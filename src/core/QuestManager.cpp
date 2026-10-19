@@ -6,8 +6,15 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 10:28:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 10:28:58 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 17:30:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "core/QuestManager.hpp"
+
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
+QuestManager::QuestManager(
+	std::unordered_map<std::string, std::unordered_map<std::string, std::string>>	quests_dict):
+	_quests_dict(quests_dict) {}

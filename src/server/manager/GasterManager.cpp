@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 16:18:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 17:20:58 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@
 # include "debug.h"
 
 
-// --- CONSTRUCTOR ---
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data) {
 
@@ -45,8 +47,9 @@ GasterManager::GasterManager(WorldConfig& world_data):
 		fillRoomsData();
 	}
 
-// ===== PUBLIC =====
-// --- PLAYER MANAGEMENTS ---
+// ============================================================================
+// =========================       PUBLIC      ================================
+// ============================================================================
 // CREATE PLAYER
 void	GasterManager::createPlayer(const std::string& player_name) {
 	// Get the spawn zone
@@ -64,7 +67,9 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
 }
 
-// --- GETTER ---
+// ============================================================================
+// ===================      COMMANDS - GETTER      ============================
+// ============================================================================
 // * Get a formatted list of players in game. *
 const std::string	GasterManager::getListOfPlayers() const {
 	std::string	list_players = "[";
@@ -122,7 +127,9 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 	return player->getItemInInventory(add_details);
 }
 
-// --- MOVEMENT ---
+// ============================================================================
+// ===================      COMMANDS - MOVEMENTS      =========================
+// ============================================================================
 // *Move a player to a direction. Take a player name and a Direction.*
 bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
 	// Get player
@@ -155,13 +162,6 @@ bool	GasterManager::movePlayer(const std::string& player_name, const Direction d
 	return true;
 }
 
-// --- CHECKER ---
-// * Check if the user exist, return true if yes. *
-bool	GasterManager::checkIfUserExist(const std::string& username) const {
-	return _world_state.players.find(username) != _world_state.players.end();
-}
-
-// --- ITEM MANAGEMENT --
 // * Take a requested item and put in player inventory. *
 bool	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
 	// Get the player
@@ -216,9 +216,18 @@ bool	GasterManager::dropItem(const std::string& player_name, const std::string& 
 	return true;
 }
 
-// ===== PRIVATE =====
-// --- Getter ---
-// * Get a player. *
+// ============================================================================
+// ===================           CHECKER      =================================
+// ============================================================================
+// * Check if the user exist, return true if yes. *
+bool	GasterManager::checkIfUserExist(const std::string& username) const {
+	return _world_state.players.find(username) != _world_state.players.end();
+}
+
+// ============================================================================
+// =========================       PRIVATE      ===============================
+// ============================================================================
+// * Get a player (const). *
 const Player*	GasterManager::getPlayer(const std::string& player_name) const {
 	auto it = _world_state.players.find(player_name);
 	if (it == _world_state.players.end()) {
@@ -233,7 +242,7 @@ Player* GasterManager::getPlayer(const std::string& player_name) {
     return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
 }
 
-// * Get an item. *
+// * Get an item (const). *
 const Item*	GasterManager::getItem(const std::string& item_name) const {
 	auto it = _world_state.items.find(item_name);
 	if (it == _world_state.items.end()) {
@@ -248,7 +257,7 @@ Item* GasterManager::getItem(const std::string& item_name) {
 	return const_cast<Item*>(std::as_const(*this).getItem(item_name));
 }
 
-// * Get a room. *
+// * Get a room (const). *
 const Room*	GasterManager::getRoom(const std::string& room_id) const {
 	auto it = _world_state.rooms.find(room_id);
 	if (it == _world_state.rooms.end()) {
@@ -263,7 +272,9 @@ Room*	GasterManager::getRoom(const std::string& room_id) {
 	return const_cast<Room*>(std::as_const(*this).getRoom(room_id));
 }
 
-// --- OBJECTS MANAGEMENTS ---
+// ============================================================================
+// ==================       OBJECTS MANAGEMENTS      ==========================
+// ============================================================================
 // CREATE OBJECTS
 // * Create the rooms and add them to the world state. *
 void	GasterManager::createRoom() {
@@ -377,7 +388,16 @@ void	GasterManager::fillRoomsData() {
 	}
 }
 
-// --- DEBUG ---
+// ============================================================================
+// =========================       MANAGERS     ===============================
+// ============================================================================
+void	GasterManager::createQuestManager() {
+	_quest_manager;
+}
+
+// ============================================================================
+// =========================       DEBUG      =================================
+// ============================================================================
 // Print the structure of WorldData
 void	GasterManager::debugPrintStructureData(bool show_gui_data) {
 	debug_print_structure(_world_data, show_gui_data);
