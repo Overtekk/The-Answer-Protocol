@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 17:20:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 17:48:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ class GasterManager {
 	void	createEntities();
 	void	createItems();
 	void	fillRoomsData();
-	// --- MANAGERS ---
-	void	createQuestManager();
 
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
