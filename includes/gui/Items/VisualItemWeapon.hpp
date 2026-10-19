@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/13 14:36:16 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/15 15:47:50 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/19 10:54:03 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class VisualItemWeapon: public VisualItem
 
         ~VisualItemWeapon() = default;
 
-        // Draw item, if width and height are not specified, it will original sprite width height
+        // Draw item, if width and height are not specified, it will use original sprite width height
 		void DrawWeaponIcon(float x, float y, float width = -1, float height = -1);
 };
 

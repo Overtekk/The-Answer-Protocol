@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 15:27:08 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/15 15:45:53 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/19 10:44:34 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ VisualItem::VisualItem(
 	float sprite_scale
 ):
     _id(id),
-    _chest_sprits(Animation(assets.sprits.at("chest"),
+    _chest_sprits(Animation(assets.sprites.at("chest"),
                             {this->_CHEST_WIDTH, this->_CHEST_HEIGHT,},
                             2, 2, 0, 0.0f, false)),
     _sprite_scale(sprite_scale) {}

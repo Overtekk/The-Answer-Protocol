@@ -6,10 +6,12 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 11:07:51 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 16:09:19 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/16 11:17:11 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <bits/stdc++.h>
+# include <vector>
 # include "gui/entities/User.hpp"
 
 User::User(

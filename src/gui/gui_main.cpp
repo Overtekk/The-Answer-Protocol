@@ -6,13 +6,17 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 16:27:35 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/19 16:37:34 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <typeinfo>
+# include <poll.h>
+# include <csignal>
+# include <iostream>
+# include <string.h>
 
 # include "raylib.h"
+# include "gui/data/VisualWorldState.hpp"
 # include "gui/entities/User.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
@@ -27,15 +31,20 @@
 # include "utils.h"
 # include "debug.h"
 
-int gui_parser(WorldConfig& world_data);
-void graphic(WorldConfig& world_data);
+# include "server/TCPSocket.hpp"
+# include "common.h"
+
+int gui_parser(WorldConfig& world_config);
+void graphic(WorldConfig& world_config);
+void	TCP_main(int argc, char** argv);
 
 
-int main() {
-	WorldConfig world_data;
-	if (gui_parser(world_data) == 0)
+int main(int argc, char** argv) {
+	WorldConfig world_config;
+	if (gui_parser(world_config) == 0)
 	{
-		graphic(world_data);
+		// graphic(world_config);
+		TCP_main(argc, argv);
 		return (0);
 	}
 	return (1);
@@ -70,47 +79,45 @@ bool checkCollison(float x1, float y1, float w1, float h1, float x2, float y2, f
 	return (false);
 }
 
-void graphic(WorldConfig& world_data)
+void graphic(WorldConfig& world_config)
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
 
-	LoadedAssets	assets;
+	LoadedAssets		assets;
+	LoadAssets(world_config, assets);
+	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 2.0f, assets);
 	
+	// std::cout << "============================================\n";
+	VisualItemWeapon*		sword = data.getAddWeapon("wooden_sword");
+	VisualItemConsumable*	v_cookie = data.getAddConsumable("COOKIE");
+	bool					Icon = false;
 
-	LoadAssets(world_data, assets);
-	
-	VisualItemWeapon	v_sword("basic sword", assets, 2.0f);
-	VisualItemConsumable	v_cookie("basic sword", assets, 2.0f);
-	bool				Icon = false;
-    User 				v_kris("Kris", assets.sprits.at("player"), {19, 38}, 2.0f);
-	// User				*v_kris = data.get_user();
-
-	v_kris.setPos(Vector2 {400, 225});
-	v_sword.setPos(Vector2 {500, 225});
-	v_cookie.setPos(Vector2 {150, 150});
+	data.user->setPos(Vector2 {400, 225});
+	sword->setPos(Vector2 {500, 225});
+	v_cookie->setPos(Vector2 {150, 150});
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(BLACK);
 
-			v_sword.DrawInRoom();
-			v_cookie.DrawInRoom();
+			sword->DrawInRoom();
+			v_cookie->DrawInRoom();
 			if (Icon == true)
 			{
-				v_sword.DrawWeaponIcon(495, 180);
+				sword->DrawWeaponIcon(495, 180);
 			}
 			
-			v_kris.update();
-			v_kris.onDraw();
+			data.user->update();
+			data.user->onDraw();
 
 			if (IsKeyReleased(KEY_E))
 			{
-				if (checkCollison(v_kris.getPos().x, v_kris.getPos().y, v_kris.getWidth(), v_kris.getHeight(), v_sword.getPos().x, v_sword.getPos().y, v_sword.getChestWidth(), v_sword.getChestHeight()))
+				if (checkCollison(data.user->getPos().x, data.user->getPos().y, data.user->getWidth(), data.user->getHeight(), sword->getPos().x, sword->getPos().y, sword->getChestWidth(), sword->getChestHeight()))
 				{
-					v_sword.ItemPicked();
+					sword->ItemPicked();
 					Icon = true;
 				}
 			}
@@ -120,4 +127,20 @@ void graphic(WorldConfig& world_data)
 
 	UnloadAssets(assets);
     CloseWindow();
+}
+
+void	TCP_main(int argc, char** argv)
+{
+	int			client_fd = connect_client_to_tcp(argc, argv);
+	TCPSocket 	client_socket(client_fd);
+	char		buffer[1024];
+	
+	client_socket.sendData("CONNECT Nomi\n");
+	client_socket.sendData("LOOK\n");
+
+	while (true)
+	{
+		client_socket.receiveData(buffer, 1024);
+		std::cout << buffer;
+	}
 }

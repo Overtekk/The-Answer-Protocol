@@ -6,14 +6,13 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:48:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 16:08:59 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/16 10:56:13 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <vector>
-# include <algorithm>
 # include "base_class/entities/Player.hpp"
 # include "gui/entities/VisualEntity.hpp"
 
