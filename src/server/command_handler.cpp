@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 13:19:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 15:03:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 
 # define IGNORED_CHARS	" \t\r\n"
 
-// ======= UTILS =======
+// ============================================================================
+// =========================       UTILS      =================================
+// ============================================================================
 // * Clean the line from spaces, ´\t', '\r' and , '\n'. *
 std::string	clean_line(const std::string& raw_line) {
 	std::string	ignored_chars = IGNORED_CHARS;
@@ -121,11 +123,15 @@ void	lower_the_string(std::string& text) {
 	}
 }
 
-// ======= METHODS =======
+// ============================================================================
+// =========================       METHODS      ===============================
+// ============================================================================
 // --- CONSTRUCTOR ---
 CommandHandler::CommandHandler(GasterManager& manager): _manager(manager) {}
 
-// ======= PUBLIC =======
+// ============================================================================
+// =========================       PUBLIC      ================================
+// ============================================================================
 // * Check the line of the current session and return the correct command. *
 void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_line) {
 	// Client is connect but not 'in game'.
@@ -138,7 +144,9 @@ void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_
 	}
 }
 
-// ======= PRIVATE ======
+// ============================================================================
+// =========================       PRIVATE      ===============================
+// ============================================================================
 // * Handling commands before the client is in game. *
 void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw_line) {
 	// Clear the line received
@@ -187,7 +195,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 
 	// Call the good command
 	switch (cmd) {
-		case GameCommand::QUIT:			commandConnect(session, argument); break;
+		case GameCommand::QUIT:			commandQuit(session, argument); break;
 		case GameCommand::WHO:			commandWho(session, argument); break;
 		case GameCommand::LOOK:			commandLook(session, argument); break;
 		case GameCommand::MOVE:			commandMove(session, argument); break;
@@ -200,7 +208,9 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 	return;
 }
 
-// --- COMMANDS ---
+// ============================================================================
+// =========================      COMMANDS      ===============================
+// ============================================================================
 void	CommandHandler::commandUnknown(TCPSession& session, std::string command) {
 	print_log_message(session, "rejected command: '" + command + "'");
 	session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
@@ -247,8 +257,14 @@ void	CommandHandler::commandWho(TCPSession& session, std::string argument) {
 }
 
 void	CommandHandler::commandLook(TCPSession& session, std::string argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getRoomData(session.getUsername())));
+	lower_the_string(argument);
+
+	if (argument == "--details") {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getRoomData(session.getUsername(), true)));
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getRoomData(session.getUsername(), false)));
 	return;
 }
 
@@ -313,7 +329,9 @@ void	CommandHandler::commandInventory(TCPSession& session, std::string argument)
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername())));
 }
 
-// --- DEBUG ---
+// ============================================================================
+// =========================        DEBUG      ================================
+// ============================================================================
 void	CommandHandler::debugTrySimulate(bool try_move) {
 	_manager.debugTrySimulate(try_move);
 }

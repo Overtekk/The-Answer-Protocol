@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 14:38:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 13:50:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,13 @@ const std::string	GasterManager::getListOfPlayers() const {
 }
 
 // * Get the data of the current room of the player.*
-const std::string	GasterManager::getRoomData(const std::string& player_name) const {
+const std::string	GasterManager::getRoomData(const std::string& player_name, bool add_details) const {
 	// Get the zone of the player
 	std::string zone_player = getPlayerRoom(player_name);
 	if (zone_player.empty())
 		return "ERROR: Player room not found.\n";
 
-	return _world_state.rooms.at(zone_player)->getRoomData();
+	return _world_state.rooms.at(zone_player)->getRoomData(add_details);
 }
 
 // * Get the room of of the player.*
@@ -407,20 +407,20 @@ void	GasterManager::debugTrySimulate(bool try_move) {
 
 	if (try_move) {
 		std::cout << RED << "State of Spawn:\n" << RESET;
-		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
 
 		std::cout << RED << "Try to move player to an bad direction: \n" << RESET;
 		movePlayer(test_player, Direction::NORTH);
-		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
 
 		std::cout << RED << "Try to move player to an good direction: \n" << RESET;
 		if (!movePlayer(test_player, Direction::EAST)) {
 			return;
 		}
-		std::cout << _world_state.rooms["spawn"]->getRoomData() << "\n\n";
+		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
 		Room* room_east = _world_state.rooms["spawn"]->getFromDirection(Direction::EAST);
 		if (room_east != nullptr) {
-			std::cout << _world_state.rooms[room_east->getID()]->getRoomData() << "\n\n";
+			std::cout << _world_state.rooms[room_east->getID()]->getRoomData(false) << "\n\n";
 		}
 	}
 }
