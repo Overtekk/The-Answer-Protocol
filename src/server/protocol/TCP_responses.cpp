@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:22:07 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/19 16:18:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ namespace {
 // * Return the error and the description to the client. *
 std::string getTCP_error(TCPErrorCode e) {
 	ErrorInfo i = getErrorInfo(e);
-	return "ERR " + std::to_string(i.code) + " " + i.name + " : " + i.description + "\n";
+	return "ERR " + std::to_string(i.code) + " " + i.name + " : " + i.description + "\n\n";
 }
 
 // * Return a string with an 'ok' at the start for successfully operation. *
 std::string	getTCP_OK_operation(const std::string& msg) {
-	return ("OK " + msg + "\n");
+	return ("OK " + msg + "\n\n");
 }
