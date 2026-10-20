@@ -76,6 +76,7 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/server/connect_client.cpp
 	src/server/tcp_socket.cpp
 	src/server/protocol/TCP_responses.cpp
+	src/gui/connection/ServerLink.cpp
 	src/gui/parser/gui_parser.cpp
 	src/gui/data/Loaders/AssetsLoader.cpp
 	src/gui/data/Loaders/AssetsUnloader.cpp

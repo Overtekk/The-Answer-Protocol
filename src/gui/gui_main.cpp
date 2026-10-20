@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 16:37:34 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/20 15:33:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,19 @@
 # include "utils.h"
 # include "debug.h"
 
-# include "server/TCPSocket.hpp"
+# include "gui/connection/ServerLink.hpp"
 # include "common.h"
 
-int gui_parser(WorldConfig& world_config);
-void graphic(WorldConfig& world_config);
-void	TCP_main(int argc, char** argv);
+int 	gui_parser(WorldConfig& world_config);
+void 	graphic(WorldConfig& world_config, int argc, char** argv);
+void 	print_server_sends(const std::vector<std::string> &lines);
 
 
 int main(int argc, char** argv) {
 	WorldConfig world_config;
 	if (gui_parser(world_config) == 0)
 	{
-		// graphic(world_config);
-		TCP_main(argc, argv);
+		graphic(world_config, argc, argv);
 		return (0);
 	}
 	return (1);
@@ -79,12 +78,14 @@ bool checkCollison(float x1, float y1, float w1, float h1, float x2, float y2, f
 	return (false);
 }
 
-void graphic(WorldConfig& world_config)
+void graphic(WorldConfig& world_config, int argc, char** argv)
 {
     SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
 
+	ServerLink			connection(argc, argv);
+	
 	LoadedAssets		assets;
 	LoadAssets(world_config, assets);
 	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 2.0f, assets);
@@ -94,12 +95,15 @@ void graphic(WorldConfig& world_config)
 	VisualItemConsumable*	v_cookie = data.getAddConsumable("COOKIE");
 	bool					Icon = false;
 
+	connection.send_commande("CONNECT Nomi");
 	data.user->setPos(Vector2 {400, 225});
 	sword->setPos(Vector2 {500, 225});
 	v_cookie->setPos(Vector2 {150, 150});
 
     while (!WindowShouldClose())
     {
+		print_server_sends(connection.recive());
+
         BeginDrawing();
             ClearBackground(BLACK);
 
@@ -119,6 +123,7 @@ void graphic(WorldConfig& world_config)
 				{
 					sword->ItemPicked();
 					Icon = true;
+					connection.send_commande("LOOK");
 				}
 			}
 
@@ -129,18 +134,9 @@ void graphic(WorldConfig& world_config)
     CloseWindow();
 }
 
-void	TCP_main(int argc, char** argv)
+void print_server_sends(const std::vector<std::string> &lines)
 {
-	int			client_fd = connect_client_to_tcp(argc, argv);
-	TCPSocket 	client_socket(client_fd);
-	char		buffer[1024];
-	
-	client_socket.sendData("CONNECT Nomi\n");
-	client_socket.sendData("LOOK\n");
-
-	while (true)
-	{
-		client_socket.receiveData(buffer, 1024);
-		std::cout << buffer;
+	for (auto line : lines) {
+		std::cout << line << "\n==================================\n";
 	}
 }
