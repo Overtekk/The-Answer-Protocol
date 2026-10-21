@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 10:28:33 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:36:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:36:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class QuestManager {
 	private :
 	std::unordered_map<std::string, QuestConfig>	_quests_dict;
 
-		bool	checkQuestExist(const std::string& quest_id);
+		bool	checkQuestExist(const std::string& quest_id) const;
 
 	public :
 		// CONSTRUCTOR
@@ -32,7 +32,7 @@ class QuestManager {
 		// DESTRUCTOR
 		~QuestManager() = default;
 
-		const std::unordered_map<std::string, std::string>	getQuestInformation(const std::string& quest_id);
+		const std::unordered_map<std::string, std::string>	getQuestInformation(const std::string& quest_id) const;
 		bool		giveQuest(const std::string& quest_id, Player& player);
 		bool		removeQuest(const std::string& quest_id, Player& player);
 		void		setQuestCompleted(const std::string& quest_id, Player& player);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 10:28:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:39:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:35:58 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ QuestManager::QuestManager(const std::unordered_map<std::string, QuestConfig>& q
 // ====================       PUBLIC METHODS      =============================
 // ============================================================================
 // * Quest the name and the description of a quest. *
-const std::unordered_map<std::string, std::string>	QuestManager::getQuestInformation(const std::string& quest_id) {
+const std::unordered_map<std::string, std::string>	QuestManager::getQuestInformation(const std::string& quest_id) const {
 	std::unordered_map<std::string, std::string>	quest_info;
 
 	if (checkQuestExist(quest_id)) {
-		quest_info["name"] = _quests_dict[quest_id].name;
-		quest_info["description"] = _quests_dict[quest_id].description;
+		quest_info["name"] = _quests_dict.at(quest_id).name;
+		quest_info["description"] = _quests_dict.at(quest_id).description;
 		return quest_info;
 	}
 	return quest_info;
@@ -96,7 +96,7 @@ void	QuestManager::addDefaultQuests(Player& player) {
 // ====================       PRIVATE METHODS      ============================
 // ============================================================================
 // * Check if the requested quest exist. *
-bool	QuestManager::checkQuestExist(const std::string& quest_id) {
+bool	QuestManager::checkQuestExist(const std::string& quest_id) const {
 	auto it = _quests_dict.find(quest_id);
 	if (it == _quests_dict.end()) {
 		print_log("\"" + quest_id + "\"" " doesn't exist.");

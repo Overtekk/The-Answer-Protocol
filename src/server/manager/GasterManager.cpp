@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:57:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:45:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include <memory>
 # include <utility>
 # include <string>
-# include <vector>
+# include <unordered_map>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -29,6 +29,7 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
+#include "config/Enums.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -132,7 +133,7 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 	return player->getItemInInventory(add_details);
 }
 
-// *Get the quests of a player. *
+// * Get the quests of a player. *
 const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
@@ -155,6 +156,23 @@ const std::string	GasterManager::getPlayerQuests(const std::string& player_name)
 	str_list_quests += "]";
 
 	return str_list_quests;
+
+}
+
+// * Get the name and description of a quest. *
+const std::string	GasterManager::getQuestDescription(const std::string& player_name, const std::string& quest_id) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	if (player->getQuestStatut(quest_id) == QuestState::NOT_FOUND)
+		return "Quest not found.";
+
+	std::unordered_map<std::string, std::string> quest_info = _quest_manager.getQuestInformation(quest_id);
+	if (quest_info.empty())
+		return "Quest not found.";
+
+	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
 }
 
 // ============================================================================

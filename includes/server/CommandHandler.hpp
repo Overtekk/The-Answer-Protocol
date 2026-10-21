@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:27:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:59:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class CommandHandler {
 		void	commandAttack(TCPSession& session, std::string argument);
 		void	commandStatus(TCPSession& session, std::string argument);
 		void	commandQuest(TCPSession& session, std::string argument);
+		void	commandQuestInfo(TCPSession& session, std::string argument);
 
 	public :
 		// --- CONSTRUCTOR ---
