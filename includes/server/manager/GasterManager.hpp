@@ -6,13 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 17:48:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:09:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
+# include <string>
 
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
@@ -52,6 +52,7 @@ class GasterManager {
 		const std::string	getRoomData(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerRoom(const std::string& player_name) const;
 		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
+		const std::string	getPlayerQuests(const std::string& player_name) const;
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);

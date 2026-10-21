@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 13:10:58 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:27:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,16 @@ class CommandHandler {
 		void	commandTake(TCPSession& session, std::string argument);
 		void	commandDrop(TCPSession& session, std::string argument);
 		void	commandInventory(TCPSession& session, std::string argument);
+		void	commandQuests(TCPSession& session, std::string argument);
+		void	commandChat(TCPSession& session, std::string argument);
+		void	commandGroupCreate(TCPSession& session, std::string argument);
+		void	commandGroupInvite(TCPSession& session, std::string argument);
+		void	commandGroupJoin(TCPSession& session, std::string argument);
+		void	commandGroupLeave(TCPSession& session, std::string argument);
+		void	commandTalk(TCPSession& session, std::string argument);
+		void	commandAttack(TCPSession& session, std::string argument);
+		void	commandStatus(TCPSession& session, std::string argument);
+		void	commandQuest(TCPSession& session, std::string argument);
 
 	public :
 		// --- CONSTRUCTOR ---

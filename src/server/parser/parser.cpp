@@ -6,19 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 14:23:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:23:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include <filesystem>
+# include <string>
 
 # include "yaml-cpp/yaml.h"
 # include "config/Enums.hpp"
+# include "config/WorldConfig.hpp"
 # include "parser.h"
 # include "utils.h"
-
-namespace fs = std::filesystem;
 
 LocationConfig parse_locationConfig(const std::string& loc_id, const YAML::Node& node, std::unordered_set<std::string>& knows_locations);
 ItemConfig parse_itemConfig(const std::string& item_id, const YAML::Node& node, std::unordered_set<std::string>& knows_items);

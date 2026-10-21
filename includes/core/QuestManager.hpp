@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 10:28:33 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 17:54:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:36:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,26 @@
 
 # include "config/WorldConfig.hpp"
 
+class Player;
+
 
 class QuestManager {
 	private :
 	std::unordered_map<std::string, QuestConfig>	_quests_dict;
+
+		bool	checkQuestExist(const std::string& quest_id);
 
 	public :
 		// CONSTRUCTOR
 		QuestManager(const std::unordered_map<std::string, QuestConfig>& quests_config);
 		// DESTRUCTOR
 		~QuestManager() = default;
+
+		const std::unordered_map<std::string, std::string>	getQuestInformation(const std::string& quest_id);
+		bool		giveQuest(const std::string& quest_id, Player& player);
+		bool		removeQuest(const std::string& quest_id, Player& player);
+		void		setQuestCompleted(const std::string& quest_id, Player& player);
+		bool		checkIfPlayerHaveQuest(const std::string& quest_id, Player& player, bool search_completed_quests = false);
+
+		void		addDefaultQuests(Player& player);
 };

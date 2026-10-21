@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 15:59:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:41:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::TAKE:			commandTake(session, argument); break;
 		case GameCommand::DROP:			commandDrop(session, argument); break;
 		case GameCommand::INVENTORY:	commandInventory(session, argument); break;
+		case GameCommand::QUESTS:		commandQuests(session, argument); break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -333,6 +334,13 @@ void	CommandHandler::commandInventory(TCPSession& session, std::string argument)
 	}
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername(), false)));
+}
+
+void	CommandHandler::commandQuests(TCPSession& session, std::string argument) {
+	std::ignore = argument;
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerQuests(session.getUsername())));
+	return;
 }
 
 // ============================================================================

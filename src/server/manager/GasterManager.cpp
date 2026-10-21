@@ -6,13 +6,15 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 17:48:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:57:54 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
 # include <utility>
+# include <string>
+# include <vector>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -27,7 +29,6 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
-# include "protocol/TCP_error.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -64,6 +65,9 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	Player* player = new_player.get();
 	_world_state.players[player_name] = std::move(new_player);
 	spawn->addPlayer(player);
+
+	// Give the player the default quests
+	_quest_manager.addDefaultQuests(*player);
 
 	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
 }
@@ -126,6 +130,31 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 		return "";
 
 	return player->getItemInInventory(add_details);
+}
+
+// *Get the quests of a player. *
+const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	std::string str_list_quests = "[";
+
+	for (const std::string& act_quests :   player->getCurrentQuests()) {
+		str_list_quests += "{\"quest_id\": \"" + act_quests + "\", \"status\": \"";
+		str_list_quests += quest_state_to_string(player->getQuestStatut(act_quests)) + "\"}, ";
+	}
+
+	for (const std::string& cmplt_quests :  player->getCompletedQuests()) {
+		str_list_quests += "{\"quest_id\": \"" + cmplt_quests + "\", \"status\": \"";
+		str_list_quests += quest_state_to_string(player->getQuestStatut(cmplt_quests)) + "\"}, ";
+	}
+
+	if (str_list_quests.size() > 1)
+		str_list_quests.erase(str_list_quests.size() - 2);
+	str_list_quests += "]";
+
+	return str_list_quests;
 }
 
 // ============================================================================

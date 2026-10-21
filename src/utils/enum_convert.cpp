@@ -6,11 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/02 16:48:05 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:59:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:17:58 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
+# include <string>
 
 # include "config/Enums.hpp"
 
@@ -46,6 +46,17 @@ std::string item_type_to_string(ItemType type) {
 		default:					return "unknown";
 	}
 }
+
+// *Return a quest statut enum in string format.*
+std::string quest_state_to_string(QuestState state) {
+	switch (state) {
+		case QuestState::COMPLETED:		return "completed";
+		case QuestState::IN_PROGRESS:	return "active";
+		case QuestState::NOT_FOUND:		return "not found";
+		default:						return "unknown";
+	}
+}
+
 
 // *Return a string in Direction enum if exist.*
 Direction direction_str_to_enum(const std::string& direction_str) {
