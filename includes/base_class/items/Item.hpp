@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 12:57:13 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 12:57:23 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/22 18:04:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
+# include <string>
+# include <cstdint>
 
 # include "config/Enums.hpp"
 

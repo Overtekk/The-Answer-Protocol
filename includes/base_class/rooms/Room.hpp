@@ -3,21 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Room.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 14:42:42 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/22 18:17:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
 # include <string>
 # include <filesystem>
 # include <unordered_map>
 
-# include <nlohmann/json.hpp>
 # include "base_class/items/Item.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
@@ -48,7 +46,7 @@ class Room {
 		~Room() = default;
 
 		// Data
-		std::string	getRoomData();
+		std::string	getRoomData(bool add_details);
 
 		// ID
 		const std::string&	getID() const;

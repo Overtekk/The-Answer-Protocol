@@ -10,27 +10,82 @@
 /*                                                                         */
 /* *********************************************************************** */
 
-# include <iostream>
-# include <memory>
-# include <uuid/uuid.h>
+# include <string>
 # include <utility>
 
 # include "base_class/entities/Player.hpp"
+# include "utils.h"
+# include "config/Enums.hpp"
 
 
-// --- CONSTRUCTOR ---
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 Player::Player(const std::string& name):
 	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {}
 
+// ============================================================================
+// ====================       PUBLIC METHODS      =============================
+// ============================================================================
 // --- GETTER ---
+// * Get the current zone of the player. *
 const std::string&	Player::getZone() const { return _zone; }
 
+// * Return player not completed quests. *
+std::vector<std::string>	Player::getCurrentQuests() const {
+	std::vector<std::string>	quests_list;
+
+	for (const auto& quest_id : _quests) {
+		if (quest_id.second == QuestState::IN_PROGRESS)
+			quests_list.push_back(quest_id.first);
+	}
+	return quests_list;
+}
+
+// * Return player completed quests. *
+std::vector<std::string>	Player::getCompletedQuests() const {
+	std::vector<std::string>	quests_list;
+
+	for (const auto& quest_id : _quests) {
+		if (quest_id.second == QuestState::COMPLETED)
+			quests_list.push_back(quest_id.first);
+	}
+	return quests_list;
+}
+
+QuestState	Player::getQuestStatut(const std::string& quest_id) const {
+	const auto it = _quests.find(quest_id);
+	if (it == _quests.end()) {
+		print_log(this->getName() + ": quest \"" + quest_id + "\" not found.");
+		return QuestState::NOT_FOUND;
+	}
+	return it->second;
+}
+
 // --- SETTER ---
+// * Set the new zone of the player. *
 void	Player::setZone(const std::string& new_zone) {
 	_zone = new_zone;
 }
 
-// --- INVENTORY SYSTEM ---
+// * Add a quest to the player. *
+void	Player::addQuest(const std::string& quest_id) {
+	_quests[quest_id] = QuestState::IN_PROGRESS;
+}
+
+// * Remove a quest from the player. *
+void	Player::removeQuest(const std::string& quest_id) {
+	_quests.erase(quest_id);
+}
+
+// * Set a quest as completed. *
+void	Player::setQuestCompleted(const std::string& quest_id) {
+	_quests[quest_id] = QuestState::COMPLETED;
+}
+
+// ============================================================================
+// ====================      INVENTORY SYSTEM      ============================
+// ============================================================================
 // * Add an item to the player inventory. *
 Item* Player::addItemToInventory(Item* item) {
 	if (!item) {
@@ -72,7 +127,7 @@ const Item* Player::getItem(ItemID id) const {
 		return it->second;
 	}
 	return nullptr;
-	}
+}
 
 	// * Get the item by ID from the player inventory. *
 Item* Player::getItem(ItemID id) {
@@ -90,22 +145,30 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 }
 
 // * Get the inventory of the player. *
-std::string Player::getItemInInventory() const {
+std::string Player::getItemInInventory(bool add_details) const {
 	if (_inventory.empty()) {
 		return "No item in inventory.\n";
 	}
 
-	std::string inventory = "Item in " + this->getName() + "'s inventory:\n[";
+	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
 	for (const auto& [id, item] : _inventory) {
 		if (item) {
+			if (add_details)
+				inventory += "[";
+
 			inventory += "\"" + item->getName();
 			inventory += "\", ";
+
+			if (add_details) {
+				inventory += "\"" + item_type_to_string(item->getType());
+				inventory += "\"], ";
+			}
 		}
 	}
 
 	inventory.pop_back();
 	inventory.pop_back();
-	inventory += "]\n";
+	inventory += "]";
 
 	return inventory;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Room.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/12 14:43:25 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/19 15:57:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,40 @@
 # include <unordered_map>
 # include <vector>
 
-# include <nlohmann/json.hpp>
 # include "base_class/rooms/Room.hpp"
 # include "config/Enums.hpp"
 # include "utils.h"
 
 namespace fs = std::filesystem;
 
+// ============================================================================
+// =========================       UTILS      =================================
+// ============================================================================
+// * Format a list of strings as ["a", "b"]. *
+static std::string	format_list(const std::vector<std::string>& list) {
+	std::string	out = "[";
+	for (size_t i = 0; i < list.size(); i++) {
+		if (i > 0)
+			out += ", ";
+		out += "\"" + list[i] + "\"";
+	}
+	return out + "]";
+}
 
+// * Format a list of already formatted elements as [a, b] (no quotes added). *
+static std::string	format_raw_list(const std::vector<std::string>& list) {
+	std::string	out = "[";
+	for (size_t i = 0; i < list.size(); i++) {
+		if (i > 0)
+			out += ", ";
+		out += list[i];
+	}
+	return out + "]";
+}
+
+// ============================================================================
+// =========================      METHODS      ================================
+// ============================================================================
 Room::Room(
 	const std::string& id, const std::string& name, const std::string& description,
 	const fs::path& background, const bool special
@@ -44,45 +70,46 @@ Room::Room(
 // ============================================================================
 
 // Get the data of a room with a json structure dumped. *
-std::string	Room::getRoomData() {
-	nlohmann::ordered_json	room_data;
-
-	room_data[this->getName()]["id"] = this->getID();
-	room_data[this->getName()]["name"] = this->getName();
-	room_data[this->getName()]["description"] = this->getDescription();
-	if (this->getFromDirection(Direction::NORTH) != nullptr) {
-		room_data[this->getName()]["exits"]["north"] = this->getFromDirection(Direction::NORTH)->getID();
-	}
-	if (this->getFromDirection(Direction::SOUTH) != nullptr) {
-		room_data[this->getName()]["exits"]["south"] = this->getFromDirection(Direction::SOUTH)->getID();
-	}
-	if (this->getFromDirection(Direction::EAST) != nullptr) {
-		room_data[this->getName()]["exits"]["east"] = this->getFromDirection(Direction::EAST)->getID();
-	}
-	if (this->getFromDirection(Direction::WEST) != nullptr) {
-		room_data[this->getName()]["exits"]["west"] = this->getFromDirection(Direction::WEST)->getID();
+std::string	Room::getRoomData(bool add_details) {
+	// Exits
+	std::string	exits;
+	for (Direction dir : {Direction::NORTH, Direction::SOUTH, Direction::EAST, Direction::WEST}) {
+		Room* room = this->getFromDirection(dir);
+		if (room == nullptr)
+			continue;
+		if (!exits.empty())
+			exits += ", ";
+		exits += "\"" + direction_to_string(dir) + "\": \"" + room->getID() + "\"";
 	}
 	// List of players
 	std::vector<std::string>	list_players;
 	for (const auto& it : _players) {
 		list_players.push_back(it.second->getName());
 	}
-	room_data["players"] = list_players;
 	// List of items
 	std::vector<std::string>	list_items;
 	for (const auto& it : _items) {
-		list_items.push_back(it.second->getID());
+		if (add_details)
+			list_items.push_back(format_list({it.second->getID(), item_type_to_string(it.second->getType())}));
+		else
+			list_items.push_back("\"" + it.second->getID() + "\"");
 	}
-	room_data["items"] = list_items;
 	// List of entities
 	std::vector<std::string>	list_npcs;
 	for (const auto& it : _entity) {
-		list_npcs.push_back(it.second->getID());
+		if (add_details)
+			list_npcs.push_back(format_list({it.second->getID(), enemy_type_to_string(it.second->getType())}));
+		else
+			list_npcs.push_back("\"" + it.second->getID() + "\"");
 	}
-	room_data["npcs"] = list_npcs;
 
-	std::string room_data_str = room_data.dump(4);
-	return room_data_str;
+	return "{ \"room\": { \"id\": \"" + this->getID()
+		+ "\", \"name\": \"" + this->getName()
+		+ "\", \"description\": \"" + this->getDescription()
+		+ "\", \"exits\": {" + exits + "} }"
+		+ ", \"players\": " + format_list(list_players)
+		+ ", \"items\": " + format_raw_list(list_items)
+		+ ", \"npcs\": " + format_raw_list(list_npcs) + " }";
 }
 
 // ============================================================================
