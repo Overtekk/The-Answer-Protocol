@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 15:59:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:52:03 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,10 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"QUIT",			GameCommand::QUIT},
 		{"CHAT",			GameCommand::CHAT},
 		{"WHO",				GameCommand::WHO},
-		{"GROUP_CREATE",	GameCommand::GROUP_CREATE},
-		{"GROUP_INVITE",	GameCommand::GROUP_INVITE},
-		{"GROUP_JOIN",		GameCommand::GROUP_JOIN},
-		{"GROUP_LEAVE",		GameCommand::GROUP_LEAVE},
+		{"GROUP CREATE",	GameCommand::GROUP_CREATE},
+		{"GROUP INVITE",	GameCommand::GROUP_INVITE},
+		{"GROUP JOIN",		GameCommand::GROUP_JOIN},
+		{"GROUP LEAVE",		GameCommand::GROUP_LEAVE},
 		{"TAKE",			GameCommand::TAKE},
 		{"DROP",			GameCommand::DROP},
 		{"INVENTORY",		GameCommand::INVENTORY},
@@ -104,7 +104,8 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"ATTACK",			GameCommand::ATTACK},
 		{"STATUS",			GameCommand::STATUS},
 		{"QUEST",			GameCommand::QUEST},
-		{"QUESTS",			GameCommand::QUESTS}
+		{"QUESTS",			GameCommand::QUESTS},
+		{"QUEST INFO",		GameCommand::QUEST_INFO}
 	};
 
 	auto it = game_map.find(cmd_str);
@@ -186,9 +187,15 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 	std::string command = std::get<0>(packed_cmd);
 	std::string argument = std::get<1>(packed_cmd);
 
-	// Check if command exist
+	// Check if command exist (two-words command first, ex: "QUEST INFO [QUEST]")
 	GameCommand cmd;
-	if (!parseGameCommand(command, cmd)) {
+	std::tuple<std::string, std::string> packed_sub_cmd = extract_command_and_args(argument);
+	std::string compound_command = command + " " + std::get<0>(packed_sub_cmd);
+	if (!argument.empty() && parseGameCommand(compound_command, cmd)) {
+		command = compound_command;
+		argument = std::get<1>(packed_sub_cmd);
+	}
+	else if (!parseGameCommand(command, cmd)) {
 		commandUnknown(session, command);
 		return;
 	}
@@ -202,6 +209,8 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::TAKE:			commandTake(session, argument); break;
 		case GameCommand::DROP:			commandDrop(session, argument); break;
 		case GameCommand::INVENTORY:	commandInventory(session, argument); break;
+		case GameCommand::QUESTS:		commandQuests(session, argument); break;
+		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument); break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -333,6 +342,20 @@ void	CommandHandler::commandInventory(TCPSession& session, std::string argument)
 	}
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername(), false)));
+}
+
+void	CommandHandler::commandQuests(TCPSession& session, std::string argument) {
+	std::ignore = argument;
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerQuests(session.getUsername())));
+	return;
+}
+
+void	CommandHandler::commandQuestInfo(TCPSession& session, std::string argument) {
+	lower_the_string(argument);
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getQuestDescription(session.getUsername(), argument)));
+	return;
 }
 
 // ============================================================================

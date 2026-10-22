@@ -6,16 +6,15 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:14:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:37:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 14:18:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
+# include <string>
 # include <queue>
 
-# include "config/WorldConfig.hpp"
 # include "config/Enums.hpp"
 
 # define pass (void)0
@@ -31,6 +30,7 @@ void	print_log(const std::string& log_msg);
 std::string	direction_to_string(Direction dir);
 std::string	enemy_type_to_string(EnemyType type);
 std::string	item_type_to_string(ItemType type);
+std::string quest_state_to_string(QuestState state);
 // - String to enum convert -
 Direction direction_str_to_enum(const std::string& direction_str);
 

@@ -6,17 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 15:59:25 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:30:04 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
-# include <vector>
+# include <string>
 
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
+# include "core/QuestManager.hpp"
 
 
 // * Orchestor of the program. *
@@ -24,6 +24,8 @@ class GasterManager {
 	private :
 		WorldConfig	_world_data;
 		WorldState	_world_state;
+
+		QuestManager	_quest_manager;
 
 	// --- CREATE OBJECTS ---
 	void	createRoom();
@@ -50,6 +52,8 @@ class GasterManager {
 		const std::string	getRoomData(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerRoom(const std::string& player_name) const;
 		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
+		const std::string	getPlayerQuests(const std::string& player_name) const;
+		const std::string	getQuestDescription(const std::string& player_name, const std::string& quest_id) const;
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:03:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:22:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,5 @@ enum class GameCommand {
 	STATUS,
 	QUEST,
 	QUESTS,
+	QUEST_INFO,
 };
