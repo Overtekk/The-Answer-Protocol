@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 14:34:10 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/22 10:56:54 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,14 @@ class VisualRoom
         VisualRoom(
 			const Texture2D	&tile_map
 		);
+
         ~VisualRoom() = default;
 
-		void	drawItems();
+        void    										addItem(VisualItem *item, const std::string &id);
 
-		void	shutUp() { std::ignore = this->tile_map; }
+		std::unordered_map<std::string, VisualItem*>	&getItems();
+        
+		void											drawItems();
+
+		void											shutUp() { std::ignore = this->tile_map; }
 };

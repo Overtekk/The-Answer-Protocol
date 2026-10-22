@@ -6,17 +6,16 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:34:47 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 14:36:02 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/21 16:36:29 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
 # include <unordered_map>
 # include <memory>
 
 # include "gui/data/VisualWorldState.hpp"
 
-# include "gui/VisualRoom.hpp"
+# include "gui/rooms/VisualRoom.hpp"
 
 # include "gui/entities/VisualEntity.hpp"
 # include "gui/entities/VisualPlayer.hpp"
@@ -81,5 +80,16 @@ VisualItemConsumable*	VisualWorldState::getAddConsumable(const std::string &id)
     {
         this->items.emplace(id, std::make_unique<VisualItemConsumable>(id, this->assets, 2.0f));
 		return ((VisualItemConsumable *)this->items.at(id).get());
+    }
+}
+
+
+VisualRoom*	            VisualWorldState::getRoom(const std::string &id)
+{
+	try { return ((VisualRoom *)this->rooms.at(id).get()); }
+    catch(...)
+    {
+        std::cout << "BIG ERROR =============================================\n";
+		return (nullptr);
     }
 }

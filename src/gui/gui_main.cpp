@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/20 15:33:12 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/22 11:16:59 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include <string.h>
 
 # include "raylib.h"
+# include "gui/rooms/RoomManager.hpp"
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/entities/User.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
-# include "base_class/rooms/Room.hpp"
 # include "base_class/entities/NPC.hpp"
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemConsumable.hpp"
@@ -36,7 +36,7 @@
 
 int 	gui_parser(WorldConfig& world_config);
 void 	graphic(WorldConfig& world_config, int argc, char** argv);
-void 	print_server_sends(const std::vector<std::string> &lines);
+void 	print_server_sends(ServerLink &lines);
 
 
 int main(int argc, char** argv) {
@@ -70,13 +70,6 @@ int gui_parser(WorldConfig& world_data) {
 	 return 0;
 }
 
-bool checkCollison(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
-{
-	if ((x1 + w1 / 2 > x2 - w2 / 2 and x1 - w1 / 2 < x2 + w2 / 2)
-	and (y1 + h1 / 2 > y2 - h2 / 2 and y1 - h1 / 2 < y2 + h2 / 2))
-		return (true);
-	return (false);
-}
 
 void graphic(WorldConfig& world_config, int argc, char** argv)
 {
@@ -89,43 +82,44 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 	LoadedAssets		assets;
 	LoadAssets(world_config, assets);
 	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 2.0f, assets);
+	RoomManager			room(data, connection, data.user.get());
+
+	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
 	
-	// std::cout << "============================================\n";
-	VisualItemWeapon*		sword = data.getAddWeapon("wooden_sword");
-	VisualItemConsumable*	v_cookie = data.getAddConsumable("COOKIE");
-	bool					Icon = false;
-
-	connection.send_commande("CONNECT Nomi");
 	data.user->setPos(Vector2 {400, 225});
-	sword->setPos(Vector2 {500, 225});
-	v_cookie->setPos(Vector2 {150, 150});
-
+	// Check if the player is correctly connected and update the spawn room
+	while (room.updateRoomState() == false) {
+		connection.recive();
+		if (!connection.lines.empty()) {
+			if (connection.lines.front().find("OK CONNECTE") == 0) {
+				connection.lines.pop();
+				std::cout << "CONNECTED !!!!\n";
+			}
+		}
+	}
+	
     while (!WindowShouldClose())
     {
-		print_server_sends(connection.recive());
+		connection.recive();
 
         BeginDrawing();
             ClearBackground(BLACK);
-
-			sword->DrawInRoom();
-			v_cookie->DrawInRoom();
-			if (Icon == true)
-			{
-				sword->DrawWeaponIcon(495, 180);
-			}
 			
+			room.updateRoom();
+			room.drawRoom();
+
 			data.user->update();
 			data.user->onDraw();
 
-			if (IsKeyReleased(KEY_E))
-			{
-				if (checkCollison(data.user->getPos().x, data.user->getPos().y, data.user->getWidth(), data.user->getHeight(), sword->getPos().x, sword->getPos().y, sword->getChestWidth(), sword->getChestHeight()))
-				{
-					sword->ItemPicked();
-					Icon = true;
-					connection.send_commande("LOOK");
-				}
-			}
+			// if (IsKeyReleased(KEY_E))
+			// {
+			// 	if (checkCollison(data.user->getPos().x, data.user->getPos().y, data.user->getWidth(), data.user->getHeight(), sword->getPos().x, sword->getPos().y, sword->getChestWidth(), sword->getChestHeight()))
+			// 	{
+			// 		sword->ItemPicked();
+			// 		Icon = true;
+			// 		connection.send_commande("LOOK", Commande::LOOK);
+			// 	}
+			// }
 
         EndDrawing();
     }
@@ -134,9 +128,10 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
     CloseWindow();
 }
 
-void print_server_sends(const std::vector<std::string> &lines)
+void print_server_sends(ServerLink &connection)
 {
-	for (auto line : lines) {
-		std::cout << line << "\n==================================\n";
+	while(connection.lines.empty() == false) {
+		std::cout << "--> " << connection.lines.front() << "\n";
+		connection.lines.pop();
 	}
 }

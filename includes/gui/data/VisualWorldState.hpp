@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:35:42 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 14:18:51 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/21 14:00:44 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include "config/WorldConfig.hpp"
 # include "config/LoadedAssets.hpp"
 
-# include "gui/VisualRoom.hpp"
+# include "gui/rooms/VisualRoom.hpp"
 
 # include "gui/entities/VisualEntity.hpp"
 # include "gui/entities/VisualPlayer.hpp"
@@ -62,6 +62,12 @@ class VisualWorldState
         VisualItemWeapon*		getAddWeapon(const std::string &id);
         VisualItemKey*			getAddKey(const std::string &id);
         VisualItemConsumable*	getAddConsumable(const std::string &id);
+
+        //===============================================================================
+        //=============================== ROOM GETER ====================================
+        //===============================================================================
+        
+        VisualRoom*             getRoom(const std::string &id);
 };
 
 

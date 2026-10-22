@@ -88,8 +88,10 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/Items/VisualItemConsumable.cpp
 	src/gui/Items/VisualItemKey.cpp
 	src/gui/Items/VisualItemWeapon.cpp
+	src/gui/rooms/RoomManager.cpp
 	src/gui/rooms/VisualRoom.cpp
     src/gui/Animation.cpp
+	src/gui/utils/VisualUtils.cpp
 	src/utils/files.cpp
 )
 
