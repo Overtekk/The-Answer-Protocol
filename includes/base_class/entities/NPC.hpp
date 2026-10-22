@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 13:56:53 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 11:56:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/22 18:17:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+# include <string>
 # include <unordered_map>
 
 # include "Entity.hpp"
