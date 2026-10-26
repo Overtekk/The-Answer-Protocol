@@ -6,7 +6,7 @@
 #    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/10/07 10:41:58 by roandrie         ###   ########.fr        #
+#    Updated: 2026/10/22 18:02:30 by roandrie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -106,15 +106,15 @@ re:		fclean all
 #     COLORS      #
 # --------------- #
 
-BLUE		=		\033[96m
-MAGENTA		=		\033[35m
-GREEN		=		\033[32m
-CYAN		=		\033[36m
-YELLOW		=		\033[93m
-BOLD		=		\033[1m
-BGREEN		=		\033[92m
-BRED		=		\033[91m
-BMAGENTA	=		\033[95m
-UNDERLINE	=		\033[4m
-ITALIC		=		\033[3m
-RESET		=		\033[0m
+BLUE		:=		$(shell printf '\033[96m')
+MAGENTA		:=		$(shell printf '\033[35m')
+GREEN		:=		$(shell printf '\033[32m')
+CYAN		:=		$(shell printf '\033[36m')
+YELLOW		:=		$(shell printf '\033[93m')
+BOLD		:=		$(shell printf '\033[1m')
+BGREEN		:=		$(shell printf '\033[92m')
+BRED		:=		$(shell printf '\033[91m')
+BMAGENTA	:=		$(shell printf '\033[95m')
+UNDERLINE	:=		$(shell printf '\033[4m')
+ITALIC		:=		$(shell printf '\033[3m')
+RESET		:=		$(shell printf '\033[0m')

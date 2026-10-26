@@ -6,11 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/19 10:35:34 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 12:57:42 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/22 18:17:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+# include <string>
 
 # include "Item.hpp"
 # include "config/Enums.hpp"

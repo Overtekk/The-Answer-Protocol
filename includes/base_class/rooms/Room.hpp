@@ -6,18 +6,16 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 13:28:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/22 18:17:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
 # include <string>
 # include <filesystem>
 # include <unordered_map>
 
-# include <nlohmann/json.hpp>
 # include "base_class/items/Item.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"

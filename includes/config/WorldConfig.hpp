@@ -6,17 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 14:12:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/22 18:18:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
 
-# include <iostream>
+# include <string>
 # include <unordered_map>
 # include <vector>
 
-# include "config/Enums.hpp"
+# include "Enums.hpp"
 
 
 /// ** Structures that hold raws data for the manager to create the objects later on. **
