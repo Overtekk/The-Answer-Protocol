@@ -319,7 +319,7 @@ entities:
       neutral_3: "Maus keeps running between your feet."
       neutral_4: "Maus is keenly aware of the fear it invokes."
       neutral_5: "Maus would like to go to its favorite bistro in this marvelous city."
-      neutral_6: "Smells like wood shavings.
+      neutral_6: "Smells like wood shavings."
       act_1: "Press [(SPACE)] To Trap!!!"
       act_result_failed: "Didn't catch anything..."
       act_result_won: "Caught the enemy!"
