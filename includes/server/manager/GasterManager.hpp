@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 09:40:55 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 11:21:36 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # include <string>
 
+# include "base_class/entities/Entity.hpp"
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
 # include "core/QuestManager.hpp"
@@ -42,6 +43,8 @@ class GasterManager {
 	Item*			getItem(const std::string& item_name);
 	const Room*		getRoom(const std::string& room_id) const;
 	Room*			getRoom(const std::string& room_id);
+	const Entity*	getEntity(const std::string& entity_id) const;
+	Entity*			getEntity(const std::string& entity_id);
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -56,6 +59,7 @@ class GasterManager {
 		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerQuests(const std::string& player_name) const;
 		const std::string	getQuestDescription(const std::string& player_name, const std::string& quest_id) const;
+		const std::string	getDialogue(const std::string& player_name, const std::string& entity_id) const;
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);

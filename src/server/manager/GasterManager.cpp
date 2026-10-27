@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 10:15:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 11:21:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,11 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
-#include "config/Enums.hpp"
+# include "core/QuestManager.hpp"
+# include "core/DialogueManager.hpp"
+# include "config/WorldConfig.hpp"
+# include "config/WorldState.hpp"
+# include "config/Enums.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -114,7 +118,7 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 	// Find the player
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	// Get the room of the player
 	const std::string& zone_player = player->getZone();
@@ -129,7 +133,7 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 const std::string	GasterManager::getPlayerInventory(const std::string& player_name, bool add_details) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	return player->getItemInInventory(add_details);
 }
@@ -138,7 +142,7 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	std::string str_list_quests = "[";
 
@@ -164,7 +168,7 @@ const std::string	GasterManager::getPlayerQuests(const std::string& player_name)
 const std::string	GasterManager::getQuestDescription(const std::string& player_name, const std::string& quest_id) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	if (player->getQuestStatut(quest_id) == QuestState::NOT_FOUND)
 		return "Quest not found.";
@@ -174,6 +178,19 @@ const std::string	GasterManager::getQuestDescription(const std::string& player_n
 		return "Quest not found.";
 
 	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
+}
+
+const std::string	GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "Player not found";
+
+	const Entity* entity = getEntity(entity_id);
+	if (!entity)
+		return "Entity not found";
+
+	_dialogue_manager.getLine(entity->getName(), "");
+	return "";
 }
 
 // ============================================================================
@@ -319,6 +336,21 @@ const Room*	GasterManager::getRoom(const std::string& room_id) const {
 // * Get a room. *
 Room*	GasterManager::getRoom(const std::string& room_id) {
 	return const_cast<Room*>(std::as_const(*this).getRoom(room_id));
+}
+
+// * Get an entity (const). *
+const Entity*	GasterManager::getEntity(const std::string& entity_id) const {
+	auto it = _world_state.entities.find(entity_id);
+	if (it == _world_state.entities.end()) {
+		print_log("GasterManager: can't find entity '" + entity_id + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get an entity. *
+Entity*	GasterManager::getEntity(const std::string& entity_id) {
+	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
 }
 
 // ============================================================================

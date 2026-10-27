@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 10:38:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 11:16:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class DialogueManager {
 		std::unordered_map<std::string, std::unordered_map<std::string, std::string>>	_dialogue_map;
 
 		// --- METHODS ---
-		bool	hasKey(const std::string entity_id, const std::string dialogue_key);
+		const std::string*	findLine(const std::string& entity_id, const std::string& dialogue_key) const;
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -33,5 +33,6 @@ class DialogueManager {
 		~DialogueManager() = default;
 
 		// --- METHODS ---
-		std::optional<std::string>	getLine(const std::string entity_id, const std::string dialogue_key);
+		bool						hasKey(const std::string& entity_id, const std::string& dialogue_key) const;
+		std::optional<std::string>	getLine(const std::string& entity_id, const std::string& dialogue_key) const;
 };

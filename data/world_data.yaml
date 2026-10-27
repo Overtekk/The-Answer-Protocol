@@ -9,7 +9,7 @@ world:
       exits:
         west: "road_traffic"
         east: "carnival"
-      spawns: []
+      spawns: ["dummy"]
       items: []
 
   # CITY ROAD TRAFFIC
@@ -254,6 +254,23 @@ items:
 
 # --- ENTITIES ---
 entities:
+  dummy:
+    name: "Dummy"
+    description: "It's just a simple dummy."
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      talk_1: "..."
+      talk_2: "...."
+      talk_3: "....."
+      talk_4: "......"
+      talk_5: "It's a dummy. He can't talk."
+      encounter: "The dummy stand here."
+      check_default: "It's a dummy."
+      neutral_1: "..."
+      neutral_2: "...."
+    type: "enemy"
+    hp: 33
+
   virovirokun: # mini-games = just act
     name: "Virovirokun"
     description: "A virus with a slightly criminal streak... and a heart of gold."
@@ -279,13 +296,13 @@ entities:
     description: "It's so excited that it thinks fighting is just play."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      first_dialogue_1: "You shall not pass as I guard those gates."
-      first_dialogue_2: "(even if you can pass by just going around...)."
-      first_dialogue_3: "But if you want to pass. You shall met my delicious strength."
-      second_dialogue_1: "Are you sure you want to fight me?"
-      second_dialogue_2: "In reality I've lost the other remote of the gates. I can't let you pass."
-      second_dialogue_3: "I've have one but it's mine."
-      pre_fight_dialogue: "Are you sure you want to force you way through?"
+      talk_1: "You shall not pass as I guard those gates."
+      talk_2: "(even if you can pass by just going around...)."
+      talk_3: "But if you want to pass. You shall met my delicious strength."
+      talk_4: "Are you sure you want to fight me?"
+      talk_5: "In reality I've lost the other remote of the gates. I can't let you pass."
+      talk_6: "I've have one but it's mine."
+      talk_7: "Are you sure you want to force you way through?"
       encounter: "This is a dog in a guard suit."
       check_default: "It's not very excited."
       check_1: "It's a bit excited."
@@ -303,7 +320,7 @@ entities:
       low_hp: "Greater Dog is panting slowly."
       can_spare: "Greater Dog is contented."
       killed: "I... just wanted the ball..."
-      remote_dialogue: "You have the remote. You shall pass."
+      talk_8: "You have the remote. You shall pass."
     type: "boss"
     hp: 150
 
@@ -382,8 +399,8 @@ entities:
     description: "Despite appearances, it's trying its best to defeat you."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      dialogue_spared_road_1: "K.Round look at you. He thinks you are special."
-      dialogue_spared_road_2: "It give you a Key as a reward."
+      talk_1: "K.Round look at you. He thinks you are special."
+      talk_2: "It give you a Key as a reward."
       encounter: "K.Round shuffles furiously."
       check_default: "Check? That's chess, not checkers!"
       neutral_1: "K.Round shuffles furiously."
@@ -406,20 +423,20 @@ entities:
     description: "The Queen that has stolen your moss to play with you."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      first_dialogue_1: "Oh! You're finally here!"
-      first_dialogue_2: "Congratulation. You want your moss?"
-      first_dialogue_3: "Distract me and I will give it to you."
-      pre_fight_dialogue: "Wants to fight?"
+      talk_1: "Oh! You're finally here!"
+      talk_2: "Congratulation. You want your moss?"
+      talk_3: "Distract me and I will give it to you."
+      talk_4: "Wants to fight?"
       encounter: "The tension feels electric."
       check_default: "The Queen"
       neutral_1: "The skyline echoes with regal laughter."
       neutral_2: "The fountain flows ominously."
       neutral_3: "Smells like overclocked high heels."
       neutral_4: "Moss feels you with DETERMINATION."
-      win_dialogue_1: "Well. Well. Well."
-      win_dialogue_2: "You won. Congrats. I just wanted to play with you. I'm bored."
-      win_dialogue_3: "Take your moss now."
-      final_dialogue: "You can go now."
+      talk_5: "Well. Well. Well."
+      talk_6: "You won. Congrats. I just wanted to play with you. I'm bored."
+      talk_7: "Take your moss now."
+      talk_8: "You can go now."
     type: "boss"
     hp: 500
 
@@ -437,17 +454,17 @@ entities:
     description: "Your best friend, Susie!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hey. What's up?"
-      dialogue_key_1: "Hey! I know where the other key is. You want it?"
-      dialogue_key_2: "But I can't give it like that. I want something."
-      dialogue_key_3: "Hum... Let me think..."
-      dialogue_key_4: "I know!"
-      dialogue_key_5: "I want a chocolate cake. Bring me that."
-      dialogue_key_6: "You should talk to Ralsei. He knows how to cook unlike you."
-      dialogue_quest_cake: "Where's my chocolate cake?"
-      dialogue_cake_1: "Oh! Thanks you."
-      dialogue_cake_2: "Yummy. Here's the key."
-      dialogue_final: "I'm eating. Go away."
+      talk_1: "Hey. What's up?"
+      talk_2: "Hey! I know where the other key is. You want it?"
+      talk_3: "But I can't give it like that. I want something."
+      talk_4: "Hum... Let me think..."
+      talk_5: "I know!"
+      talk_6: "I want a chocolate cake. Bring me that."
+      talk_7: "You should talk to Ralsei. He knows how to cook unlike you."
+      talk_8: "Where's my chocolate cake?"
+      talk_9: "Oh! Thanks you."
+      talk_10: "Yummy. Here's the key."
+      talk_11: "I'm eating. Go away."
     type: "npc"
     hp: 999
 
@@ -456,16 +473,16 @@ entities:
     description: "The prince of the Dark World and also your best friend."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hey!"
-      dialogue_cake_1: "You want to do a cake? Well, I can do it..."
-      dialogue_cake_2: "I just need those ingredients."
-      dialogue_cake_3: "Wheat,"
-      dialogue_cake_4: "A chocolate bar,"
-      dialogue_cake_5: "And milk."
-      dialogue_cake_6: "You have everything?"
-      dialogue_cake_finish_1: "I can do the cake know. Wait a minute."
-      dialogue_cake_finish_2: "Here your cake. Have a good meal!"
-      dialogue_final: "The cake was good?"
+      talk_1: "Hey!"
+      talk_2: "You want to do a cake? Well, I can do it..."
+      talk_3: "I just need those ingredients."
+      talk_4: "Wheat,"
+      talk_5: "A chocolate bar,"
+      talk_6: "And milk."
+      talk_7: "You have everything?"
+      talk_8: "I can do the cake know. Wait a minute."
+      talk_9: "Here your cake. Have a good meal!"
+      talk_10: "The cake was good?"
     type: "npc"
     hp: 999
 
@@ -474,10 +491,10 @@ entities:
     description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Moo!"
-      dialogue_1: "Moo, moo?"
-      dialogue_2: "Moo... Moo, moooo, moo."
-      dialogue_3: "Moo! Moo, moo? Mooooo."
+      talk_1: "Moo!"
+      talk_2: "Moo, moo?"
+      talk_3: "Moo... Moo, moooo, moo."
+      talk_4: "Moo! Moo, moo? Mooooo."
     type: "npc"
     hp: 999
 
@@ -486,17 +503,17 @@ entities:
     description: "He wants to make a DEAL, but don't give him your MONEY!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "YOU [Little Sponge]! I KNEW YOU'D COME HERE [[On A Saturday Night]]"
-      dialogue_1: "AFTER ALL, YOU WANNA BE A [Big Shot]! EAHAHAHAHAA!!"
-      dialogue_2: "COME TO MY [Shopping Mall]."
-      dialogue_shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
-      dialogue_shop_2: "LET'S MAKE A DEAL."
+      talk_1: "YOU [Little Sponge]! I KNEW YOU'D COME HERE [[On A Saturday Night]]"
+      talk_2: "AFTER ALL, YOU WANNA BE A [Big Shot]! EAHAHAHAHAA!!"
+      talk_3: "COME TO MY [Shopping Mall]."
+      shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
+      shop_2: "LET'S MAKE A DEAL."
       no_money: "MONEY NO [Not enought D$]"
       buy: "DEALS SO GOOD I'LL [$!$$] MYSELF!"
       remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
       quit: "HURRY UP AND BUY. NO [exit], NO [return back]!!"
-      pipis_1: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
-      pipis_2: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
+      talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
+      talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
     type: "shop"
     hp: 999
 
@@ -505,7 +522,10 @@ entities:
     description: "He like juice."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "..."
+      shop_1: "..."
+      no_money: ":["
+      buy: ":}"
+      quit: ";)"
     type: "shop"
     hp: 999
 
