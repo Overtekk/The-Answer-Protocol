@@ -172,3 +172,20 @@ std::string Player::getItemInInventory(bool add_details) const {
 
 	return inventory;
 }
+
+// ============================================================================
+// ====================       DIALOGUE SYSTEM      ============================
+// ============================================================================
+// * Set a new index for the given entity. *
+void	Player::setDialogueIndex(const std::string& entity_id, int new_index) {
+	_dialogue_state[entity_id] = new_index;
+}
+
+// * Get the current index of an entity. *
+int 	Player::getDialogueIndex(const std::string& entity_id) const {
+	const auto& it = _dialogue_state.find(entity_id);
+	if (it == _dialogue_state.end())
+		return 0;
+
+	return it->second;
+}

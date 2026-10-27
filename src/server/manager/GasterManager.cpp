@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 11:21:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:32:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,17 +180,33 @@ const std::string	GasterManager::getQuestDescription(const std::string& player_n
 	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
 }
 
-const std::string	GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) const {
-	const Player* player = getPlayer(player_name);
+// ============================================================================
+// ===================      COMMANDS - DIALOGUE      ==========================
+// ============================================================================
+// * Get the dialogue line and send it to the client. *
+const std::string	GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) {
+	Player* player = getPlayer(player_name);
 	if (!player)
-		return "Player not found";
+		return "Player not found.";
 
 	const Entity* entity = getEntity(entity_id);
 	if (!entity)
-		return "Entity not found";
+		return "Entity not found.";
 
-	_dialogue_manager.getLine(entity->getName(), "");
-	return "";
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room)
+		return "Can't find player room";
+	// Check if entity is in player room
+	Entity* entity_room = player_room->getEntity(entity->getName());
+	if (!entity_room)
+		return "Entity not in player room";
+
+	int dialogue_index = player->getDialogueIndex(entity_id);
+	if (_dialogue_manager.hasKey(entity_id, "talk_" + std::to_string(dialogue_index))) {
+
+	}
+	return "It doesn't want to speak.";
 }
 
 // ============================================================================

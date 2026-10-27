@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 11:21:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:21:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class GasterManager {
 		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerQuests(const std::string& player_name) const;
 		const std::string	getQuestDescription(const std::string& player_name, const std::string& quest_id) const;
-		const std::string	getDialogue(const std::string& player_name, const std::string& entity_id) const;
+		const std::string	getDialogue(const std::string& player_name, const std::string& entity_id);
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);
