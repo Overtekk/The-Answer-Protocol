@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 15:45:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 10:15:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@
 // ============================================================================
 GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data),
-	_quest_manager(_world_data.quests) {
+	_quest_manager(_world_data.quests),
+	_dialogue_manager(_world_data.entities) {
 
 		// Create all the objects
 		createRoom();
@@ -342,22 +343,22 @@ void	GasterManager::createEntities() {
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			default:
@@ -435,11 +436,6 @@ void	GasterManager::fillRoomsData() {
 		}
 	}
 }
-
-// ============================================================================
-// =========================       MANAGERS     ===============================
-// ============================================================================
-
 
 // ============================================================================
 // =========================       DEBUG      =================================

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 15:30:04 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 09:40:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
 # include "core/QuestManager.hpp"
+# include "core/DialogueManager.hpp"
 
 
 // * Orchestor of the program. *
@@ -26,6 +27,7 @@ class GasterManager {
 		WorldState	_world_state;
 
 		QuestManager	_quest_manager;
+		DialogueManager	_dialogue_manager;
 
 	// --- CREATE OBJECTS ---
 	void	createRoom();

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:04:23 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 11:57:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 09:58:03 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 # include "base_class/entities/NPCShop.hpp"
 
 
-// --- CONSTRUCTOR ---
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 NPCShop::NPCShop(
     const std::string& id, const std::string& name, const std::string& description,
-	std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
+	EnemyType type, int health
 ):
-	NPC(id, name, description, dialogue, type, health) {}
+	NPC(id, name, description, type, health) {}

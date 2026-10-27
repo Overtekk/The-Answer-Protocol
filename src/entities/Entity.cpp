@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 14:24:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 09:57:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # include "utils.h"
 
 
-// --- CONSTRUCTOR ---
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 Entity::Entity(const std::string& id, const std::string& name, const std::string& description,
 	EnemyType type, int health):
 	_id(id),
