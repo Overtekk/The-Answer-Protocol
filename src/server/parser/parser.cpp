@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:23:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/29 14:42:06 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ QuestConfig parse_questConfig(const std::string& quest_id, const YAML::Node& nod
 Direction convert_direction(const std::string& direction_str);
 ItemType convert_itemType(const std::string& itemtype_str);
 EnemyType convert_enemyType(const std::string& enemytype_str);
+QuestStage convert_questStage(const std::string& quest_stage_str);
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id);
 void check_int(int value, const std::string& id);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
@@ -89,7 +90,12 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 		// Check numbers of quests
 		if (world.quests.size() < 3)
 			throw std::runtime_error("You need to have a least 3 quests. Only " + std::to_string(world.quests.size() ) + " found.");
-
+		// Check if quests are valid in the dialogue stage
+		for (const auto& entry : world.entities["dialogue_stage"]) {
+			if (entry != QuestConfig.name) {
+				throw std::runtime_error("Invalid quest? 😱");
+			}
+		}
 	}
 	catch (const std::exception& e) {
 		print_error(std::string("PARSING FAILED!\n") + e.what());
@@ -158,7 +164,7 @@ ItemConfig parse_itemConfig(
 // Parsing for the entities part.
 EntityConfig parse_entityConfig(
 	const std::string& entity_id, const YAML::Node& node, std::unordered_set<std::string>& knows_entities) {
-	EntityConfig config;
+	EntityConfig	config;
 
 	knows_entities.insert(entity_id); // added to the set to check later
 
@@ -166,12 +172,39 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
-
-
 	if (node["dialogue"] && node["dialogue"].IsMap()) {
 		for (const auto& entry : node["dialogue"]) {
 			std::string dial_key = entry.first.as<std::string>();
 			config.dialogue[dial_key] = entry.second.as<std::string>();
+		}
+	}
+
+	if (node["talk_stages"] && node["talk_stages"].IsSequence()) {
+		for (const auto& entry : node["talk_stages"]) {
+			DialogueStage config_dialogue;
+			config_dialogue.last_stage = getValue<int>(entry, "last_stage", 0);
+			if (config_dialogue.last_stage <= 0) {
+				print_warning("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
+					+ std::to_string(config_dialogue.last_stage) + ". Server will launch but this entity will have no dialogues.\n");
+				config.dialogue_stage.clear();
+				break;
+			}
+			if (!config.dialogue_stage.empty() && config_dialogue.last_stage <= config.dialogue_stage.back().last_stage) {
+				print_warning("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
+					+ std::to_string(config_dialogue.last_stage) + ". Server will launch but this entity will have no dialogues.\n");
+				config.dialogue_stage.clear();
+				break;
+			}
+			auto it = config.dialogue.find("talk_" + std::to_string(config_dialogue.last_stage));
+			if (it != config.dialogue.end()) {
+				print_warning("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = missing dialogue key"
+				". Server will launch but this entity will have no dialogues.\n");
+				config.dialogue_stage.clear();
+				break;
+			}
+			config_dialogue.quest_id = getValue<std::string>(entry, "wait_quest", "");
+			config_dialogue.condition = convert_questStage(getValue<std::string>(entry, "wait_for", ""));
+			config.dialogue_stage.push_back(config_dialogue);
 		}
 	}
 
@@ -226,6 +259,14 @@ EnemyType convert_enemyType(const std::string& enemytype_str) {
 	if (enemytype_str == "shop")  return EnemyType::SHOP;
 
 	return EnemyType::UNKNOWN;
+}
+
+// Convert the direction in string to an enum.
+QuestStage convert_questStage(const std::string& quest_stage_str) {
+	if (quest_stage_str == "completed") return QuestStage::COMPLETED;
+	if (quest_stage_str == "have") return QuestStage::HAVE;
+
+	return QuestStage::UNKNOWN;
 }
 
 // --- CHECKER ---

@@ -291,39 +291,6 @@ entities:
     type: "enemy"
     hp: 50
 
-  guard_dog: # mini-games = make the dog comes to the player by ignoring it then pet it 5 times
-    name: "Guard Dog"
-    description: "It's so excited that it thinks fighting is just play."
-    sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      talk_1: "You shall not pass as I guard those gates."
-      talk_2: "(even if you can pass by just going around...)."
-      talk_3: "But if you want to pass. You shall met my delicious strength."
-      talk_4: "Are you sure you want to fight me?"
-      talk_5: "In reality I've lost the other remote of the gates. I can't let you pass."
-      talk_6: "I've have one but it's mine."
-      talk_7: "Are you sure you want to force you way through?"
-      encounter: "This is a dog in a guard suit."
-      check_default: "It's not very excited."
-      check_1: "It's a bit excited."
-      check_2: "It's excited but not enought to play."
-      check_3: "It's so excited that it thinks fighting is just play."
-      neutral_1: "Guard Dog is watching you intently."
-      neutral_2: "Guard Dog is waiting for your command."
-      neutral_3: "It smells like freshly-squeezed puppy juice."
-      neutral_4: "Guard Dog is seeking affection."
-      act_pet_1: "Greater Dog is too far away to pet. You just pet the air."
-      act_pet_2: "You pet the dog."
-      act_play_1: "Greater Dog is not excited enough to play with."
-      act_play_2: "You play with the dog."
-      act_ignore: "You ignore the dog. His face looks sad."
-      low_hp: "Greater Dog is panting slowly."
-      can_spare: "Greater Dog is contented."
-      killed: "I... just wanted the ball..."
-      talk_8: "You have the remote. You shall pass."
-    type: "boss"
-    hp: 150
-
   maus: # mini-games = catch mouses
     name: "Maus"
     description: "It dreams of re-enacting scenes from cat and mouse cartoons."
@@ -394,6 +361,44 @@ entities:
     type: "enemy"
     hp: 111
 
+  guard_dog: # mini-games = make the dog comes to the player by ignoring it then pet it 5 times
+    name: "Guard Dog"
+    description: "It's so excited that it thinks fighting is just play."
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      talk_1: "You shall not pass as I guard those gates."
+      talk_2: "(even if you can pass by just going around...)."
+      talk_3: "But if you want to pass. You shall met my delicious strength."
+      talk_4: "Are you sure you want to fight me?"
+      talk_5: "In reality I've lost the other remote of the gates. I can't let you pass."
+      talk_6: "I've have one but it's mine."
+      talk_7: "Are you sure you want to force you way through?"
+      talk_8: "You have the remote. You shall pass."
+      encounter: "This is a dog in a guard suit."
+      check_default: "It's not very excited."
+      check_1: "It's a bit excited."
+      check_2: "It's excited but not enought to play."
+      check_3: "It's so excited that it thinks fighting is just play."
+      neutral_1: "Guard Dog is watching you intently."
+      neutral_2: "Guard Dog is waiting for your command."
+      neutral_3: "It smells like freshly-squeezed puppy juice."
+      neutral_4: "Guard Dog is seeking affection."
+      act_pet_1: "Greater Dog is too far away to pet. You just pet the air."
+      act_pet_2: "You pet the dog."
+      act_play_1: "Greater Dog is not excited enough to play with."
+      act_play_2: "You play with the dog."
+      act_ignore: "You ignore the dog. His face looks sad."
+      low_hp: "Greater Dog is panting slowly."
+      can_spare: "Greater Dog is contented."
+      killed: "I... just wanted the ball..."
+    talk_stages:
+      - last: 7
+      - last: 8
+        wait_quest: "buy_remote"
+        wait_for: "completed"
+    type: "boss"
+    hp: 150
+
   k_round: # mini-game = make the crown falls
     name: "K.Round"
     description: "Despite appearances, it's trying its best to defeat you."
@@ -415,6 +420,10 @@ entities:
       check_bow_4: "Its crown start to fall."
       low_hp: "K.Round's shuffle becomes lethargic."
       spare: "K.Round lose his crown. He run away."
+    talk_stages:
+      - last: 2
+        wait_quest: "buy_remote"
+        wait_for: "completed"
     type: "boss"
     hp: 400
 
@@ -427,16 +436,21 @@ entities:
       talk_2: "Congratulation. You want your moss?"
       talk_3: "Distract me and I will give it to you."
       talk_4: "Wants to fight?"
+      talk_5: "Well. Well. Well."
+      talk_6: "You won. Congrats. I just wanted to play with you. I'm bored."
+      talk_7: "Take your moss now."
+      talk_8: "You can go now."
       encounter: "The tension feels electric."
       check_default: "The Queen"
       neutral_1: "The skyline echoes with regal laughter."
       neutral_2: "The fountain flows ominously."
       neutral_3: "Smells like overclocked high heels."
       neutral_4: "Moss feels you with DETERMINATION."
-      talk_5: "Well. Well. Well."
-      talk_6: "You won. Congrats. I just wanted to play with you. I'm bored."
-      talk_7: "Take your moss now."
-      talk_8: "You can go now."
+    talk_stages:
+      - last: 4
+      - last: 8
+        wait_quest: "defeat_queen"
+        wait_for: "completed"
     type: "boss"
     hp: 500
 
@@ -465,6 +479,14 @@ entities:
       talk_9: "Oh! Thanks you."
       talk_10: "Yummy. Here's the key."
       talk_11: "I'm eating. Go away."
+    talk_stages:
+      - last: 1
+        wait_quest: "find_key_b"
+        wait_for: "have"
+      - last: 8
+        wait_quest: "talk_to_susie"
+        wait_for: "have"
+      - last: 11
     type: "npc"
     hp: 999
 
@@ -483,6 +505,12 @@ entities:
       talk_8: "I can do the cake know. Wait a minute."
       talk_9: "Here your cake. Have a good meal!"
       talk_10: "The cake was good?"
+    talk_stages:
+      - last: 1
+      - last: 7
+        wait_quest: "find_ralsei"
+        wait_for: "have"
+      - last: 10
     type: "npc"
     hp: 999
 
@@ -506,14 +534,22 @@ entities:
       talk_1: "YOU [Little Sponge]! I KNEW YOU'D COME HERE [[On A Saturday Night]]"
       talk_2: "AFTER ALL, YOU WANNA BE A [Big Shot]! EAHAHAHAHAA!!"
       talk_3: "COME TO MY [Shopping Mall]."
+      talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
+      talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
       shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
       shop_2: "LET'S MAKE A DEAL."
       no_money: "MONEY NO [Not enought D$]"
       buy: "DEALS SO GOOD I'LL [$!$$] MYSELF!"
       remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
       quit: "HURRY UP AND BUY. NO [exit], NO [return back]!!"
-      talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
-      talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
+    talk_stages:
+      - last: 3
+        wait_quest: "find_spamton"
+        wait_for: "completed"
+      - last: 5
+        wait_quest: "bring_pipis"
+        wait_for: "completed"
+      - last: 10
     type: "shop"
     hp: 999
 

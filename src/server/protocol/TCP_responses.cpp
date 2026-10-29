@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 16:18:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/29 10:31:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ namespace {
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
 			case TCPErrorCode::COMMAND_NOT_FOUND:		return {127, "COMMAND_NOT_FOUND",		"This command doesn't exist."};
 			case TCPErrorCode::MISSING_USERNAME:		return {203, "MISSING_USERNAME",		"Username is missing after the command."};
+			case TCPErrorCode::NPC_NO_DIALOGUE:			return {406, "NPC_NO_DIALOGUE",			"This NPC has no dialogue available."};
 		}
 		return {999, "UNKNOWN_ERROR", "Unknown error code"};
 	}

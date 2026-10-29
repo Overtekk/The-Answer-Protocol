@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 12:32:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/29 09:45:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
+#include <optional>
 # include <utility>
 # include <string>
 # include <unordered_map>
@@ -198,13 +199,14 @@ const std::string	GasterManager::getDialogue(const std::string& player_name, con
 	if (!player_room)
 		return "Can't find player room";
 	// Check if entity is in player room
-	Entity* entity_room = player_room->getEntity(entity->getName());
-	if (!entity_room)
+	Entity* entity_in_room = player_room->getEntity(entity->getName());
+	if (!entity_in_room)
 		return "Entity not in player room";
 
 	int dialogue_index = player->getDialogueIndex(entity_id);
-	if (_dialogue_manager.hasKey(entity_id, "talk_" + std::to_string(dialogue_index))) {
-
+	if (_dialogue_manager.hasKey(entity_id, "talk_" + std::to_string(dialogue_index + 1))) {
+		std::optional<std::string> dialogue = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(dialogue_index + 1));
+		return dialogue;
 	}
 	return "It doesn't want to speak.";
 }
