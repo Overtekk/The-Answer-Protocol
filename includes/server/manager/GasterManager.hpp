@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 15:34:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 16:12:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "config/WorldState.hpp"
 # include "core/QuestManager.hpp"
 # include "core/DialogueManager.hpp"
+# include "core/CombatManager.hpp"
 
 
 enum class TalkStatus { OK, NOT_FOUND, NO_DIALOGUE };
@@ -39,6 +40,7 @@ class GasterManager {
 
 		QuestManager	_quest_manager;
 		DialogueManager	_dialogue_manager;
+		CombatManager	_combat_manager;
 
 	// --- CREATE OBJECTS ---
 	void	createRoom();

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 15:37:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 16:12:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@
 GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data),
 	_quest_manager(_world_data.quests),
-	_dialogue_manager(_world_data.entities) {
+	_dialogue_manager(_world_data.entities),
+	_combat_manager() {
 
 		// Create all the objects
 		createRoom();

@@ -64,6 +64,7 @@ set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 	src/server/logger.cpp
 	src/core/QuestManager.cpp
 	src/core/DialogueManager.cpp
+	src/core/CombatManager.cpp
 	src/utils/files.cpp
 )
 
