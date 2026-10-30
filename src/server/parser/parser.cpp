@@ -6,10 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:23:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 13:44:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <cctype>
 # include <string>
 
 # include "yaml-cpp/yaml.h"
@@ -25,8 +26,11 @@ QuestConfig parse_questConfig(const std::string& quest_id, const YAML::Node& nod
 Direction convert_direction(const std::string& direction_str);
 ItemType convert_itemType(const std::string& itemtype_str);
 EnemyType convert_enemyType(const std::string& enemytype_str);
+QuestStage convert_questStage(const std::string& quest_stage_str);
+ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str);
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id);
 void check_int(int value, const std::string& id);
+bool is_numbered_key(const std::string& key, const std::string& prefix);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
 
@@ -89,7 +93,18 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 		// Check numbers of quests
 		if (world.quests.size() < 3)
 			throw std::runtime_error("You need to have a least 3 quests. Only " + std::to_string(world.quests.size() ) + " found.");
-
+		// Check if quests are valid in the dialogue stage
+		for (const auto& [entity_id, entity] : world.entities) {
+			for (const auto& stage : entity.dialogue_stage) {
+				if (!stage.quest_id.empty()) {
+					const auto& quest_id = world.quests.find(stage.quest_id);
+					if (quest_id == world.quests.end()) {
+						throw std::runtime_error("Invalid quest id for dialogue stage of entity \"" + entity_id +
+							"\" (" + stage.quest_id + ").");
+					}
+				}
+			}
+		}
 	}
 	catch (const std::exception& e) {
 		print_error(std::string("PARSING FAILED!\n") + e.what());
@@ -158,7 +173,7 @@ ItemConfig parse_itemConfig(
 // Parsing for the entities part.
 EntityConfig parse_entityConfig(
 	const std::string& entity_id, const YAML::Node& node, std::unordered_set<std::string>& knows_entities) {
-	EntityConfig config;
+	EntityConfig	config;
 
 	knows_entities.insert(entity_id); // added to the set to check later
 
@@ -166,12 +181,56 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
-
-
 	if (node["dialogue"] && node["dialogue"].IsMap()) {
 		for (const auto& entry : node["dialogue"]) {
 			std::string dial_key = entry.first.as<std::string>();
+			if (!entry.second.IsScalar()) {
+				print_warning("Dialogue not scalar for \"" + entity_id + " \" and key:\"" + dial_key + "\"");
+				continue;
+			}
+
+			// check if dialogue is a valid key
+			if (convert_DialogueKey(dial_key) == ValidDialogueKey::UNKNOWN) {
+				throw std::runtime_error("invalid dialogue key \"" + dial_key + "\" for entity \"" + entity_id + "\".");
+			}
+
 			config.dialogue[dial_key] = entry.second.as<std::string>();
+		}
+	}
+
+	// Check dialogue stages
+	if (node["talk_stages"] && node["talk_stages"].IsSequence()) {
+		for (const auto& entry : node["talk_stages"]) {
+			// if entry not a dict
+			if (!entry.IsMap()) {
+				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = not a map");
+			}
+
+			DialogueStage config_dialogue;
+			config_dialogue.last_stage = getValue<int>(entry, "last_stage", 0);
+			// if last stage value in negative.
+			if (config_dialogue.last_stage <= 0) {
+				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
+					+ std::to_string(config_dialogue.last_stage) + ".");
+			}
+			// if next stage value is lower than the previous one.
+			if (!config.dialogue_stage.empty() && config_dialogue.last_stage <= config.dialogue_stage.back().last_stage) {
+				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
+					+ std::to_string(config_dialogue.last_stage) + " must be greater than previous stage "
+					+ std::to_string(config.dialogue_stage.back().last_stage) + ".");
+			}
+			// if dialogue is not starting with "talk_"
+			auto it = config.dialogue.find("talk_" + std::to_string(config_dialogue.last_stage));
+			if (it == config.dialogue.end()) {
+				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = missing dialogue key: " + std::to_string(config_dialogue.last_stage));
+			}
+			config_dialogue.quest_id = getValue<std::string>(entry, "wait_quest", "");
+			config_dialogue.condition = convert_questStage(getValue<std::string>(entry, "wait_for", ""));
+			// if condition is not "COMPLETED" or "HAVE"
+			if (!config_dialogue.quest_id.empty() && config_dialogue.condition == QuestStage::UNKNOWN) {
+				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = invalid condition (valid are \"completed\" or \"have\").");
+			}
+			config.dialogue_stage.push_back(config_dialogue);
 		}
 	}
 
@@ -228,6 +287,58 @@ EnemyType convert_enemyType(const std::string& enemytype_str) {
 	return EnemyType::UNKNOWN;
 }
 
+// Convert the quest stage in string to an enum.
+QuestStage convert_questStage(const std::string& quest_stage_str) {
+	if (quest_stage_str == "completed") return QuestStage::COMPLETED;
+	if (quest_stage_str == "have") return QuestStage::HAVE;
+
+	return QuestStage::UNKNOWN;
+}
+
+// Convert the dialogue key in string to an enum.
+// Keys ending with "_" are numbered (talk_1, talk_2, ...). The other keys are written exactly as is.
+ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
+	// --- Numbered keys ---
+	if (is_numbered_key(dialogue_key_str, "talk_")) return ValidDialogueKey::TALK_;
+	if (is_numbered_key(dialogue_key_str, "shop_")) return ValidDialogueKey::SHOP_;
+	if (is_numbered_key(dialogue_key_str, "neutral_")) return ValidDialogueKey::NEUTRAL_;
+	if (is_numbered_key(dialogue_key_str, "check_")) return ValidDialogueKey::CHECK_;
+	if (is_numbered_key(dialogue_key_str, "check_bow_")) return ValidDialogueKey::CHECK_BOW_;
+	if (is_numbered_key(dialogue_key_str, "act_")) return ValidDialogueKey::ACT_;
+	if (is_numbered_key(dialogue_key_str, "act_coldify_")) return ValidDialogueKey::ACT_COLDIFY_;
+	if (is_numbered_key(dialogue_key_str, "act_warmify_")) return ValidDialogueKey::ACT_WARMIFY_;
+	if (is_numbered_key(dialogue_key_str, "act_pet_")) return ValidDialogueKey::ACT_PET_;
+	if (is_numbered_key(dialogue_key_str, "act_play_")) return ValidDialogueKey::ACT_PLAY_;
+
+	// --- Shop keys ---
+	if (dialogue_key_str == "no_money") return ValidDialogueKey::NO_MONEY;
+	if (dialogue_key_str == "buy") return ValidDialogueKey::BUY;
+	if (dialogue_key_str == "remote") return ValidDialogueKey::REMOTE;
+	if (dialogue_key_str == "quit") return ValidDialogueKey::QUIT;
+
+	// --- Fight keys ---
+	if (dialogue_key_str == "encounter") return ValidDialogueKey::ENCOUNTER;
+	if (dialogue_key_str == "check_default") return ValidDialogueKey::CHECK_DEFAULT;
+	if (dialogue_key_str == "low_hp") return ValidDialogueKey::LOW_HP;
+	if (dialogue_key_str == "spare") return ValidDialogueKey::SPARE;
+	if (dialogue_key_str == "killed") return ValidDialogueKey::KILLED;
+	if (dialogue_key_str == "can_spare") return ValidDialogueKey::CAN_SPARE;
+	if (dialogue_key_str == "act_result_failed") return ValidDialogueKey::ACT_RESULT_FAILED;
+	if (dialogue_key_str == "act_result_won") return ValidDialogueKey::ACT_RESULT_WON;
+	if (dialogue_key_str == "act_ignore") return ValidDialogueKey::ACT_IGNORE;
+	if (dialogue_key_str == "act_bow") return ValidDialogueKey::ACT_BOW;
+	if (dialogue_key_str == "act_bow_result") return ValidDialogueKey::ACT_BOW_RESULT;
+	if (dialogue_key_str == "act_check_oufit_half_warm") return ValidDialogueKey::ACT_CHECK_OUFIT_HALF_WARM;
+	if (dialogue_key_str == "act_check_oufit_half_cold") return ValidDialogueKey::ACT_CHECK_OUFIT_HALF_COLD;
+	if (dialogue_key_str == "act_check_oufit_nothing") return ValidDialogueKey::ACT_CHECK_OUFIT_NOTHING;
+	if (dialogue_key_str == "act_check_oufit_green") return ValidDialogueKey::ACT_CHECK_OUFIT_GREEN;
+	if (dialogue_key_str == "act_check_oufit_orange") return ValidDialogueKey::ACT_CHECK_OUFIT_ORANGE;
+	if (dialogue_key_str == "act_check_oufit_yellow") return ValidDialogueKey::ACT_CHECK_OUFIT_YELLOW;
+	if (dialogue_key_str == "act_check_oufit_red") return ValidDialogueKey::ACT_CHECK_OUFIT_RED;
+
+	return ValidDialogueKey::UNKNOWN;
+}
+
 // --- CHECKER ---
 // Checker for the name and description.
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id) {
@@ -237,6 +348,21 @@ void check_global_data_validation(const std::string& name, const std::string& de
 	if (desc.empty()) {
 		throw std::runtime_error(id + " description can't be empty.");
 	}
+}
+
+// Check if the key is the prefix followed by a number only (ex: "talk_" + "12").
+// Because of the number, "act_pet_1" is not seen as an "act_" key.
+bool is_numbered_key(const std::string& key, const std::string& prefix) {
+	if (key.size() <= prefix.size())
+		return false;
+	if (key.compare(0, prefix.size(), prefix) != 0)
+		return false;
+
+	for (size_t i = prefix.size(); i < key.size(); i++) {
+		if (!std::isdigit(static_cast<unsigned char>(key[i])))
+			return false;
+	}
+	return true;
 }
 
 // Check if int is positive.
@@ -296,4 +422,3 @@ void check_locations_data(
 		throw std::runtime_error("spawn is missing. Make sure a zone ID is named 'spawn'.");
 	}
 }
-

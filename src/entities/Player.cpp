@@ -55,10 +55,8 @@ std::vector<std::string>	Player::getCompletedQuests() const {
 
 QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	const auto it = _quests.find(quest_id);
-	if (it == _quests.end()) {
-		print_log(this->getName() + ": quest \"" + quest_id + "\" not found.");
+	if (it == _quests.end())
 		return QuestState::NOT_FOUND;
-	}
 	return it->second;
 }
 
@@ -171,4 +169,21 @@ std::string Player::getItemInInventory(bool add_details) const {
 	inventory += "]";
 
 	return inventory;
+}
+
+// ============================================================================
+// ====================       DIALOGUE SYSTEM      ============================
+// ============================================================================
+// * Set a new index for the given entity. *
+void	Player::setDialogueIndex(const std::string& entity_id, int new_index) {
+	_dialogue_state[entity_id] = new_index;
+}
+
+// * Get the current index of an entity. *
+int 	Player::getDialogueIndex(const std::string& entity_id) const {
+	const auto& it = _dialogue_state.find(entity_id);
+	if (it == _dialogue_state.end())
+		return 0;
+
+	return it->second;
 }

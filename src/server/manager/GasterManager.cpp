@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 15:45:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:37:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
+#include <optional>
 # include <utility>
 # include <string>
 # include <unordered_map>
@@ -29,7 +30,11 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
-#include "config/Enums.hpp"
+# include "core/QuestManager.hpp"
+# include "core/DialogueManager.hpp"
+# include "config/WorldConfig.hpp"
+# include "config/WorldState.hpp"
+# include "config/Enums.hpp"
 # include "utils/colored_text.h"
 # include "utils.h"
 # include "debug.h"
@@ -40,7 +45,8 @@
 // ============================================================================
 GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data),
-	_quest_manager(_world_data.quests) {
+	_quest_manager(_world_data.quests),
+	_dialogue_manager(_world_data.entities) {
 
 		// Create all the objects
 		createRoom();
@@ -113,7 +119,7 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 	// Find the player
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	// Get the room of the player
 	const std::string& zone_player = player->getZone();
@@ -128,7 +134,7 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 const std::string	GasterManager::getPlayerInventory(const std::string& player_name, bool add_details) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	return player->getItemInInventory(add_details);
 }
@@ -137,7 +143,7 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	std::string str_list_quests = "[";
 
@@ -163,7 +169,7 @@ const std::string	GasterManager::getPlayerQuests(const std::string& player_name)
 const std::string	GasterManager::getQuestDescription(const std::string& player_name, const std::string& quest_id) const {
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "";
+		return "Player not found";
 
 	if (player->getQuestStatut(quest_id) == QuestState::NOT_FOUND)
 		return "Quest not found.";
@@ -173,6 +179,71 @@ const std::string	GasterManager::getQuestDescription(const std::string& player_n
 		return "Quest not found.";
 
 	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
+}
+
+// ============================================================================
+// ===================      COMMANDS - DIALOGUE      ==========================
+// ============================================================================
+// * Get the dialogue line and send it to the client. *
+TalkResult			GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) {
+	TalkResult	result;
+
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return result;
+
+	const Entity* entity = getEntity(entity_id);
+	if (!entity)
+		return result;
+
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room) {
+		print_log("Can't get the room of \"" + player->getName() + "\".");
+		return result;
+	}
+	// Check if entity is in player room
+	Entity* entity_in_room = player_room->getEntity(entity->getName());
+	if (!entity_in_room) {
+		print_log("\"" + entity->getName() + "\" not in player room.");
+		return result;
+	}
+
+	const auto& stages = _dialogue_manager.getStages(entity_id);
+	if (stages.empty()) {
+		result.status = TalkStatus::NO_DIALOGUE;
+		return result;
+	}
+
+	// Get the next line of dialogue
+	int limit = getTalkLimit(*player, stages);
+	int index = player->getDialogueIndex(entity_id);
+	int line_number = limit;
+	bool advance = false;
+	// Check if the dialogue is moving
+	if (index < limit) {
+		line_number = index + 1;
+		advance = true;
+	}
+	// Get the line
+	auto line = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(line_number));
+	if (!line) {
+		result.status = TalkStatus::NO_DIALOGUE;
+		return result;
+	}
+	int new_index = index;
+	// Set the next dialogue
+	if (advance) {
+		player->setDialogueIndex(entity_id, line_number);
+		new_index = line_number;
+	}
+	// Write the data
+	result.status = TalkStatus::OK;
+	result.entity_name = entity->getName();
+	result.text = *line;
+	result.has_more = new_index < limit;
+
+	return result;
 }
 
 // ============================================================================
@@ -320,6 +391,54 @@ Room*	GasterManager::getRoom(const std::string& room_id) {
 	return const_cast<Room*>(std::as_const(*this).getRoom(room_id));
 }
 
+// * Get an entity (const). *
+const Entity*	GasterManager::getEntity(const std::string& entity_id) const {
+	auto it = _world_state.entities.find(entity_id);
+	if (it == _world_state.entities.end()) {
+		print_log("GasterManager: can't find entity '" + entity_id + "'.");
+		return nullptr;
+	}
+	return it->second.get();
+}
+
+// * Get an entity. *
+Entity*	GasterManager::getEntity(const std::string& entity_id) {
+	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
+}
+
+// --- DIALOGUES ---
+// * Check if condition is met to change stage of a dialogue. *
+bool	GasterManager::isConditionMet(const Player& player, const DialogueStage& stage) const {
+	if (stage.quest_id.empty())
+		return true;
+
+	QuestState state = player.getQuestStatut(stage.quest_id);
+	if (stage.condition == QuestStage::HAVE)
+		return state != QuestState::NOT_FOUND;
+	else if (stage.condition == QuestStage::COMPLETED)
+		return state == QuestState::COMPLETED;
+
+	return false;
+
+}
+
+// * Get the dialogues limit of an entity. *
+int		GasterManager::getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const {
+	int		limit = 0;
+
+	for (size_t i = 0; i < stages.size(); i++) {
+		limit = stages[i].last_stage;
+		// last stage
+		if (i + 1 == stages.size())
+			break;
+		// condition no met, stay in the stage
+		if (!isConditionMet(player, stages[i]))
+			break;
+	}
+
+	return limit;
+}
+
 // ============================================================================
 // ==================       OBJECTS MANAGEMENTS      ==========================
 // ============================================================================
@@ -342,22 +461,22 @@ void	GasterManager::createEntities() {
 		switch (entity.type) {
 			case EnemyType::ENEMY:
 				new_entity = std::make_unique<Enemy>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::BOSS:
 				new_entity = std::make_unique<Boss>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::NPC:
 				new_entity = std::make_unique<NPC>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			case EnemyType::SHOP:
 				new_entity = std::make_unique<NPCShop>(
-					entity_id, entity.name, entity.description, entity.dialogue, entity.type, entity.hp);
+					entity_id, entity.name, entity.description, entity.type, entity.hp);
 				break;
 
 			default:
@@ -435,11 +554,6 @@ void	GasterManager::fillRoomsData() {
 		}
 	}
 }
-
-// ============================================================================
-// =========================       MANAGERS     ===============================
-// ============================================================================
-
 
 // ============================================================================
 // =========================       DEBUG      =================================

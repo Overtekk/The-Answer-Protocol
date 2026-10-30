@@ -6,14 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:10:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/22 18:16:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 09:55:10 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <string>
-# include <unordered_map>
 
 # include "Entity.hpp"
 # include "config/Enums.hpp"
@@ -21,15 +20,12 @@
 
 // * REPRESENT AN ENEMY *
 class Enemy : public Entity {
-    private :
-		std::unordered_map<std::string, std::string>	_dialogue;
-
-    public :
-        // --- CONSTRUCTOR ---
-        Enemy(
+	public :
+		// --- CONSTRUCTOR ---
+		Enemy(
 			const std::string& id, const std::string& name, const std::string& description,
-			std::unordered_map<std::string, std::string> dialogue, EnemyType type, int health
+			EnemyType type, int health
 		);
-        // --- DESTRUCTOR ---
-        ~Enemy() override = default;
+		// --- DESTRUCTOR ---
+		~Enemy() override = default;
 };

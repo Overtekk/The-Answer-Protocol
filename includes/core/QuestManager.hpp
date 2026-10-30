@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 10:28:33 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 15:36:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 09:37:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Player;
 
 class QuestManager {
 	private :
-	std::unordered_map<std::string, QuestConfig>	_quests_dict;
+		std::unordered_map<std::string, QuestConfig>	_quests_dict;
 
 		bool	checkQuestExist(const std::string& quest_id) const;
 

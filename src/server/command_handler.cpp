@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 15:52:03 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:34:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::INVENTORY:	commandInventory(session, argument); break;
 		case GameCommand::QUESTS:		commandQuests(session, argument); break;
 		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument); break;
+		case GameCommand::TALK:			commandTalk(session, argument); break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -355,6 +356,25 @@ void	CommandHandler::commandQuestInfo(TCPSession& session, std::string argument)
 	lower_the_string(argument);
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getQuestDescription(session.getUsername(), argument)));
+	return;
+}
+
+void	CommandHandler::commandTalk(TCPSession& session, std::string argument) {
+	lower_the_string(argument);
+
+	TalkResult result = _manager.getDialogue(session.getUsername(), argument);
+	if (result.status == TalkStatus::NOT_FOUND) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NPC_NOT_FOUND));
+		print_log_message(session, "error 404: Requested NPC not present in room.");
+		return;
+	}
+	if (result.status == TalkStatus::NO_DIALOGUE) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NPC_NO_DIALOGUE));
+		print_log_message(session, "error 407: Requested NPC have no available dialogue.");
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation( result.entity_name + ": \"" + result.text + "\""));
 	return;
 }
 

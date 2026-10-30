@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:15:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/27 12:27:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ using PlayerID = uint64_t;
 // * Represent a player *
 class Player : public Entity {
 	private :
-		std::map<ItemID, Item*>	_inventory;
+		std::map<ItemID, Item*>						_inventory;
 		std::unordered_map<std::string, QuestState>	_quests;
 
 		// Information
-		std::string	_zone;
+		std::string								_zone;
+		std::unordered_map<std::string, int>	_dialogue_state;
 
 		inline static	PlayerID _id = 1;
 
@@ -62,6 +63,10 @@ class Player : public Entity {
 		const Item*		getItem(ItemID id) const;
 		Item* 			getItem(ItemID id);
 		std::optional<ItemID>	getItemIdByName(const std::string& name) const;
+
+		// --- DIALOGUE SYSTEM ---
+		void	setDialogueIndex(const std::string& entity_id, int new_index);
+		int		getDialogueIndex(const std::string& entity_id) const;
 
 		bool 			checkItemInInventory(ItemID id) const;
 		std::string		getItemInInventory(bool add_details) const;
