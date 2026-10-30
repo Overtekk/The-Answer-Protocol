@@ -343,7 +343,7 @@ entities:
       neutral_3: "The Swatchlings are cleaning each other off with feather dusters."
       neutral_4: "Swatchlings flex their backs while bending over to inspect a teacup."
       neutral_5: "The Swatchlings are adjusting their hue and saturation."
-      act_coldify_1: "Talked about the crunch of the last_stage pickle in the refrigerator."
+      act_coldify_1: "Talked about the crunch of the last pickle in the refrigerator."
       act_coldify_2: "Talked about the chill of the wind on an ice skating pond."
       act_coldify_3: "Talked about the snow matted on your brother's nose."
       act_warmify_1: "Talked about the color of the summer sun shining on a beach ball."
@@ -393,9 +393,9 @@ entities:
       killed: "I... just wanted the ball..."
     talk_stages:
       - last_stage: 7
-      - last_stage: 8
         wait_quest: "buy_remote"
         wait_for: "completed"
+      - last_stage: 8
     type: "boss"
     hp: 150
 
@@ -406,6 +406,7 @@ entities:
     dialogue:
       talk_1: "K.Round look at you. He thinks you are special."
       talk_2: "It give you a Key as a reward."
+      talk_3: "K.Round look at you and smile. Only his mustache move."
       encounter: "K.Round shuffles furiously."
       check_default: "Check? That's chess, not checkers!"
       neutral_1: "K.Round shuffles furiously."
@@ -424,6 +425,7 @@ entities:
       - last_stage: 2
         wait_quest: "buy_remote"
         wait_for: "completed"
+      - last_stage: 3
     type: "boss"
     hp: 400
 
@@ -448,9 +450,9 @@ entities:
       neutral_4: "Moss feels you with DETERMINATION."
     talk_stages:
       - last_stage: 4
-      - last_stage: 8
         wait_quest: "defeat_queen"
         wait_for: "completed"
+      - last_stage: 8
     type: "boss"
     hp: 500
 
@@ -507,9 +509,11 @@ entities:
       talk_10: "The cake was good?"
     talk_stages:
       - last_stage: 1
-      - last_stage: 7
         wait_quest: "find_ralsei"
         wait_for: "have"
+      - last_stage: 7
+        wait_quest: "find_ralsei"
+        wait_for: "completed"
       - last_stage: 10
     type: "npc"
     hp: 999
