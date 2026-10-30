@@ -5,3 +5,6 @@ build/
 tap_server
 tap_cli_client
 tap_gui_client
+
+# other
+CLAUDE.md

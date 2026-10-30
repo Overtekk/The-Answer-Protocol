@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/29 09:45:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 13:40:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ const std::string	GasterManager::getDialogue(const std::string& player_name, con
 	int dialogue_index = player->getDialogueIndex(entity_id);
 	if (_dialogue_manager.hasKey(entity_id, "talk_" + std::to_string(dialogue_index + 1))) {
 		std::optional<std::string> dialogue = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(dialogue_index + 1));
-		return dialogue;
+		return "";
 	}
 	return "It doesn't want to speak.";
 }

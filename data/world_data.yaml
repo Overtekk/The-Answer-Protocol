@@ -343,7 +343,7 @@ entities:
       neutral_3: "The Swatchlings are cleaning each other off with feather dusters."
       neutral_4: "Swatchlings flex their backs while bending over to inspect a teacup."
       neutral_5: "The Swatchlings are adjusting their hue and saturation."
-      act_coldify_1: "Talked about the crunch of the last pickle in the refrigerator."
+      act_coldify_1: "Talked about the crunch of the last_stage pickle in the refrigerator."
       act_coldify_2: "Talked about the chill of the wind on an ice skating pond."
       act_coldify_3: "Talked about the snow matted on your brother's nose."
       act_warmify_1: "Talked about the color of the summer sun shining on a beach ball."
@@ -392,8 +392,8 @@ entities:
       can_spare: "Greater Dog is contented."
       killed: "I... just wanted the ball..."
     talk_stages:
-      - last: 7
-      - last: 8
+      - last_stage: 7
+      - last_stage: 8
         wait_quest: "buy_remote"
         wait_for: "completed"
     type: "boss"
@@ -421,7 +421,7 @@ entities:
       low_hp: "K.Round's shuffle becomes lethargic."
       spare: "K.Round lose his crown. He run away."
     talk_stages:
-      - last: 2
+      - last_stage: 2
         wait_quest: "buy_remote"
         wait_for: "completed"
     type: "boss"
@@ -447,8 +447,8 @@ entities:
       neutral_3: "Smells like overclocked high heels."
       neutral_4: "Moss feels you with DETERMINATION."
     talk_stages:
-      - last: 4
-      - last: 8
+      - last_stage: 4
+      - last_stage: 8
         wait_quest: "defeat_queen"
         wait_for: "completed"
     type: "boss"
@@ -459,7 +459,7 @@ entities:
     description: "It's Sans the skeleton!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "Hello!"
     type: "boss"
     hp: 20
 
@@ -480,13 +480,13 @@ entities:
       talk_10: "Yummy. Here's the key."
       talk_11: "I'm eating. Go away."
     talk_stages:
-      - last: 1
+      - last_stage: 1
         wait_quest: "find_key_b"
         wait_for: "have"
-      - last: 8
+      - last_stage: 8
         wait_quest: "talk_to_susie"
         wait_for: "have"
-      - last: 11
+      - last_stage: 11
     type: "npc"
     hp: 999
 
@@ -506,11 +506,11 @@ entities:
       talk_9: "Here your cake. Have a good meal!"
       talk_10: "The cake was good?"
     talk_stages:
-      - last: 1
-      - last: 7
+      - last_stage: 1
+      - last_stage: 7
         wait_quest: "find_ralsei"
         wait_for: "have"
-      - last: 10
+      - last_stage: 10
     type: "npc"
     hp: 999
 
@@ -543,13 +543,12 @@ entities:
       remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
       quit: "HURRY UP AND BUY. NO [exit], NO [return back]!!"
     talk_stages:
-      - last: 3
+      - last_stage: 3
         wait_quest: "find_spamton"
         wait_for: "completed"
-      - last: 5
+      - last_stage: 5
         wait_quest: "bring_pipis"
         wait_for: "completed"
-      - last: 10
     type: "shop"
     hp: 999
 
