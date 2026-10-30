@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 12:18:24 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:42:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # include <string>
 # include <unordered_map>
 
+#include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
 # include "core/DialogueManager.hpp"
 # include "utils.h"
@@ -24,6 +25,24 @@
 DialogueManager::DialogueManager(const std::unordered_map<std::string, EntityConfig>& entity_map) {
 	for (const auto& [id, entity] : entity_map) {
 		_dialogue_map[id] = entity.dialogue;
+
+		// if dialogue stage exist
+		if (!entity.dialogue_stage.empty()) {
+			_stages_map[id] = entity.dialogue_stage;
+		}
+		else {
+			int count = 0;
+			// check if entity has dialogue and create the stage
+			while (entity.dialogue.find("talk_" + std::to_string(count + 1)) != entity.dialogue.end())
+				count++;
+			if (count > 0) {
+				DialogueStage stage;
+				stage.last_stage = count;
+				stage.quest_id = "";
+				stage.condition = QuestStage::UNKNOWN;
+				_stages_map[id].push_back(stage);
+			}
+		}
 	}
 }
 
@@ -44,6 +63,14 @@ std::optional<std::string>	DialogueManager::getLine(const std::string& entity_id
 	}
 
 	return *line;
+}
+
+// Get a dialogue stage from an entity. *
+const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& entity_id) const {
+	const auto& it = _stages_map.find((entity_id));
+	if (it == _stages_map.end())
+		return _empty_stages;
+	return it->second;
 }
 
 // ============================================================================

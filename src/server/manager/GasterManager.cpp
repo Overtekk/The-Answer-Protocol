@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 13:40:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 15:37:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,30 +185,65 @@ const std::string	GasterManager::getQuestDescription(const std::string& player_n
 // ===================      COMMANDS - DIALOGUE      ==========================
 // ============================================================================
 // * Get the dialogue line and send it to the client. *
-const std::string	GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) {
+TalkResult			GasterManager::getDialogue(const std::string& player_name, const std::string& entity_id) {
+	TalkResult	result;
+
 	Player* player = getPlayer(player_name);
 	if (!player)
-		return "Player not found.";
+		return result;
 
 	const Entity* entity = getEntity(entity_id);
 	if (!entity)
-		return "Entity not found.";
+		return result;
 
 	// Get the room of the player
 	Room* player_room = getRoom(player->getZone());
-	if (!player_room)
-		return "Can't find player room";
+	if (!player_room) {
+		print_log("Can't get the room of \"" + player->getName() + "\".");
+		return result;
+	}
 	// Check if entity is in player room
 	Entity* entity_in_room = player_room->getEntity(entity->getName());
-	if (!entity_in_room)
-		return "Entity not in player room";
-
-	int dialogue_index = player->getDialogueIndex(entity_id);
-	if (_dialogue_manager.hasKey(entity_id, "talk_" + std::to_string(dialogue_index + 1))) {
-		std::optional<std::string> dialogue = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(dialogue_index + 1));
-		return "";
+	if (!entity_in_room) {
+		print_log("\"" + entity->getName() + "\" not in player room.");
+		return result;
 	}
-	return "It doesn't want to speak.";
+
+	const auto& stages = _dialogue_manager.getStages(entity_id);
+	if (stages.empty()) {
+		result.status = TalkStatus::NO_DIALOGUE;
+		return result;
+	}
+
+	// Get the next line of dialogue
+	int limit = getTalkLimit(*player, stages);
+	int index = player->getDialogueIndex(entity_id);
+	int line_number = limit;
+	bool advance = false;
+	// Check if the dialogue is moving
+	if (index < limit) {
+		line_number = index + 1;
+		advance = true;
+	}
+	// Get the line
+	auto line = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(line_number));
+	if (!line) {
+		result.status = TalkStatus::NO_DIALOGUE;
+		return result;
+	}
+	int new_index = index;
+	// Set the next dialogue
+	if (advance) {
+		player->setDialogueIndex(entity_id, line_number);
+		new_index = line_number;
+	}
+	// Write the data
+	result.status = TalkStatus::OK;
+	result.entity_name = entity->getName();
+	result.text = *line;
+	result.has_more = new_index < limit;
+
+	return result;
 }
 
 // ============================================================================
@@ -369,6 +404,39 @@ const Entity*	GasterManager::getEntity(const std::string& entity_id) const {
 // * Get an entity. *
 Entity*	GasterManager::getEntity(const std::string& entity_id) {
 	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
+}
+
+// --- DIALOGUES ---
+// * Check if condition is met to change stage of a dialogue. *
+bool	GasterManager::isConditionMet(const Player& player, const DialogueStage& stage) const {
+	if (stage.quest_id.empty())
+		return true;
+
+	QuestState state = player.getQuestStatut(stage.quest_id);
+	if (stage.condition == QuestStage::HAVE)
+		return state != QuestState::NOT_FOUND;
+	else if (stage.condition == QuestStage::COMPLETED)
+		return state == QuestState::COMPLETED;
+
+	return false;
+
+}
+
+// * Get the dialogues limit of an entity. *
+int		GasterManager::getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const {
+	int		limit = 0;
+
+	for (size_t i = 0; i < stages.size(); i++) {
+		limit = stages[i].last_stage;
+		// last stage
+		if (i + 1 == stages.size())
+			break;
+		// condition no met, stay in the stage
+		if (!isConditionMet(player, stages[i]))
+			break;
+	}
+
+	return limit;
 }
 
 // ============================================================================

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 12:18:29 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 14:49:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <optional>
 # include <string>
 # include <unordered_map>
+# include <vector>
 
 # include "config/WorldConfig.hpp"
 
@@ -22,6 +23,8 @@
 class DialogueManager {
 	private :
 		std::unordered_map<std::string, std::unordered_map<std::string, std::string>>	_dialogue_map;
+		std::unordered_map<std::string, std::vector<DialogueStage>>						_stages_map;
+		std::vector<DialogueStage>														_empty_stages;
 
 		// --- METHODS ---
 		const std::string*	findLine(const std::string& entity_id, const std::string& dialogue_key) const;
@@ -33,6 +36,7 @@ class DialogueManager {
 		~DialogueManager() = default;
 
 		// --- METHODS ---
-		bool						hasKey(const std::string& entity_id, const std::string& dialogue_key) const;
-		std::optional<std::string>	getLine(const std::string& entity_id, const std::string& dialogue_key) const;
+		bool								hasKey(const std::string& entity_id, const std::string& dialogue_key) const;
+		std::optional<std::string>			getLine(const std::string& entity_id, const std::string& dialogue_key) const;
+		const std::vector<DialogueStage>&	getStages(const std::string& entity_id) const;
 };

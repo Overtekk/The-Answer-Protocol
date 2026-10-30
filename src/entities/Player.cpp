@@ -55,10 +55,8 @@ std::vector<std::string>	Player::getCompletedQuests() const {
 
 QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	const auto it = _quests.find(quest_id);
-	if (it == _quests.end()) {
-		print_log(this->getName() + ": quest \"" + quest_id + "\" not found.");
+	if (it == _quests.end())
 		return QuestState::NOT_FOUND;
-	}
 	return it->second;
 }
 
