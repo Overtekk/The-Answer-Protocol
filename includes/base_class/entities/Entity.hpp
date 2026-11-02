@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/22 18:16:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/10/30 17:13:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ class Entity {
 		std::string	_description;
 		int 		_health;
 		EnemyType	_type;
+
+		bool		_in_combat = false;
 
 	protected :
 		std::string	_name;

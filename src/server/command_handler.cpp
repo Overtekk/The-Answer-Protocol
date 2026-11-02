@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 15:34:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 10:54:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <cctype>
 # include <tuple>
 
+#include "config/Enums.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/TCPSession.hpp"
 # include "server/TCP_EnumsType.hpp"
@@ -293,15 +294,14 @@ void	CommandHandler::commandMove(TCPSession& session, std::string argument) {
 		}
 
 	// Check if player can move
-	if (!_manager.movePlayer(session.getUsername(), direction_str_to_enum(argument))) {
-		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NO_EXIT));
-		print_log_message(session, "error: 301 Invalid movement direction (bad direction).");
+	ReturnState command_state = _manager.movePlayer(session.getUsername(), direction_str_to_enum(argument));
+	if (command_state != ReturnState::VALID) {
+		sendErrorToUser(session, command_state);
 		return;
 	}
 
 	// Move player
 	session.add_msg_to_buffer(getTCP_OK_operation("room=" + _manager.getPlayerRoom(session.getUsername())));
-	return;
 }
 
 void	CommandHandler::commandTake(TCPSession& session, std::string argument) {
@@ -309,9 +309,9 @@ void	CommandHandler::commandTake(TCPSession& session, std::string argument) {
 	lower_the_string(argument);
 
 	// Take item if possible
-	if (!_manager.takeItem(session.getUsername(), argument)) {
-		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_FOUND));
-		print_log_message(session, "error: 404 Requested item not available in room..");
+	ReturnState command_state = _manager.takeItem(session.getUsername(), argument);
+	if (command_state != ReturnState::VALID) {
+		sendErrorToUser(session, command_state);
 		return;
 	}
 
@@ -324,9 +324,9 @@ void	CommandHandler::commandDrop(TCPSession& session, std::string argument) {
 	lower_the_string(argument);
 
 	// Drop item if possible
-	if (!_manager.dropItem(session.getUsername(), argument)) {
-		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY));
-		print_log_message(session, "error: 404 Requested item not in player inventory..");
+	ReturnState command_state =_manager.dropItem(session.getUsername(), argument);
+	if (command_state != ReturnState::VALID) {
+		sendErrorToUser(session, command_state);
 		return;
 	}
 
@@ -378,9 +378,36 @@ void	CommandHandler::commandTalk(TCPSession& session, std::string argument) {
 	return;
 }
 
+void	CommandHandler::commandAttack(TCPSession &session, std::string argument) {
+	lower_the_string(argument);
+
+	ReturnState command_state = _manager.isEnemyType(session.getUsername(), argument);
+	if (command_state == ReturnState::VALID) {
+		return;
+	}
+	else
+		sendErrorToUser(session, command_state);
+}
+
 // ============================================================================
-// =========================        DEBUG      ================================
+// =========================        ERRORS      ===============================
 // ============================================================================
-void	CommandHandler::debugTrySimulate(bool try_move) {
-	_manager.debugTrySimulate(try_move);
+void	CommandHandler::sendErrorToUser(TCPSession& session, ReturnState return_error) {
+	std::string error_msg = "";
+
+	switch (return_error) {
+		case ReturnState::ENTITY_NOT_ENEMY:				error_msg = getTCP_error(TCPErrorCode::NPC_NOT_HOSTILE);			break;
+		case ReturnState::PLAYER_NOT_FOUND:				error_msg = getTCP_error(TCPErrorCode::PLAYER_NOT_FOUND);			break;
+		case ReturnState::ENTITY_NOT_FOUND:				error_msg = getTCP_error(TCPErrorCode::NPC_NOT_FOUND);			break;
+		case ReturnState::ROOM_NOT_FOUND:				error_msg = getTCP_error(TCPErrorCode::ROOM_NOT_FOUND);			break;
+		case ReturnState::ITEM_NOT_FOUND:				error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_FOUND);			break;
+		case ReturnState::QUEST_NOT_FOUND:				error_msg = getTCP_error(TCPErrorCode::QUEST_NOT_FOUND);			break;
+		case ReturnState::ENTITY_NOT_IN_PLAYER_ROOM:	error_msg = getTCP_error(TCPErrorCode::NPC_NOT_IN_ROOM);			break;
+		case ReturnState::ITEM_NOT_IN_PLAYER_ROOM:		error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_ROOM); 		break;
+		case ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY:	error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY);	break;
+		case ReturnState::VALID:						error_msg = "That shoud'nt be an error.";							break;
+		default:										error_msg = "Unknown error";										break;
+	}
+
+	session.add_msg_to_buffer(error_msg);
 }

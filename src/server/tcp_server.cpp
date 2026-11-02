@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:03:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 10:58:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/logger.hpp"
-# include "utils.h"
 
 // --- CONSTRUCTOR ---
 TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log) :
@@ -197,10 +196,6 @@ void	TCPServer::handleStdinRead() {
 
 	if (command == "stop" || command == "quit") {
 		stop();
-		return;
-	}
-	else if (command == "!debug simulate") {
-		_cmd_handler.debugTrySimulate(true);
 		return;
 	}
 }

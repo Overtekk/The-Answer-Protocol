@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:59:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 10:55:10 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "config/Enums.hpp"
 # include <string>
 
 class GasterManager;
@@ -22,6 +23,7 @@ class CommandHandler {
 	private :
 		GasterManager&				_manager;
 
+		// GET COMMAND TYPE
 		void handleHandshake(TCPSession& session, const std::string& raw_line);
 		void handleGameCommand(TCPSession& session, const std::string& raw_line);
 
@@ -47,6 +49,9 @@ class CommandHandler {
 		void	commandQuest(TCPSession& session, std::string argument);
 		void	commandQuestInfo(TCPSession& session, std::string argument);
 
+		// SEND ERROR
+		void	sendErrorToUser(TCPSession& session, ReturnState return_error);
+
 	public :
 		// --- CONSTRUCTOR ---
 		explicit CommandHandler(GasterManager& manager);
@@ -54,7 +59,4 @@ class CommandHandler {
 		~CommandHandler() = default;
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
-
-		// --- DEBUG ---
-		void	debugTrySimulate(bool try_move);
 };

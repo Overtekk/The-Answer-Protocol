@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 16:12:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 10:55:32 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <vector>
 
 # include "base_class/entities/Entity.hpp"
+#include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
 # include "core/QuestManager.hpp"
@@ -72,20 +73,27 @@ class GasterManager {
 		const std::string	getListOfPlayers() const;
 		const std::string	getRoomData(const std::string& player_name, bool add_details) const;
 		const std::string	getPlayerRoom(const std::string& player_name) const;
-		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
-		const std::string	getPlayerQuests(const std::string& player_name) const;
-		const std::string	getQuestDescription(const std::string& player_name, const std::string& quest_id) const;
-		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);
 
 		// --- MOVEMENT ---
-		bool	movePlayer(const std::string& player_name, const Direction direction);
+		ReturnState	movePlayer(const std::string& player_name, const Direction direction);
 
 		// --- ITEMS MANAGEMENT ---
-		bool	takeItem(const std::string& player_name, const std::string& item_name);
-		bool	dropItem(const std::string& player_name, const std::string& item_name);
+		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
+		ReturnState				takeItem(const std::string& player_name, const std::string& item_name);
+		ReturnState				dropItem(const std::string& player_name, const std::string& item_name);
+
+		// --- DIALOGUE MANAGEMENT ---
+		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
+
+		// --- COMBAT MANAGEMENT ---
+		ReturnState	isEnemyType(const std::string& player_name, const std::string& entity_id);
+
+		// --- QUESTS ---
+		const std::string	getPlayerQuests(const std::string& player_name) const;
+		const std::string	getQuestDescription(const std::string& player_name, const std::string& quest_id) const;
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
@@ -93,5 +101,4 @@ class GasterManager {
 		// --- DEBUG ---
 		void	debugPrintStructureData(bool show_gui_data = false);
 		void	debugPrintStructureState();
-		void	debugTrySimulate(bool try_move);
 };

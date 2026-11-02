@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/29 10:34:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 10:48:09 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ enum class TCPErrorCode {
 	COMMAND_NOT_FOUND,			// COMMAND DO NOT EXIST
 	MISSING_USERNAME,			// PLAYER FORGOT TO ENTER USERNAME
 	NPC_NO_DIALOGUE,			// NO DIALOGUES AVAILABLE FOR THIS NPC
+	PLAYER_NOT_FOUND,			// ERROR WHEN FINDING THE PLAYER
+	NPC_NOT_IN_ROOM,			// NPC IS NOT IN THE SAME ROOM AS THE CLIENT
+	ROOM_NOT_FOUND,				// ROOM NOT FOUND
+	QUEST_NOT_FOUND,			// QUEST NOT FOUND
+	ITEM_NOT_IN_ROOM,			// ITEM NOT IN CLIENT ROOM
 };
 
 
