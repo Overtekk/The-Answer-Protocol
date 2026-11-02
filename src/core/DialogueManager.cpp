@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 15:42:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 12:56:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,13 @@ const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& 
 	if (it == _stages_map.end())
 		return _empty_stages;
 	return it->second;
+}
+
+std::string	DialogueManager::getEncounterDialogue(const std::string& entity_id) const {
+	std::optional<std::string> result = getLine(entity_id, "encounter");
+	if (result || result.has_value())
+		return *result;
+	return entity_id + " is here!";
 }
 
 // ============================================================================

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 10:55:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 14:42:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ class CommandHandler {
 		GasterManager&				_manager;
 
 		// GET COMMAND TYPE
-		void handleHandshake(TCPSession& session, const std::string& raw_line);
-		void handleGameCommand(TCPSession& session, const std::string& raw_line);
+		void	handleHandshake(TCPSession& session, const std::string& raw_line);
+		void	handleGameCommand(TCPSession& session, const std::string& raw_line);
+		void	handleCombatCommand(TCPSession& session, const std::string& raw_line);
 
 		// COMMANDS
 		void	commandUnknown(TCPSession& session, std::string command);
@@ -48,6 +49,14 @@ class CommandHandler {
 		void	commandStatus(TCPSession& session, std::string argument);
 		void	commandQuest(TCPSession& session, std::string argument);
 		void	commandQuestInfo(TCPSession& session, std::string argument);
+		void	commandEquip(TCPSession& session, std::string argument);
+		void	commandCombatAttack(TCPSession& session, std::string argument);
+		void	commandCombatCheck(TCPSession& session, std::string argument);
+		void	commandCombatAct(TCPSession& session, std::string argument);
+		void	commandCombatItem(TCPSession& session, std::string argument);
+		void	commandCombatSpare(TCPSession& session, std::string argument);
+		void	commandCombatRunaway(TCPSession& session, std::string argument);
+		void	commandCombatStatus(TCPSession& session, std::string argument);
 
 		// SEND ERROR
 		void	sendErrorToUser(TCPSession& session, ReturnState return_error);

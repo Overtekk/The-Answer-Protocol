@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 10:55:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:56:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 # include <string>
+#include <unordered_map>
 # include <vector>
 
 # include "base_class/entities/Entity.hpp"
@@ -23,13 +24,19 @@
 # include "core/DialogueManager.hpp"
 # include "core/CombatManager.hpp"
 
-
-enum class TalkStatus { OK, NOT_FOUND, NO_DIALOGUE };
+// Dialogue
+enum class TalkStatus {OK, NOT_FOUND, NO_DIALOGUE};
 struct TalkResult {
 	TalkStatus	status = TalkStatus::NOT_FOUND;
 	std::string	entity_name;
 	std::string	text;
 	bool		has_more = false;
+};
+
+// Combat
+struct CombatProgress {
+	Player* player;
+	Entity* entity;
 };
 
 
@@ -43,11 +50,14 @@ class GasterManager {
 		DialogueManager	_dialogue_manager;
 		CombatManager	_combat_manager;
 
+		std::unordered_map<std::string, CombatProgress>	_combat_lists;
+
 	// --- CREATE OBJECTS ---
 	void	createRoom();
 	void	createEntities();
 	void	createItems();
 	void	fillRoomsData();
+	void	createStartingWeapon();
 
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
@@ -82,14 +92,19 @@ class GasterManager {
 
 		// --- ITEMS MANAGEMENT ---
 		const std::string	getPlayerInventory(const std::string& player_name, bool add_details) const;
-		ReturnState				takeItem(const std::string& player_name, const std::string& item_name);
-		ReturnState				dropItem(const std::string& player_name, const std::string& item_name);
+		ReturnState			takeItem(const std::string& player_name, const std::string& item_name);
+		ReturnState			dropItem(const std::string& player_name, const std::string& item_name);
+		ReturnState			equipNewWeapon(const std::string& player_name, const std::string& item_name);
 
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
 
 		// --- COMBAT MANAGEMENT ---
-		ReturnState	isEnemyType(const std::string& player_name, const std::string& entity_id);
+		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
+		const std::string	initCombat(const std::string& player_name);
+		const std::string	getCombatStatus(const std::string& player_name);
+		const std::string	combatPlayerAttack(const std::string& player_name);
+		CombatStatus		checkCombatStatus(const std::string& player_name);
 
 		// --- QUESTS ---
 		const std::string	getPlayerQuests(const std::string& player_name) const;

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 17:13:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 13:31:18 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ class Entity {
 	private :
 		std::string	_id;
 		std::string	_description;
-		int 		_health;
+		int			_health;
+		int			_max_health;
 		EnemyType	_type;
+		int			_attack = 1;
 
 		bool		_in_combat = false;
 
@@ -42,10 +44,15 @@ class Entity {
 		const std::string&	getID() const;
 		const std::string&	getName() const;
 		int 				getHealth() const;
+		int					getMaxHealth() const;
 		virtual EnemyType	getType() const;
+		bool				inCombat();
+		int					getAttackValue() const;
 
 		// --- SETTER ---
-		void				setHealth(int new_value);
+		void	setHealth(int new_value);
+		void	setCombat(bool new_state);
+		void	setAttackValue(int new_value);
 
 		// --- ERROR ---
 		void sendObjectError(const std::string& error) const;

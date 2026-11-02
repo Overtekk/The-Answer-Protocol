@@ -202,24 +202,32 @@ items:
     description: "A wooden practice blade with a carbon-reinforced core. Mightier than a sword? Maybe equal at best."
     type: "weapon"
     damage: 5
+    bonus_min: 0
+    bonus_max: 2
 
   trefoil:
     name: "Trefoil"
     description: "Mossy rapier with a clover emblem. Covered in green clovers and rainbows."
     type: "weapon"
     damage: 7
+    bonus_min: 0
+    bonus_max: 3
 
   saber10:
     name: "Saber10"
     description: "A saber made of 10 cactus needles. Fortunately, can deal more than 10 damage."
     type: "weapon"
     damage: 11
+    bonus_min: 1
+    bonus_max: 4
 
   ultimate_sword:
     name: "Ultimate Sword"
     description: "'The Ultimate Weapon' that's what is written on the blade."
     type: "weapon"
     damage: 1
+    bonus_min: 0
+    bonus_max: 50
 
   # CONSUMABLES
   bandage:

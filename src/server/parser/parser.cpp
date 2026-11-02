@@ -6,11 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 13:44:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:26:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cctype>
+#include <stdexcept>
 # include <string>
 
 # include "yaml-cpp/yaml.h"
@@ -167,6 +168,13 @@ ItemConfig parse_itemConfig(
 	check_int(config.damage, item_id);
 	config.hp = getValue<int>(node, "hp", 0);
 	check_int(config.hp, item_id);
+	config.bonus_min = getValue<int>(node, "bonus_min", 0);
+	check_int(config.bonus_min, item_id);
+	config.bonus_max = getValue<int>(node, "bonus_max", 0);
+	check_int(config.bonus_max, item_id);
+	if (config.bonus_min > config.bonus_max)
+		throw std::runtime_error(item_id + " bonus_min can't be higher than bonus_max. bonus_min= " + std::to_string(config.bonus_min) + " > " + std::to_string(config.bonus_max));
+
 	return config;
 }
 

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 10:49:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:17:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ namespace {
 			case TCPErrorCode::NAME_IN_USE:				return {201, "NAME_IN_USE",				"Requested username already taken."};
 			case TCPErrorCode::INVALID_USERNAME:		return {202, "INVALID_USERNAME",		"Username length is 3-20 characters."};
 			case TCPErrorCode::MISSING_USERNAME:		return {203, "MISSING_USERNAME",		"Username is missing after the command."};
+			case TCPErrorCode::MISSING_NPC:				return {204, "MISSING_NPC",				"NPC is missing after the command."};
 			case TCPErrorCode::NO_EXIT:					return {301, "NO_EXIT",					"Invalid movement direction."};
 			case TCPErrorCode::NOT_IN_GROUP:			return {401, "NOT_IN_GROUP",			"Group operation requires group membership."};
 			case TCPErrorCode::ALREADY_IN_GROUP:		return {402, "ALREADY_IN_GROUP",		"Player already belongs to a group."};
@@ -35,6 +36,7 @@ namespace {
 			case TCPErrorCode::NPC_NO_DIALOGUE:			return {407, "NPC_NO_DIALOGUE",			"It doesn't want to speak."};
 			case TCPErrorCode::NPC_NOT_IN_ROOM:			return {408, "NPC_NOT_IN_ROOM",			"The requested NPC is not in the same room as you."};
 			case TCPErrorCode::ITEM_NOT_IN_ROOM:		return {408, "ITEM_NOT_IN_ROOM",		"Item not in the same room as you."};
+			case TCPErrorCode::ITEM_NOT_WEAPON:			return {409, "ITEM_NOT_WEAPON",			"Item requested is not a weapon."};
 			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
 			case TCPErrorCode::SEND_FAILED:				return {901, "SEND_FAILED",				"Message transmission failed."};

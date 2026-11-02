@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 10:33:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 14:00:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class TCPSession {
 
 		// Protocol status
 		SessionState	_state = SessionState::CONNECTED;
+		SubSessionState	_sub_state = SubSessionState::MOVING;
 
 		// Data buffers
 		std::string			_read_buffer;
@@ -51,9 +52,11 @@ class TCPSession {
 		std::uint16_t		getPort() const;
 		int					getSocketDescriptor() const;
 		SessionState		getSessionState() const;
+		SubSessionState		getSubSessionState() const;
 		std::string			getUsername() const;
 		// --- SETTER ---
 		void			setSessionState(SessionState new_state);
+		void			setSubSessionState(SubSessionState new_state);
 		void			setUsername(const std::string& username);
 
 		// --- NETWORK READER ---

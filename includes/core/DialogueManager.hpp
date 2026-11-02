@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 14:49:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 12:55:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,6 @@ class DialogueManager {
 		bool								hasKey(const std::string& entity_id, const std::string& dialogue_key) const;
 		std::optional<std::string>			getLine(const std::string& entity_id, const std::string& dialogue_key) const;
 		const std::vector<DialogueStage>&	getStages(const std::string& entity_id) const;
+
+		std::string	getEncounterDialogue(const std::string& entity_id) const;
 };

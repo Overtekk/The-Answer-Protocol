@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 12:27:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 15:53:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,15 @@ class Player : public Entity {
 	private :
 		std::map<ItemID, Item*>						_inventory;
 		std::unordered_map<std::string, QuestState>	_quests;
+		Item*										_equipped_weapon = nullptr;
 
 		// Information
 		std::string								_zone;
 		std::unordered_map<std::string, int>	_dialogue_state;
+
+		// Stats
+		int	_defense = 5;
+		int	_luck = 10;
 
 		inline static	PlayerID _id = 1;
 
@@ -49,12 +54,16 @@ class Player : public Entity {
 		std::vector<std::string>	getCurrentQuests() const;
 		std::vector<std::string>	getCompletedQuests() const;
 		QuestState					getQuestStatut(const std::string& quest_id) const;
+		int							getDefense() const;
+		int							getLuck() const;
 
 		// --- SETTER ---
 		void	setZone(const std::string& new_zone);
 		void	addQuest(const std::string& quest_id);
 		void	removeQuest(const std::string& quest_id);
 		void	setQuestCompleted(const std::string& quest_id);
+		void	setDefense(int new_value);
+		void	setLuck(int new_value);
 
 		// --- INVENTORY SYSTEM ---
 		Item* 			addItemToInventory(Item* item);
@@ -63,6 +72,9 @@ class Player : public Entity {
 		const Item*		getItem(ItemID id) const;
 		Item* 			getItem(ItemID id);
 		std::optional<ItemID>	getItemIdByName(const std::string& name) const;
+
+		Item*			getEquippedWeapon() const;
+		void			setEquippedWeapon(Item* new_weapon);
 
 		// --- DIALOGUE SYSTEM ---
 		void	setDialogueIndex(const std::string& entity_id, int new_index);

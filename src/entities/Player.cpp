@@ -10,10 +10,12 @@
 /*                                                                         */
 /* *********************************************************************** */
 
+# include <algorithm>
 # include <string>
 # include <utility>
 
 # include "base_class/entities/Player.hpp"
+#include "base_class/items/Item.hpp"
 # include "utils.h"
 # include "config/Enums.hpp"
 
@@ -22,12 +24,17 @@
 // =====================       CONSTRUCTOR      ===============================
 // ============================================================================
 Player::Player(const std::string& name):
-	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {}
+	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {
+		setAttackValue(10);
+	}
 
 // ============================================================================
 // ====================       PUBLIC METHODS      =============================
 // ============================================================================
-// --- GETTER ---
+
+// ============================================================================
+// ====================          GETTER      ==================================
+// ============================================================================
 // * Get the current zone of the player. *
 const std::string&	Player::getZone() const { return _zone; }
 
@@ -60,26 +67,28 @@ QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	return it->second;
 }
 
-// --- SETTER ---
+int	Player::getDefense() const { return _defense; }
+
+int	Player::getLuck() const { return _luck; }
+
+// ============================================================================
+// ====================          SETTER      ==================================
+// ============================================================================
 // * Set the new zone of the player. *
-void	Player::setZone(const std::string& new_zone) {
-	_zone = new_zone;
-}
+void	Player::setZone(const std::string& new_zone) { _zone = new_zone; }
 
 // * Add a quest to the player. *
-void	Player::addQuest(const std::string& quest_id) {
-	_quests[quest_id] = QuestState::IN_PROGRESS;
-}
+void	Player::addQuest(const std::string& quest_id) { _quests[quest_id] = QuestState::IN_PROGRESS; }
 
 // * Remove a quest from the player. *
-void	Player::removeQuest(const std::string& quest_id) {
-	_quests.erase(quest_id);
-}
+void	Player::removeQuest(const std::string& quest_id) { _quests.erase(quest_id); }
 
 // * Set a quest as completed. *
-void	Player::setQuestCompleted(const std::string& quest_id) {
-	_quests[quest_id] = QuestState::COMPLETED;
-}
+void	Player::setQuestCompleted(const std::string& quest_id) { _quests[quest_id] = QuestState::COMPLETED; }
+
+void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
+
+void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
 
 // ============================================================================
 // ====================      INVENTORY SYSTEM      ============================
@@ -170,6 +179,10 @@ std::string Player::getItemInInventory(bool add_details) const {
 
 	return inventory;
 }
+
+Item*	Player::getEquippedWeapon() const { return _equipped_weapon; }
+
+void	Player::setEquippedWeapon(Item* new_weapon) { _equipped_weapon = new_weapon; }
 
 // ============================================================================
 // ====================       DIALOGUE SYSTEM      ============================
