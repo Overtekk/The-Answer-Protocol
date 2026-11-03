@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 09:23:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:00:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ class GasterManager {
 	void	createEntities();
 	void	createItems();
 	void	fillRoomsData();
-	void	createStartingWeapon();
+
+	std::string	createStartingWeapon(std::string& player_name);
 
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 09:33:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:09:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::TALK:			commandTalk(session, argument); break;
 		case GameCommand::ATTACK:		commandAttack(session, argument); break;
 		case GameCommand::INFO_ITEM:	commandItemStat(session, argument); break;
+		case GameCommand::EQUIP:		commandEquip(session, argument); break;
 		default:						commandUnknown(session, command);
 	}
 

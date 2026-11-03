@@ -184,11 +184,14 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 
 // * Get the inventory of the player. *
 std::string Player::getItemInInventory(bool add_details) const {
-	if (_inventory.empty()) {
+	if (_inventory.empty() && _equipped_weapon == nullptr) {
 		return "No item in inventory.";
 	}
 
 	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
+	if (this->getEquippedWeapon() != nullptr)
+		inventory += "{Equipped: \"" + _equipped_weapon->getName() + "\"}, ";
+
 	for (const auto& [id, item] : _inventory) {
 		if (item) {
 			if (add_details)

@@ -6,16 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 09:36:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:17:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include <memory>
-#include <optional>
+# include <optional>
 # include <utility>
 # include <string>
 # include <unordered_map>
+# include <vector>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -75,10 +76,25 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	_world_state.players[player_name] = std::move(new_player);
 	spawn->addPlayer(player);
 
+	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".");
+
 	// Give the player the default quests
 	_quest_manager.addDefaultQuests(*player);
 
-	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".");
+	std::string default_quests_list;
+	for (const auto& quest : player->getCurrentQuests())
+		default_quests_list += quest + ", ";
+	default_quests_list.pop_back();
+	default_quests_list.pop_back();
+
+	print_log("GasterManager: added default quest \"" + default_quests_list + "\" for " + player_name + ".");
+
+	// Create and equip the starting weapon on the player
+	std::string name_player = player_name;
+	std::string item_id = createStartingWeapon(name_player);
+	player->setEquippedWeapon(_world_state.items[item_id].get());
+
+	print_log("GasterManager: add starting weapon \"" + item_id + "\" for " + player_name + ".");
 }
 
 // ============================================================================
@@ -698,9 +714,8 @@ void	GasterManager::createItems() {
 					continue;
 		}
 
-		if (new_item) {
+		if (new_item)
 			_world_state.items[new_item->getID()] = std::move(new_item);
-		}
 	}
 }
 
@@ -739,19 +754,18 @@ void	GasterManager::fillRoomsData() {
 	}
 }
 
-void	GasterManager::createStartingWeapon() {
-	// spoon:
-    // name: "Spoon"
-    // description: "A spoon found in your kitchen. At least you can do damage!"
-    // type: "weapon"
-    // damage: 2
-    // bonus_min: 0
-    // bonus_max: 1
+// * Create a new starting weapon. *
+std::string	GasterManager::createStartingWeapon(std::string& player_name) {
+	std::string item_id = player_name + "_spoon";
+	std::string item_name = "Spoon of " + player_name;
 
-	// todo
+	std::unique_ptr<Item> new_item = std::make_unique<ItemWeapon>(
+		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!", ItemType::WEAPON, 2, 0, 0, 1
+	);
 
-	// + make item description command
-	pass;
+	std::string id = new_item->getID();
+	_world_state.items[new_item->getID()] = std::move(new_item);
+	return id;
 }
 
 // ============================================================================
