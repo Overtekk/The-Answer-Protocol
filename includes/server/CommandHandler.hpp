@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 09:19:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:30:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ class CommandHandler {
 		~CommandHandler() = default;
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
+		void	processAdminCommand(const std::string& cmd);
 };

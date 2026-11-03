@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 10:58:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:49:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,12 @@
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/logger.hpp"
+# include "utils.h"
 
-// --- CONSTRUCTOR ---
+
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log) :
 	_listen_socket(-1),
 	_cmd_handler(cmd_handler),
@@ -28,6 +32,9 @@ TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_
 	std::ignore=_save_log_in_file; //todo with the logger
 }
 
+// ============================================================================
+// =========================       PUBLIC      ================================
+// ============================================================================
 // * Run the server. *
 void	TCPServer::run() {
 	_is_running = true;
@@ -86,7 +93,9 @@ void	TCPServer::run() {
 // * Stop the server. *
 void	TCPServer::stop() { _is_running = false; }
 
-// ==== PRIVATE ===
+// ============================================================================
+// =========================      PRIVATE      ================================
+// ============================================================================
 // --- INIT SOCKET ---
 // * Init the server with the port in argument. *
 void	TCPServer::init(std::uint16_t port) {
@@ -198,6 +207,28 @@ void	TCPServer::handleStdinRead() {
 		stop();
 		return;
 	}
+	else if (command.rfind("kill", 0) == 0) {
+		print_log("Server used " + command);
+		_cmd_handler.processAdminCommand(command);
+
+		// Get the killed player name (after "kill ")
+		size_t	index_arg = command.find_first_of(' ');
+		if (index_arg == std::string::npos) {
+			return;
+		}
+		std::string	target = command.substr(index_arg + 1);
+
+		// Free the client if he was in a battle
+		for (auto& [fd, session] : _sessions) {
+			if (session->getUsername() == target
+				&& session->getSubSessionState() == SubSessionState::IN_BATTLE) {
+				session->setSubSessionState(SubSessionState::MOVING);
+				session->add_msg_to_buffer(getTCP_OK_operation("You have been killed by a god of an other world."));
+			}
+		}
+		return;
+	}
+
 }
 
 // * Read incoming data from a client. *

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:24:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:52:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -470,11 +470,15 @@ CombatStatus	GasterManager::checkCombatStatus(const std::string &player_name) {
 		return CombatStatus::NOTHING;
 	}
 
+	// Get the result of the battle
 	CombatStatus result = _combat_manager.getBattleStatus(it->second.player, it->second.entity);
 
 	bool flag = false;
 	if (result == CombatStatus::PLAYER_LOSE) {
-		// todo player respawn
+		it->second.entity->setHealth(it->second.entity_max_hp);		// fill entity with max hp
+		// respawn player
+		respawnPlayer(it->second.player);
+		print_log("GasterManager: player \"" + it->second.player->getName() + "\" have respawned to.");
 		flag = true;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
@@ -757,14 +761,13 @@ void	GasterManager::fillRoomsData() {
 	}
 }
 
-// * Create a new starting weapon. *
 std::string	GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_id = player_name + "_spoon";
 	std::string item_name = "Spoon of " + player_name;
 
 	std::unique_ptr<Item> new_item = std::make_unique<ItemWeapon>(
 		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!",
-		ItemType::WEAPON, 33, 0, 0, 1
+		ItemType::WEAPON, 2, 0, 0, 1
 	);
 
 	std::string id = new_item->getID();
@@ -772,7 +775,6 @@ std::string	GasterManager::createStartingWeapon(std::string& player_name) {
 	return id;
 }
 
-// * Delete an entity. *
 void	GasterManager::deleteEntity(Entity* entity) {
 	// Get room where entity is
 	std::string room = entity->getZone();
@@ -781,6 +783,44 @@ void	GasterManager::deleteEntity(Entity* entity) {
 	// Delete it from world state
 	_world_state.entities.erase(entity->getID());
 }
+
+void	GasterManager::respawnPlayer(Player *player) {
+	Room* old_room = getRoom(player->getZone());
+
+	Room* spawn = getRoom("spawn");
+	if (old_room)
+		old_room->popPlayer(player->getName());
+	if (spawn) {
+		spawn->addPlayer(player);
+		player->setZone(spawn->getID());
+		player->setHealth(player->getHealth() / 2);
+		print_log("GasterManager: player \"" + player->getName() + "\" have respawned to spawn.");
+	}
+}
+
+// ============================================================================
+// ===================      COMMANDS - ADMIN         ==========================
+// ============================================================================
+// * Kill a player: end his battle, send him back to the spawn. *
+ReturnState	GasterManager::adminKill(const std::string& player_name) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return ReturnState::PLAYER_NOT_FOUND;
+
+	// End the battle if the player is fighting
+	auto combat_it = _combat_lists.find(player_name);
+	if (combat_it != _combat_lists.end()) {
+		combat_it->second.entity->setHealth(combat_it->second.entity_max_hp);
+		_combat_manager.finishBattle(player);
+		_combat_lists.erase(combat_it);
+	}
+
+	respawnPlayer(player);
+
+	print_log("GasterManager: player \"" + player_name + "\" has been killed by the admin.");
+	return ReturnState::VALID;
+}
+
 
 // ============================================================================
 // =========================       DEBUG      =================================

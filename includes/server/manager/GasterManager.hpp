@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:13:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:35:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ struct TalkResult {
 struct CombatProgress {
 	Player* player;
 	Entity* entity;
+	int player_max_hp;
+	int entity_max_hp;
 };
 
 
@@ -62,6 +64,8 @@ class GasterManager {
 
 	// --- DELETE OBJECTS ---
 	void	deleteEntity(Entity* entity);
+
+	void	respawnPlayer(Player* player);
 
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
@@ -117,6 +121,9 @@ class GasterManager {
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
+
+		// --- ADMIN ---
+		ReturnState	adminKill(const std::string& player_name);
 
 		// --- DEBUG ---
 		void	debugPrintStructureData(bool show_gui_data = false);

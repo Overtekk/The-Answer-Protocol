@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 10:35:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 14:51:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,29 @@ void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_
 			handleGameCommand(session, raw_line);
 	}
 }
+
+// * Handle the commands typed in the server console. *
+void	CommandHandler::processAdminCommand(const std::string& raw_line) {
+	std::string raw_command = clean_line(raw_line);
+
+	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
+	std::string command = std::get<0>(packed_cmd);
+	std::string argument = std::get<1>(packed_cmd);
+
+	if (command == "KILL") {
+		if (argument.empty()) {
+			print_error("usage: kill [player name]");
+			return;
+		}
+
+		ReturnState state = _manager.adminKill(argument);
+		if (state == ReturnState::VALID)
+			print_success("player '" + argument + "' has been killed with success.");
+		else
+			print_error("can't kill '" + argument + "': player not found.");
+	}
+}
+
 
 // ============================================================================
 // =========================       PRIVATE      ===============================
