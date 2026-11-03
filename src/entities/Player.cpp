@@ -34,10 +34,6 @@ Player::Player(const std::string& name):
 // ============================================================================
 // ====================          GETTER      ==================================
 // ============================================================================
-// * Get the current zone of the player. *
-const std::string&	Player::getZone() const { return _zone; }
-
-// * Return player not completed quests. *
 std::vector<std::string>	Player::getCurrentQuests() const {
 	std::vector<std::string>	quests_list;
 
@@ -48,7 +44,6 @@ std::vector<std::string>	Player::getCurrentQuests() const {
 	return quests_list;
 }
 
-// * Return player completed quests. *
 std::vector<std::string>	Player::getCompletedQuests() const {
 	std::vector<std::string>	quests_list;
 
@@ -59,7 +54,6 @@ std::vector<std::string>	Player::getCompletedQuests() const {
 	return quests_list;
 }
 
-// * Get the statut of the current quest. *
 QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	const auto it = _quests.find(quest_id);
 	if (it == _quests.end())
@@ -67,13 +61,10 @@ QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	return it->second;
 }
 
-// * Get the defense of the player. *
 int	Player::getDefense() const { return _defense; }
 
-// * Get the luck of the player. *
 int	Player::getLuck() const { return _luck; }
 
-// * Get the stat of an item. *
 const std::string	Player::getItemStats(ItemID id) {
 	Item* item = getItem(id);
 	if (!item)
@@ -102,9 +93,6 @@ const std::string	Player::getItemStats(ItemID id) {
 // ============================================================================
 // ====================          SETTER      ==================================
 // ============================================================================
-// * Set the new zone of the player. *
-void	Player::setZone(const std::string& new_zone) { _zone = new_zone; }
-
 // * Add a quest to the player. *
 void	Player::addQuest(const std::string& quest_id) { _quests[quest_id] = QuestState::IN_PROGRESS; }
 

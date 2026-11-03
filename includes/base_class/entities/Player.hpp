@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:05:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:16:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ class Player : public Entity {
 		Item*										_equipped_weapon = nullptr;
 
 		// Information
-		std::string								_zone;
 		std::unordered_map<std::string, int>	_dialogue_state;
 
 		// Stats
@@ -50,7 +49,6 @@ class Player : public Entity {
         ~Player() override = default;
 
 		// --- GETTER ---
-		const std::string&			getZone() const;
 		std::vector<std::string>	getCurrentQuests() const;
 		std::vector<std::string>	getCompletedQuests() const;
 		QuestState					getQuestStatut(const std::string& quest_id) const;
@@ -59,7 +57,6 @@ class Player : public Entity {
 		const std::string			getItemStats(ItemID id);
 
 		// --- SETTER ---
-		void	setZone(const std::string& new_zone);
 		void	addQuest(const std::string& quest_id);
 		void	removeQuest(const std::string& quest_id);
 		void	setQuestCompleted(const std::string& quest_id);

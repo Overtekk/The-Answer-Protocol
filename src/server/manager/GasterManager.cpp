@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 10:17:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:24:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,7 +478,9 @@ CombatStatus	GasterManager::checkCombatStatus(const std::string &player_name) {
 		flag = true;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
-		// todo enemy delete
+		std::string entity_id = it->second.entity->getID();
+		deleteEntity(it->second.entity);
+		print_log("GasterManager: entity \"" + entity_id + "\" have been deleted.");
 		flag = true;
 	}
 	if (flag) {
@@ -642,7 +644,6 @@ int		GasterManager::getTalkLimit(const Player& player, const std::vector<Dialogu
 // ============================================================================
 // ==================       OBJECTS MANAGEMENTS      ==========================
 // ============================================================================
-// CREATE OBJECTS
 // * Create the rooms and add them to the world state. *
 void	GasterManager::createRoom() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
@@ -749,7 +750,9 @@ void	GasterManager::fillRoomsData() {
 		}
 		// Fill entities
 		for (const auto& entity : config.spawns) {
-			data->addEntity(_world_state.entities[entity].get());
+			Entity* entity_ptr = _world_state.entities[entity].get();
+			data->addEntity(entity_ptr);
+			entity_ptr->setZone(room_id);
 		}
 	}
 }
@@ -760,12 +763,23 @@ std::string	GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_name = "Spoon of " + player_name;
 
 	std::unique_ptr<Item> new_item = std::make_unique<ItemWeapon>(
-		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!", ItemType::WEAPON, 2, 0, 0, 1
+		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!",
+		ItemType::WEAPON, 33, 0, 0, 1
 	);
 
 	std::string id = new_item->getID();
 	_world_state.items[new_item->getID()] = std::move(new_item);
 	return id;
+}
+
+// * Delete an entity. *
+void	GasterManager::deleteEntity(Entity* entity) {
+	// Get room where entity is
+	std::string room = entity->getZone();
+	_world_state.rooms[room]->popEntity(entity->getName());
+
+	// Delete it from world state
+	_world_state.entities.erase(entity->getID());
 }
 
 // ============================================================================

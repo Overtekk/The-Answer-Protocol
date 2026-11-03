@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 10:00:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:13:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ class GasterManager {
 	void	fillRoomsData();
 
 	std::string	createStartingWeapon(std::string& player_name);
+
+	// --- DELETE OBJECTS ---
+	void	deleteEntity(Entity* entity);
 
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
