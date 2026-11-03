@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:14:57 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:31:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ enum class TCPErrorCode {
 	QUEST_NOT_FOUND,			// QUEST NOT FOUND
 	ITEM_NOT_IN_ROOM,			// ITEM NOT IN CLIENT ROOM
 	MISSING_NPC,				// CLIENT FORGOT TO ADD ENTITY TO A COMMAND
-	ITEM_NOT_WEAPON				// ITEM IS NOT A WEAPON
+	ITEM_NOT_WEAPON,			// ITEM IS NOT A WEAPON
+	MISSING_ITEM				// ITEM IS MISSING
 };
 
 

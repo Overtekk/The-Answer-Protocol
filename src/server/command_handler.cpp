@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:15:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:33:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"QUEST",			GameCommand::QUEST},
 		{"QUESTS",			GameCommand::QUESTS},
 		{"QUEST INFO",		GameCommand::QUEST_INFO},
-		{"EQUIP",			GameCommand::EQUIP}
+		{"EQUIP",			GameCommand::EQUIP},
+		{"INFO_ITEM",		GameCommand::INFO_ITEM}
 	};
 
 	auto it = game_map.find(cmd_str);
@@ -241,6 +242,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument); break;
 		case GameCommand::TALK:			commandTalk(session, argument); break;
 		case GameCommand::ATTACK:		commandAttack(session, argument); break;
+		case GameCommand::INFO_ITEM:	commandItemStat(session, argument); break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -491,6 +493,24 @@ void	CommandHandler::commandCombatStatus(TCPSession &session, std::string argume
 	std::ignore = argument;
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getCombatStatus(session.getUsername())));
+}
+
+void CommandHandler::commandItemStat(TCPSession &session, std::string argument) {
+	lower_the_string(argument);
+
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_ITEM));
+		print_log_message(session, getTCP_error(TCPErrorCode::MISSING_ITEM));
+		return;
+	}
+
+	std::string result = _manager.getItemStat(session.getUsername(), argument);
+	if (result.empty()) {
+		sendErrorToUser(session, ReturnState::ITEM_NOT_FOUND);
+		return;
+	}
+	session.add_msg_to_buffer(getTCP_OK_operation(result));
+	return;
 }
 
 // ============================================================================

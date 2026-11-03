@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:59:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:36:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	// Give the player the default quests
 	_quest_manager.addDefaultQuests(*player);
 
-	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
+	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".");
 }
 
 // ============================================================================
@@ -316,6 +316,7 @@ const std::string	GasterManager::getPlayerInventory(const std::string& player_na
 	return player->getItemInInventory(add_details);
 }
 
+// * Equip a new weapon (switch with the current one and place it in the player inventory). *
 ReturnState	GasterManager::equipNewWeapon(const std::string &player_name, const std::string &item_name) {
 	Player* player = getPlayer(player_name);
 	if (!player) {
@@ -345,6 +346,21 @@ ReturnState	GasterManager::equipNewWeapon(const std::string &player_name, const 
 	player->addItemToInventory(old_player_item);
 
 	return ReturnState::VALID;
+}
+
+const std::string	GasterManager::getItemStat(const std::string &player_name, const std::string &item_name) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item) {
+		print_log("GasterManager: can't get item \"" + item_name + "\".");
+		return "";
+	}
+
+	return player->getItemStats(item->getUniqueID());
 }
 
 // ============================================================================
@@ -393,6 +409,7 @@ ReturnState	GasterManager::isEnemyType(const std::string& player_name, const std
 	return ReturnState::VALID;
 }
 
+// * Init a battle with a player and an entity. *
 const std::string	GasterManager::initCombat(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
@@ -403,6 +420,7 @@ const std::string	GasterManager::initCombat(const std::string &player_name) {
 	return _combat_manager.initBattle(it->second.player, it->second.entity);
 }
 
+// * Get the combat status of a current battle. *
 const std::string	GasterManager::getCombatStatus(const std::string &player_name) {
 	const Player* player = getPlayer(player_name);
 	if (!player)
@@ -417,6 +435,7 @@ const std::string	GasterManager::getCombatStatus(const std::string &player_name)
 	return _combat_manager.getBattleStats(it->second.player, it->second.entity);
 }
 
+// * Make the player attack the entity. *
 const std::string	GasterManager::combatPlayerAttack(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
@@ -427,6 +446,7 @@ const std::string	GasterManager::combatPlayerAttack(const std::string &player_na
 	return _combat_manager.PlayerBasicAttack(it->second.player, it->second.entity);
 }
 
+// * Check if a battle is finished. *
 CombatStatus	GasterManager::checkCombatStatus(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {

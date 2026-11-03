@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:53:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:09:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class Player : public Entity {
 		QuestState					getQuestStatut(const std::string& quest_id) const;
 		int							getDefense() const;
 		int							getLuck() const;
+		const std::string			getItemStats(ItemID id);
 
 		// --- SETTER ---
 		void	setZone(const std::string& new_zone);

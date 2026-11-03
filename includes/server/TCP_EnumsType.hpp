@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 14:41:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:20:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ enum class GameCommand {
 	QUEST,
 	QUESTS,
 	QUEST_INFO,
-	EQUIP
+	EQUIP,
+	INFO_ITEM,
 };
 
 enum class BattleCommand {

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 14:42:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:19:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class CommandHandler {
 		void	commandQuest(TCPSession& session, std::string argument);
 		void	commandQuestInfo(TCPSession& session, std::string argument);
 		void	commandEquip(TCPSession& session, std::string argument);
+		void	commandItemStat(TCPSession& session, std::string argument);
 		void	commandCombatAttack(TCPSession& session, std::string argument);
 		void	commandCombatCheck(TCPSession& session, std::string argument);
 		void	commandCombatAct(TCPSession& session, std::string argument);

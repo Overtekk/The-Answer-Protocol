@@ -60,6 +60,7 @@ std::vector<std::string>	Player::getCompletedQuests() const {
 	return quests_list;
 }
 
+// * Get the statut of the current quest. *
 QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	const auto it = _quests.find(quest_id);
 	if (it == _quests.end())
@@ -67,9 +68,37 @@ QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	return it->second;
 }
 
+// * Get the defense of the player. *
 int	Player::getDefense() const { return _defense; }
 
+// * Get the luck of the player. *
 int	Player::getLuck() const { return _luck; }
+
+// * Get the stat of an item. *
+const std::string	Player::getItemStats(ItemID id) {
+	Item* item = getItem(id);
+	if (!item)
+		return "";
+
+	std::string result = "name: \"" + item->getName() + "\" | ";
+	result += "description: | \"" + item->getDescription() + "\" | ";
+	result += "type: " + item_type_to_string(item->getType()) + " | ";
+
+	if (item->getType() == ItemType::WEAPON) {
+		result += "damage: " + std::to_string(item->getDamage()) + " | ";
+		if (item->getBonusMin() > 0) {
+			result += "(bonus_min: " + std::to_string(item->getBonusMin()) + " | ";
+			result += "bonus_max: " + std::to_string(item->getBonusMax()) + ")";
+		}
+		else
+			result.pop_back();
+	}
+
+	else if (item->getType() == ItemType::CONSUMABLE)
+		result += "+ " + std::to_string(item->getHP()) + " HP";
+
+	return result;
+}
 
 // ============================================================================
 // ====================          SETTER      ==================================
@@ -86,8 +115,10 @@ void	Player::removeQuest(const std::string& quest_id) { _quests.erase(quest_id);
 // * Set a quest as completed. *
 void	Player::setQuestCompleted(const std::string& quest_id) { _quests[quest_id] = QuestState::COMPLETED; }
 
+// * Set the new defense value. *
 void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
 
+// * Set the new luck value. *
 void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
 
 // ============================================================================
@@ -154,7 +185,7 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 // * Get the inventory of the player. *
 std::string Player::getItemInInventory(bool add_details) const {
 	if (_inventory.empty()) {
-		return "No item in inventory.\n";
+		return "No item in inventory.";
 	}
 
 	std::string inventory = "Item in " + this->getName() + "'s inventory: [";

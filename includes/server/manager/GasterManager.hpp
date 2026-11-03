@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:56:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 09:23:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ class GasterManager {
 		ReturnState			takeItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			dropItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			equipNewWeapon(const std::string& player_name, const std::string& item_name);
+		const std::string	getItemStat(const std::string& player_name, const std::string& item_name);
 
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
