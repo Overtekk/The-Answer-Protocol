@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 13:31:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:05:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class Entity {
 		int					getMaxHealth() const;
 		virtual EnemyType	getType() const;
 		bool				inCombat();
-		int					getAttackValue() const;
+		int			getAttackValue() const;
 
 		// --- SETTER ---
 		void	setHealth(int new_value);

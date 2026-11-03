@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 10:09:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:35:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -472,6 +472,7 @@ void	CommandHandler::commandAttack(TCPSession &session, std::string argument) {
 	ReturnState command_state = _manager.isEnemyType(session.getUsername(), argument);
 	if (command_state == ReturnState::VALID) {
 		session.add_msg_to_buffer(getTCP_OK_operation(_manager.initCombat(session.getUsername())));
+		commandCombatStatus(session, argument);
 		session.setSubSessionState(SubSessionState::IN_BATTLE);
 	}
 	else
@@ -485,9 +486,19 @@ void	CommandHandler::commandCombatAttack(TCPSession &session, std::string argume
 	session.add_msg_to_buffer(getTCP_OK_operation( _manager.combatPlayerAttack(session.getUsername())));
 
 	CombatStatus result = _manager.checkCombatStatus(session.getUsername());
-	if (result == CombatStatus::PLAYER_LOSE)
-		session.setSubSessionState(SubSessionState::MOVING);
 
+	if (result == CombatStatus::PLAYER_LOSE) {
+		session.add_msg_to_buffer(getTCP_OK_operation("You lose the battle."));
+		session.setSubSessionState(SubSessionState::MOVING);
+		return;
+	}
+	else if (result == CombatStatus::ENTITY_LOSE) {
+		session.add_msg_to_buffer(getTCP_OK_operation("You won the battle."));
+		session.setSubSessionState(SubSessionState::MOVING);
+		return;
+	}
+	commandCombatStatus(session, argument);
+	return;
 }
 
 void	CommandHandler::commandCombatStatus(TCPSession &session, std::string argument) {

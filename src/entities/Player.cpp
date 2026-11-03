@@ -24,9 +24,8 @@
 // =====================       CONSTRUCTOR      ===============================
 // ============================================================================
 Player::Player(const std::string& name):
-	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {
-		setAttackValue(10);
-	}
+	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100)
+	{}
 
 // ============================================================================
 // ====================       PUBLIC METHODS      =============================
@@ -216,7 +215,10 @@ std::string Player::getItemInInventory(bool add_details) const {
 
 Item*	Player::getEquippedWeapon() const { return _equipped_weapon; }
 
-void	Player::setEquippedWeapon(Item* new_weapon) { _equipped_weapon = new_weapon; }
+void	Player::setEquippedWeapon(Item* new_weapon) {
+	_equipped_weapon = new_weapon;
+	Entity::setAttackValue(new_weapon ? new_weapon->getDamage() : 1);
+}
 
 // ============================================================================
 // ====================       DIALOGUE SYSTEM      ============================

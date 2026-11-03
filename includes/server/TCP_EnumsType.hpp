@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 09:20:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 10:37:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,26 @@ enum class SubSessionState {MOVING, IN_BATTLE};
 enum class OperationState {SUCCESS, WAITING, DECONNEXION, ERROR, NETWORK_ERROR};
 
 // === COMMANDHANDLER ===
-enum class HandshakeCommand { CONNECT, QUIT };
+enum class HandshakeCommand {
+	CONNECT,
+	QUIT,
+	HELP //todo
+};
 
 enum class GameCommand {
 	LOOK,
 	MOVE,
 	QUIT,
-	CHAT,
+	CHAT, //todo
 	WHO,
-	GROUP_CREATE,
-	GROUP_INVITE,
-	GROUP_JOIN,
-	GROUP_LEAVE,
+	GROUP_CREATE, //todo
+	GROUP_INVITE, //todo
+	GROUP_JOIN, //todo
+	GROUP_LEAVE, //todo
 	TAKE,
 	DROP,
 	INVENTORY,
-	TALK,
+	TALK, //todo
 	ATTACK,
 	STATUS,
 	QUEST,
@@ -44,14 +48,16 @@ enum class GameCommand {
 	QUEST_INFO,
 	EQUIP,
 	INFO_ITEM,
+	HELP, //todo
 };
 
 enum class BattleCommand {
 	ATTACK,
-	ACT,
-	ITEM,
-	SPARE,
-	RUNAWAY,
-	CHECK,
+	ACT, //todo
+	ITEM, //todo
+	SPARE, //todo
+	RUNAWAY, //todo
+	CHECK, //todo
 	STATUS,
+	HELP, //todo
 };
