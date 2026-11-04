@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:50:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 10:25:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,26 @@ const std::string	CombatManager::PlayerBasicAttack(Player *player, Entity *entit
 		return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + " (bonus +" + std::to_string(bonus) + ").";
 	}
 	return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + ".";
+}
+
+bool	CombatManager::tryFlee (Player *player, Entity *entity) {
+	// base chance
+	float flee_base_chance = 50.0f;
+	// calculate fluctuations:
+	// - add player chance
+	// - add ratio enemy based on health (more health = less chance)
+	// - add ratio player based on health (less health = more chance)
+	float player_bonus_chance = player->getLuck() * BASE_LUCK_FLEE;
+	float ratio_enemy = ((static_cast<float>(entity->getHealth()) / entity->getMaxHealth()) * BASE_RATIO_ENEMY_HP_FLEE);
+	float ratio_player = ((static_cast<float>(player->getHealth()) / player->getMaxHealth()) * BASE_RATIO_PLAYER_HP_FLEE);
+	flee_base_chance += player_bonus_chance - ratio_enemy - ratio_player;
+
+	// get the final percentage
+	float final_chance = std::clamp(flee_base_chance, MIN_FLEE_CHANCE, MAX_FLEE_CHANCE);
+
+	// roll the dice
+	std::uniform_int_distribution<int> roll_100(0, 99);
+	if (roll_100(_rng) < final_chance)
+		return true;
+	return false;
 }

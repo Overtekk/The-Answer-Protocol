@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 14:30:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 10:27:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class CommandHandler {
 		void	commandCombatAct(TCPSession& session, std::string argument);
 		void	commandCombatItem(TCPSession& session, std::string argument);
 		void	commandCombatSpare(TCPSession& session, std::string argument);
-		void	commandCombatRunaway(TCPSession& session, std::string argument);
+		void	commandCombatFlee(TCPSession& session, std::string argument);
 		void	commandCombatStatus(TCPSession& session, std::string argument);
 
 		// SEND ERROR

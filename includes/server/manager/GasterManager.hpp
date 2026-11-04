@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 14:35:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 10:42:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,8 @@ class GasterManager {
 		const std::string	getCombatStatus(const std::string& player_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);
+		bool				tryFlee(const std::string& player_name);
+		void				finishBattle(const std::string& player_name);
 
 		// --- QUESTS ---
 		const std::string	getPlayerQuests(const std::string& player_name) const;

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 14:51:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 10:49:36 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ bool	parseCombatCommand(const std::string& cmd_str, BattleCommand& cmd) {
 		{"ATTACK",	BattleCommand::ATTACK},
 		{"ACT",		BattleCommand::ACT},
 		{"ITEM",	BattleCommand::ITEM},
-		{"RUNAWAY",	BattleCommand::RUNAWAY},
+		{"FLEE",	BattleCommand::FLEE},
 		{"SPARE",	BattleCommand::SPARE},
 		{"CHECK",	BattleCommand::CHECK},
 		{"STATUS",	BattleCommand::STATUS}
@@ -302,7 +302,7 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 		case BattleCommand::ATTACK:			commandCombatAttack(session, argument); break;
 		case BattleCommand::STATUS:			commandCombatStatus(session, argument); break;
 		// case BattleCommand::ACT:			commandWho(session, argument); break;
-		// case BattleCommand::RUNAWAY:		commandLook(session, argument); break;
+		case BattleCommand::FLEE:			commandCombatFlee(session, argument); break;
 		// case BattleCommand::SPARE:			commandMove(session, argument); break;
 		// case BattleCommand::ITEM:			commandTake(session, argument); break;
 		default:						commandUnknown(session, command);
@@ -530,7 +530,22 @@ void	CommandHandler::commandCombatStatus(TCPSession &session, std::string argume
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getCombatStatus(session.getUsername())));
 }
 
-void CommandHandler::commandItemStat(TCPSession &session, std::string argument) {
+void	CommandHandler::commandCombatFlee(TCPSession &session, std::string argument) {
+	std::ignore = argument;
+
+	bool result = _manager.tryFlee(session.getUsername());
+	if (result) {
+		session.add_msg_to_buffer(getTCP_OK_operation("You take your shoes and flee with success!"));
+		_manager.finishBattle(session.getUsername());
+		session.setSubSessionState(SubSessionState::MOVING);
+		return;
+	}
+	session.add_msg_to_buffer(getTCP_OK_operation("You slipped on a rock. You didn't succeed!"));
+
+	return;
+}
+
+void	CommandHandler::commandItemStat(TCPSession &session, std::string argument) {
 	lower_the_string(argument);
 
 	if (argument.empty()) {

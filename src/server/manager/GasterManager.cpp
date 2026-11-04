@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 14:52:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 10:50:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,7 +383,7 @@ const std::string	GasterManager::getItemStat(const std::string &player_name, con
 // ===================      COMMANDS - COMBATS       ==========================
 // ============================================================================
 // * Check if the requested enemy is a enemy. *
-ReturnState	GasterManager::isEnemyType(const std::string& player_name, const std::string& entity_id) {
+ReturnState			GasterManager::isEnemyType(const std::string& player_name, const std::string& entity_id) {
 	Player* player = getPlayer(player_name);
 	if (!player) {
 		print_log("GasterManager: can't find player \"" + player_name + "\"");
@@ -418,6 +418,8 @@ ReturnState	GasterManager::isEnemyType(const std::string& player_name, const std
 	CombatProgress combat_progress;
 	combat_progress.entity = entity;
 	combat_progress.player = player;
+	combat_progress.entity_max_hp = entity->getMaxHealth();
+	combat_progress.player_max_hp = player->getMaxHealth();
 	_combat_lists[player->getName()] = combat_progress;
 	print_log("GasterManager: combat have started between " + player_name + " and " + entity_id);
 
@@ -463,7 +465,7 @@ const std::string	GasterManager::combatPlayerAttack(const std::string &player_na
 }
 
 // * Check if a battle is finished. *
-CombatStatus	GasterManager::checkCombatStatus(const std::string &player_name) {
+CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
 		print_log("GasterManager: " + player_name + " have not started a battle yet. Can't check status of his battle.");
@@ -492,6 +494,29 @@ CombatStatus	GasterManager::checkCombatStatus(const std::string &player_name) {
 		_combat_lists.erase(it);
 	}
 	return result;
+}
+
+bool				GasterManager::tryFlee(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return false;
+	}
+
+	return _combat_manager.tryFlee(it->second.player, it->second.entity);
+}
+
+void				GasterManager::finishBattle(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return;
+	}
+
+	it->second.entity->setHealth(it->second.entity_max_hp);
+	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the battle.");
+	_combat_manager.finishBattle(it->second.player);
+	_combat_lists.erase(it);
 }
 
 // ============================================================================
@@ -820,7 +845,6 @@ ReturnState	GasterManager::adminKill(const std::string& player_name) {
 	print_log("GasterManager: player \"" + player_name + "\" has been killed by the admin.");
 	return ReturnState::VALID;
 }
-
 
 // ============================================================================
 // =========================       DEBUG      =================================
