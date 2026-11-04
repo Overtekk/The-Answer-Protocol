@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 12:56:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 11:34:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,14 @@ DialogueManager::DialogueManager(const std::unordered_map<std::string, EntityCon
 // ============================================================================
 // =====================          PUBLIC      =================================
 // ============================================================================
+// --- MAIN LOGIC ---
 // * Check if the entity has the dialogue key (silent: can be used as a probe). *
-bool	DialogueManager::hasKey(const std::string& entity_id, const std::string& dialogue_key) const {
+bool								DialogueManager::hasKey(const std::string& entity_id, const std::string& dialogue_key) const {
 	return findLine(entity_id, dialogue_key) != nullptr;
 }
 
 // * Return the dialogue string of the entity if exist. *
-std::optional<std::string>	DialogueManager::getLine(const std::string& entity_id, const std::string& dialogue_key) const {
+std::optional<std::string>			DialogueManager::getLine(const std::string& entity_id, const std::string& dialogue_key) const {
 	const std::string*	line = findLine(entity_id, dialogue_key);
 	if (!line) {
 		print_log("DialogueManager: can't find dialogue \"" + dialogue_key + "\" for entity \"" + entity_id + "\".");
@@ -73,11 +74,19 @@ const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& 
 	return it->second;
 }
 
-std::string	DialogueManager::getEncounterDialogue(const std::string& entity_id) const {
+// --- GETTER ---
+const std::string	DialogueManager::getEncounterDialogue(const std::string& entity_id) const {
 	std::optional<std::string> result = getLine(entity_id, "encounter");
 	if (result || result.has_value())
 		return *result;
 	return entity_id + " is here!";
+}
+
+const std::string	DialogueManager::getCheckDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result = getLine(entity_id, "check_default");
+	if (result || result.has_value())
+		return *result;
+	return entity_id;
 }
 
 // ============================================================================

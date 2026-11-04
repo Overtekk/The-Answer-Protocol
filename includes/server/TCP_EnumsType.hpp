@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 10:01:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 11:23:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ enum class BattleCommand {
 	ACT, //todo
 	ITEM, //todo
 	SPARE, //todo
-	FLEE, //todo
+	FLEE,
 	CHECK, //todo
 	STATUS,
 	HELP, //todo

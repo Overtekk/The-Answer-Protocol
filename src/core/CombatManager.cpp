@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 10:25:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 11:35:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ const std::string	CombatManager::initBattle(Player* player, Entity* entity) {
 	return _dialogue_manager.getEncounterDialogue(entity->getID());
 }
 
-void	CombatManager::finishBattle(Player *player) {
+void				CombatManager::finishBattle(Player *player) {
 	player->setCombat(false);
 }
 
@@ -64,6 +64,9 @@ CombatStatus		CombatManager::getBattleStatus(Player *player, Entity *entity) con
 	return CombatStatus::NOTHING;
 }
 
+const std::string	CombatManager::getCheckMsg(Entity *entity) const { return _dialogue_manager.getCheckDialogue(entity->getID()); }
+
+// ATTACK
 const std::string	CombatManager::PlayerBasicAttack(Player *player, Entity *entity) {
 	float bonus_chance = std::clamp((player->getLuck() * BONUS_CHANCE_MULTIPLIER), 0.0f, 100.0f);
 	std::uniform_int_distribution<int> roll_100(0, 99);
@@ -92,7 +95,8 @@ const std::string	CombatManager::PlayerBasicAttack(Player *player, Entity *entit
 	return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + ".";
 }
 
-bool	CombatManager::tryFlee (Player *player, Entity *entity) {
+// RUNAWAY
+bool				CombatManager::tryFlee (Player *player, Entity *entity) {
 	// base chance
 	float flee_base_chance = 50.0f;
 	// calculate fluctuations:

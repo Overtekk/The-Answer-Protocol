@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 10:50:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 11:36:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -517,6 +517,16 @@ void				GasterManager::finishBattle(const std::string &player_name) {
 	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the battle.");
 	_combat_manager.finishBattle(it->second.player);
 	_combat_lists.erase(it);
+}
+
+const std::string	GasterManager::combatCheck(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return "";
+	}
+
+	return _combat_manager.getCheckMsg(it->second.entity);
 }
 
 // ============================================================================

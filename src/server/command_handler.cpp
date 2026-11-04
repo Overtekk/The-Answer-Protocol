@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 10:49:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/04 11:38:03 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,6 +301,8 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 	switch (cmd) {
 		case BattleCommand::ATTACK:			commandCombatAttack(session, argument); break;
 		case BattleCommand::STATUS:			commandCombatStatus(session, argument); break;
+		case BattleCommand::ACT:			commandCombatAct(session, argument); break;
+		case BattleCommand::CHECK:			commandCombatCheck(session, argument); break;
 		// case BattleCommand::ACT:			commandWho(session, argument); break;
 		case BattleCommand::FLEE:			commandCombatFlee(session, argument); break;
 		// case BattleCommand::SPARE:			commandMove(session, argument); break;
@@ -543,6 +545,21 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string argument
 	session.add_msg_to_buffer(getTCP_OK_operation("You slipped on a rock. You didn't succeed!"));
 
 	return;
+}
+
+void	CommandHandler::commandCombatAct(TCPSession &session, std::string argument) {
+	std::ignore = argument;
+	std::ignore = session;
+}
+
+void	CommandHandler::commandCombatCheck(TCPSession &session, std::string argument) {
+	std::ignore = argument;
+
+	const std::string result = _manager.combatCheck(session.getUsername());
+	if (result.empty())
+		return;
+
+	session.add_msg_to_buffer(getTCP_OK_operation(result));
 }
 
 void	CommandHandler::commandItemStat(TCPSession &session, std::string argument) {
