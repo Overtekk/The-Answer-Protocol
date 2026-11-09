@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 11:32:03 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:43:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ class DialogueManager {
 		std::unordered_map<std::string, std::vector<DialogueStage>>						_stages_map;
 		std::vector<DialogueStage>														_empty_stages;
 
+		std::unordered_map<std::string, int>	_neutral_count_map;
+
 		// --- METHODS ---
 		const std::string*	findLine(const std::string& entity_id, const std::string& dialogue_key) const;
 
@@ -42,4 +44,5 @@ class DialogueManager {
 
 		const std::string	getEncounterDialogue(const std::string& entity_id) const;
 		const std::string	getCheckDialogue(const std::string& entity_id) const;
+		const std::string	getNeutralDialogue(const std::string& entity_id) const;
 };
