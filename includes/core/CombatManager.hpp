@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:07:55 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 11:29:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 11:23:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,20 @@ class CombatManager {
 		// --- DESTRUCTOR ---
 		~CombatManager() = default;
 
+		// INIT & FINISH
 		const std::string	initBattle(Player* player, Entity* entity);
 		void				finishBattle(Player* player);
 
+		// BATTLE STATUS
 		const std::string	getBattleStats(Player* player, Entity* entity) const;
 		CombatStatus		getBattleStatus(Player* player, Entity* entity) const;
 
+		// MESSAGES
 		const std::string	getCheckMsg(Entity* entity) const;
 
 		// ATTACK
-		const std::string	PlayerBasicAttack(Player* player, Entity* entity);
+		const std::string	playerBasicAttack(Player* player, Entity* entity);
+		const std::string	enemyBasicAttack(Player* player, Entity* entity);
 
 		// RUNAWAY
 		bool	tryFlee(Player* player, Entity* entity);

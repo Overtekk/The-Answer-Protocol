@@ -6,18 +6,20 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 11:25:09 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:05:04 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+# include <chrono>
+# include <queue>
 # include <string>
-#include <unordered_map>
+# include <unordered_map>
 # include <vector>
 
 # include "base_class/entities/Entity.hpp"
-#include "config/Enums.hpp"
+# include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
 # include "config/WorldState.hpp"
 # include "core/QuestManager.hpp"
@@ -34,11 +36,23 @@ struct TalkResult {
 };
 
 // Combat
+enum class CombatTurn {PLAYER, ENTITY, NONE};
+inline constexpr std::chrono::milliseconds	COMBAT_CLOCK_DELAY{1000};
+
+// A message to send to a player (the server writes it in the session of the player).
+struct CombatMessage {
+	std::string	player_name;
+	std::string	text;
+	bool		combat_over = false;
+};
+
 struct CombatProgress {
-	Player* player;
-	Entity* entity;
-	int player_max_hp;
-	int entity_max_hp;
+	Player*		player;
+	Entity*		entity;
+	CombatTurn	turn = CombatTurn::PLAYER;
+	std::chrono::steady_clock::time_point	next_action_time;
+	std::queue<std::string>					messages;			// messages waiting to be sent, one per delay
+	CombatStatus							end_status = CombatStatus::NOTHING;	// result of the enemy action
 };
 
 
@@ -109,14 +123,18 @@ class GasterManager {
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
 
 		// --- COMBAT MANAGEMENT ---
+		std::vector<CombatMessage>	updateCombats();
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
 		const std::string	getCombatStatus(const std::string& player_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
+		const std::string	combatEnemyAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);
 		bool				tryFlee(const std::string& player_name);
 		void				finishBattle(const std::string& player_name);
 		const std::string	combatCheck(const std::string& player_name);
+		CombatTurn			getBattleWhoTurn(const std::string& player_name);
+		const std::string	changeBattleWhoTurn(const std::string& player_name, CombatTurn turn);
 
 		// --- QUESTS ---
 		const std::string	getPlayerQuests(const std::string& player_name) const;

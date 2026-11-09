@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 11:35:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:19:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,20 @@ CombatStatus		CombatManager::getBattleStatus(Player *player, Entity *entity) con
 const std::string	CombatManager::getCheckMsg(Entity *entity) const { return _dialogue_manager.getCheckDialogue(entity->getID()); }
 
 // ATTACK
-const std::string	CombatManager::PlayerBasicAttack(Player *player, Entity *entity) {
+const std::string	CombatManager::playerBasicAttack(Player *player, Entity *entity) {
+	// player chance
 	float bonus_chance = std::clamp((player->getLuck() * BONUS_CHANCE_MULTIPLIER), 0.0f, 100.0f);
-	std::uniform_int_distribution<int> roll_100(0, 99);
 
+	// get the weapon of the player
 	Item* player_weapon = player->getEquippedWeapon();
 	int bonus = 0;
 	if (!player_weapon)
 		bonus = 0;
 	else {
+		// get bonus stats of weapon
 		if (player_weapon->getBonusMax() > 0) {
 			std::uniform_int_distribution<int> roll_bonus(player_weapon->getBonusMin(), player_weapon->getBonusMax());
+			std::uniform_int_distribution<int> roll_100(0, 99);
 			if (roll_100(_rng) < bonus_chance)
 				bonus = roll_bonus(_rng);
 		}
@@ -93,6 +96,31 @@ const std::string	CombatManager::PlayerBasicAttack(Player *player, Entity *entit
 		return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + " (bonus +" + std::to_string(bonus) + ").";
 	}
 	return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + ".";
+}
+
+const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity) {
+	// player chance
+	float bonus_chance = std::clamp((player->getLuck() * BONUS_CHANCE_MULTIPLIER), 0.0f, 100.0f);
+
+	int	entity_damage = entity->getAttackValue();
+
+	// get random value from player defense
+	int player_defense = 0;
+	if (player->getDefense() > 0) {
+		std::uniform_int_distribution<int> roll_bonus(0, player->getDefense());
+		std::uniform_int_distribution<int> roll_100(0, 99);
+		if (roll_100(_rng) < bonus_chance) {
+			player_defense = roll_bonus(_rng);
+		}
+	}
+
+	int total_damage = entity_damage - player_defense;
+
+	if (total_damage > 0) {
+		player->setHealth(player->getHealth() - total_damage);
+		return entity->getName() + " attacked you with a strength of " + std::to_string(total_damage);
+	}
+	return "You blocked " + entity->getName() + " damage.";
 }
 
 // RUNAWAY

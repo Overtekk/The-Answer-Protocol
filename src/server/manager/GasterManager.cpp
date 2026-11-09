@@ -6,10 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 11:36:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:08:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <chrono>
 # include <iostream>
 # include <memory>
 # include <optional>
@@ -382,7 +383,72 @@ const std::string	GasterManager::getItemStat(const std::string &player_name, con
 // ============================================================================
 // ===================      COMMANDS - COMBATS       ==========================
 // ============================================================================
-// * Check if the requested enemy is a enemy. *
+// * Called at each turn of the server loop. Make the enemies play and return the messages to send. *
+std::vector<CombatMessage>	GasterManager::updateCombats() {
+	std::vector<CombatMessage> result;
+
+	if (_combat_lists.empty())
+		return result;
+
+	// Copy the names first: checkCombatStatus() can erase a combat from _combat_lists,
+	// and erasing while looping on the map would invalidate the loop.
+	std::vector<std::string> player_names;
+	for (const auto& it : _combat_lists)
+		player_names.push_back(it.first);
+
+	const auto now = std::chrono::steady_clock::now();
+
+	for (const std::string& name : player_names) {
+		auto it = _combat_lists.find(name);
+		if (it == _combat_lists.end())
+			continue;
+		CombatProgress& combat = it->second;
+
+		// Nothing to do if it's the player turn or if the delay is not over
+		if (combat.turn != CombatTurn::ENTITY || now < combat.next_action_time)
+			continue;
+
+		// The queue is empty: the enemy plays and we fill the queue with what happened
+		if (combat.messages.empty()) {
+			combat.messages.push(_combat_manager.enemyBasicAttack(combat.player, combat.entity));
+
+			// Only read the result here (no erase). The battle really ends when the queue is empty.
+			combat.end_status = _combat_manager.getBattleStatus(combat.player, combat.entity);
+			if (combat.end_status == CombatStatus::NOTHING) {
+				combat.messages.push(_combat_manager.getBattleStats(combat.player, combat.entity));
+				combat.messages.push("Your turn");
+			}
+			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
+				combat.messages.push("You lose the battle.");
+			else
+				combat.messages.push("You won the battle.");
+		}
+
+		// Send only ONE message, then wait for the delay before the next one
+		CombatMessage message;
+		message.player_name = name;
+		message.text = combat.messages.front();
+		combat.messages.pop();
+		combat.next_action_time = now + COMBAT_CLOCK_DELAY;
+
+		// Queue empty: it was the last message
+		if (combat.messages.empty()) {
+			if (combat.end_status == CombatStatus::NOTHING)
+				combat.turn = CombatTurn::PLAYER;
+			else {
+				message.combat_over = true;
+				result.push_back(message);
+				checkCombatStatus(name);	// erase the combat: "combat" is not valid anymore!
+				continue;
+			}
+		}
+		result.push_back(message);
+	}
+
+	return result;
+}
+
+// * Check if the requested enemy is a enemy and launch the combat. *
 ReturnState			GasterManager::isEnemyType(const std::string& player_name, const std::string& entity_id) {
 	Player* player = getPlayer(player_name);
 	if (!player) {
@@ -418,8 +484,7 @@ ReturnState			GasterManager::isEnemyType(const std::string& player_name, const s
 	CombatProgress combat_progress;
 	combat_progress.entity = entity;
 	combat_progress.player = player;
-	combat_progress.entity_max_hp = entity->getMaxHealth();
-	combat_progress.player_max_hp = player->getMaxHealth();
+	combat_progress.turn = CombatTurn::PLAYER;
 	_combat_lists[player->getName()] = combat_progress;
 	print_log("GasterManager: combat have started between " + player_name + " and " + entity_id);
 
@@ -461,7 +526,17 @@ const std::string	GasterManager::combatPlayerAttack(const std::string &player_na
 		return "";
 	}
 
-	return _combat_manager.PlayerBasicAttack(it->second.player, it->second.entity);
+	return _combat_manager.playerBasicAttack(it->second.player, it->second.entity);
+}
+
+const std::string	GasterManager::combatEnemyAttack(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return "";
+	}
+
+	return _combat_manager.enemyBasicAttack(it->second.player, it->second.entity);
 }
 
 // * Check if a battle is finished. *
@@ -477,7 +552,7 @@ CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
 
 	bool flag = false;
 	if (result == CombatStatus::PLAYER_LOSE) {
-		it->second.entity->setHealth(it->second.entity_max_hp);		// fill entity with max hp
+		it->second.entity->setHealth(it->second.entity->getMaxHealth());		// fill entity with max hp
 		// respawn player
 		respawnPlayer(it->second.player);
 		print_log("GasterManager: player \"" + it->second.player->getName() + "\" have respawned to.");
@@ -513,7 +588,7 @@ void				GasterManager::finishBattle(const std::string &player_name) {
 		return;
 	}
 
-	it->second.entity->setHealth(it->second.entity_max_hp);
+	it->second.entity->setHealth(it->second.entity->getMaxHealth());
 	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the battle.");
 	_combat_manager.finishBattle(it->second.player);
 	_combat_lists.erase(it);
@@ -527,6 +602,33 @@ const std::string	GasterManager::combatCheck(const std::string &player_name) {
 	}
 
 	return _combat_manager.getCheckMsg(it->second.entity);
+}
+
+CombatTurn			GasterManager::getBattleWhoTurn(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return CombatTurn::NONE;
+	}
+
+	return it->second.turn;
+}
+
+const std::string	GasterManager::changeBattleWhoTurn(const std::string &player_name, CombatTurn turn) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		return "";
+	}
+
+	if (turn == CombatTurn::ENTITY || turn == CombatTurn::NONE) {
+		it->second.turn = CombatTurn::ENTITY;
+		it->second.next_action_time = std::chrono::steady_clock::now() + COMBAT_CLOCK_DELAY;
+		return "Turn of " + it->second.entity->getName();
+	}
+
+	it->second.turn = CombatTurn::PLAYER;
+	return "Your turn";
 }
 
 // ============================================================================
@@ -798,7 +900,7 @@ void	GasterManager::fillRoomsData() {
 
 std::string	GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_id = player_name + "_spoon";
-	std::string item_name = "Spoon of " + player_name;
+	std::string item_name = player_name + "_spoon";
 
 	std::unique_ptr<Item> new_item = std::make_unique<ItemWeapon>(
 		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!",
@@ -828,7 +930,7 @@ void	GasterManager::respawnPlayer(Player *player) {
 	if (spawn) {
 		spawn->addPlayer(player);
 		player->setZone(spawn->getID());
-		player->setHealth(player->getHealth() / 2);
+		player->setHealth(player->getMaxHealth() / 2);
 		print_log("GasterManager: player \"" + player->getName() + "\" have respawned to spawn.");
 	}
 }
@@ -845,7 +947,7 @@ ReturnState	GasterManager::adminKill(const std::string& player_name) {
 	// End the battle if the player is fighting
 	auto combat_it = _combat_lists.find(player_name);
 	if (combat_it != _combat_lists.end()) {
-		combat_it->second.entity->setHealth(combat_it->second.entity_max_hp);
+		combat_it->second.entity->setHealth(combat_it->second.entity->getMaxHealth());
 		_combat_manager.finishBattle(player);
 		_combat_lists.erase(combat_it);
 	}

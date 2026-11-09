@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/04 10:01:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:04:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void	TCPServer::run() {
 	_is_running = true;
 
 	while (_is_running) {
+		// make the enemies play (before buildPollFds, so new messages are sent right away)
+		_cmd_handler.updateCombats(_sessions);
 		buildPollFds();
 
 		int return_value = poll(_poll_fds.data(), _poll_fds.size(), 100);
