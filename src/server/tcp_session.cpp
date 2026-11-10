@@ -6,11 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/07 15:21:05 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/02 14:01:33 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "server/TCPSession.hpp"
+#include "server/TCP_EnumsType.hpp"
 
 # define DATA_SIZE 4096
 
@@ -23,9 +24,12 @@ std::string		TCPSession::getIP() const { return _ip; }
 uint16_t		TCPSession::getPort() const { return _port; }
 int				TCPSession::getSocketDescriptor() const { return _socket.getFD(); }
 SessionState	TCPSession::getSessionState() const { return _state; }
+SubSessionState	TCPSession::getSubSessionState() const { return _sub_state; }
 std::string		TCPSession::getUsername() const { return _username; }
 // --- SETTER ---
 void			TCPSession::setSessionState(SessionState new_state) { _state = new_state; }
+
+void			TCPSession::setSubSessionState(SubSessionState new_state) { _sub_state = new_state; }
 
 void			TCPSession::setUsername(const std::string& username) { _username = username; }
 

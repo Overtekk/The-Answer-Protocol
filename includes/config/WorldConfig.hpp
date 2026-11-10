@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/29 10:40:06 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 09:39:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ struct ItemConfig {
 	ItemType	type;
 	int			damage;
 	int			hp;
+	int			bonus_min;
+	int			bonus_max;
 };
 
 // Contains data of a DialogueStage of an entity.
@@ -55,7 +57,9 @@ struct EntityConfig {
 	std::unordered_map<std::string, std::string>	dialogue;
 	EnemyType										type;
 	int												hp;
+	int												attack;
 	std::vector<DialogueStage>						dialogue_stage;
+	EnemyBehavior									behavior;
 };
 
 // Contains the data of a quest.

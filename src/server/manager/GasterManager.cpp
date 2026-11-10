@@ -6,16 +6,18 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/30 15:37:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:41:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <chrono>
 # include <iostream>
 # include <memory>
-#include <optional>
+# include <optional>
 # include <utility>
 # include <string>
 # include <unordered_map>
+# include <vector>
 
 # include <nlohmann/json.hpp>
 # include "server/manager/GasterManager.hpp"
@@ -30,6 +32,7 @@
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemKey.hpp"
 # include "base_class/items/ItemConsumable.hpp"
+#include "core/CombatManager.hpp"
 # include "core/QuestManager.hpp"
 # include "core/DialogueManager.hpp"
 # include "config/WorldConfig.hpp"
@@ -46,7 +49,8 @@
 GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data),
 	_quest_manager(_world_data.quests),
-	_dialogue_manager(_world_data.entities) {
+	_dialogue_manager(_world_data.entities),
+	_combat_manager(_dialogue_manager) {
 
 		// Create all the objects
 		createRoom();
@@ -73,10 +77,25 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 	_world_state.players[player_name] = std::move(new_player);
 	spawn->addPlayer(player);
 
+	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".");
+
 	// Give the player the default quests
 	_quest_manager.addDefaultQuests(*player);
 
-	print_log("GasterManager: player '" + player_name + "' spawned in " + _world_state.players[player_name]->getZone() + ".\n");
+	std::string default_quests_list;
+	for (const auto& quest : player->getCurrentQuests())
+		default_quests_list += quest + ", ";
+	default_quests_list.pop_back();
+	default_quests_list.pop_back();
+
+	print_log("GasterManager: added default quest \"" + default_quests_list + "\" for " + player_name + ".");
+
+	// Create and equip the starting weapon on the player
+	std::string name_player = player_name;
+	std::string item_id = createStartingWeapon(name_player);
+	player->setEquippedWeapon(_world_state.items[item_id].get());
+
+	print_log("GasterManager: add starting weapon \"" + item_id + "\" for " + player_name + ".");
 }
 
 // ============================================================================
@@ -109,7 +128,7 @@ const std::string	GasterManager::getRoomData(const std::string& player_name, boo
 	// Get the zone of the player
 	std::string zone_player = getPlayerRoom(player_name);
 	if (zone_player.empty())
-		return "ERROR: Player room not found.\n";
+		return "";
 
 	return _world_state.rooms.at(zone_player)->getRoomData(add_details);
 }
@@ -119,66 +138,52 @@ const std::string	GasterManager::getPlayerRoom(const std::string& player_name) c
 	// Find the player
 	const Player* player = getPlayer(player_name);
 	if (!player)
-		return "Player not found";
+		return "";
 
 	// Get the room of the player
 	const std::string& zone_player = player->getZone();
 	if (zone_player.empty() || _world_state.rooms.find(zone_player) == _world_state.rooms.end()) {
 		print_log("GasterManager: can't find the zone of player '" + player_name + "'.");
-		return "\n";
+		return "";
 	}
 	return zone_player;
 }
 
-// * Get the inventory of a player. *
-const std::string	GasterManager::getPlayerInventory(const std::string& player_name, bool add_details) const {
-	const Player* player = getPlayer(player_name);
-	if (!player)
-		return "Player not found";
-
-	return player->getItemInInventory(add_details);
-}
-
-// * Get the quests of a player. *
-const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
-	const Player* player = getPlayer(player_name);
-	if (!player)
-		return "Player not found";
-
-	std::string str_list_quests = "[";
-
-	for (const std::string& act_quests :   player->getCurrentQuests()) {
-		str_list_quests += "{\"quest_id\": \"" + act_quests + "\", \"status\": \"";
-		str_list_quests += quest_state_to_string(player->getQuestStatut(act_quests)) + "\"}, ";
+// ============================================================================
+// ===================      COMMANDS - MOVEMENTS      =========================
+// ============================================================================
+// *Move a player to a direction. Take a player name and a Direction.*
+ReturnState	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
+	// Get player
+	Player* player = getPlayer(player_name);
+	if (!player) {
+		print_log("GasterManager: can't find player \"" + player_name + "\"");
+		return ReturnState::PLAYER_NOT_FOUND;
 	}
 
-	for (const std::string& cmplt_quests :  player->getCompletedQuests()) {
-		str_list_quests += "{\"quest_id\": \"" + cmplt_quests + "\", \"status\": \"";
-		str_list_quests += quest_state_to_string(player->getQuestStatut(cmplt_quests)) + "\"}, ";
+	// Get the zone of the player
+	const std::string& zone_player = player->getZone();
+	auto room_it = _world_state.rooms.find(zone_player);
+	if (zone_player.empty() || room_it == _world_state.rooms.end())  {
+		print_log("GasterManager: can't get the room of \"" + player->getName() + "\".");
+		return ReturnState::ROOM_NOT_FOUND;
 	}
 
-	if (str_list_quests.size() > 1)
-		str_list_quests.erase(str_list_quests.size() - 2);
-	str_list_quests += "]";
+	// Get the direction
+	Room* current_room = room_it->second.get();
+	Room* new_room = current_room->getFromDirection(direction);
+	if (!new_room) {
+		print_log("GasterManager: bad direction '" + direction_to_string(direction) + "' for zone '" + zone_player + "'.");
+		return ReturnState::ROOM_NOT_FOUND;
+	}
 
-	return str_list_quests;
+	// Move the player
+	current_room->popPlayer(player_name);
+	new_room->addPlayer(player);
+	player->setZone(new_room->getID());
 
-}
-
-// * Get the name and description of a quest. *
-const std::string	GasterManager::getQuestDescription(const std::string& player_name, const std::string& quest_id) const {
-	const Player* player = getPlayer(player_name);
-	if (!player)
-		return "Player not found";
-
-	if (player->getQuestStatut(quest_id) == QuestState::NOT_FOUND)
-		return "Quest not found.";
-
-	std::unordered_map<std::string, std::string> quest_info = _quest_manager.getQuestInformation(quest_id);
-	if (quest_info.empty())
-		return "Quest not found.";
-
-	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
+	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
+	return ReturnState::VALID;
 }
 
 // ============================================================================
@@ -247,92 +252,429 @@ TalkResult			GasterManager::getDialogue(const std::string& player_name, const st
 }
 
 // ============================================================================
-// ===================      COMMANDS - MOVEMENTS      =========================
+// ===================      COMMANDS - ITEMS         ==========================
 // ============================================================================
-// *Move a player to a direction. Take a player name and a Direction.*
-bool	GasterManager::movePlayer(const std::string& player_name, const Direction direction) {
-	// Get player
-	Player* player = getPlayer(player_name);
-	if (!player)
-		return false;
-
-	// Get the zone of the player
-	const std::string& zone_player = player->getZone();
-	auto room_it = _world_state.rooms.find(zone_player);
-	if (zone_player.empty() || room_it == _world_state.rooms.end()) {
-		print_log("GasterManager: can't find zone '" + zone_player + "'.");
-		return false;
-	}
-
-	// Get the direction
-	Room* current_room = room_it->second.get();
-	Room* new_room = current_room->getFromDirection(direction);
-	if (!new_room) {
-		print_log("GasterManager: bad direction '" + direction_to_string(direction) + "' for zone '" + zone_player + "'.");
-		return false;
-	}
-
-	// Move the player
-	current_room->popPlayer(player_name);
-	new_room->addPlayer(player);
-	player->setZone(new_room->getID());
-
-	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
-	return true;
-}
-
 // * Take a requested item and put in player inventory. *
-bool	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
+ReturnState	GasterManager::takeItem(const std::string& player_name, const std::string& item_name) {
 	// Get the player
 	Player*	player = getPlayer(player_name);
-	if (!player)
-		return false;
+	if (!player) {
+		print_log("GasterManager: can't find player \"" + player_name + "\"");
+		return ReturnState::PLAYER_NOT_FOUND;
+	}
+
 	// Get the room of the player
 	Room* player_room = getRoom(player->getZone());
-	if (!player_room)
-		return false;
+	if (!player_room) {
+		print_log("GasterManager: can't get the room of \"" + player->getName() + "\".");
+		return ReturnState::ROOM_NOT_FOUND;
+	}
+
 	// Get the item requested
 	Item* item = getItem(item_name);
-	if (!item)
-		return false;
+	if (!item) {
+		print_log("GasterManager: can't get item \"" + item_name + "\".");
+		return ReturnState::ITEM_NOT_FOUND;
+	}
 
 	// Pop item from the room
 	Item* item_room = player_room->popItem(item->getUniqueID());
 	if (!item_room) {
 		print_log("GasterManager: item '" + item_name + "' not in room.");
-		return false;
+		return ReturnState::ITEM_NOT_IN_PLAYER_ROOM;
 	}
 
 	// Add to inventory
 	player->addItemToInventory(item_room);
-	return true;
+	return ReturnState::VALID;
 }
 
 // * Drop a requested item and put in player inventory. *
-bool	GasterManager::dropItem(const std::string& player_name, const std::string& item_name) {
+ReturnState	GasterManager::dropItem(const std::string& player_name, const std::string& item_name) {
 	// Get the player
 	Player*	player = getPlayer(player_name);
-	if (!player)
-		return false;
+	if (!player) {
+		print_log("GasterManager: can't find player \"" + player_name + "\"");
+		return ReturnState::PLAYER_NOT_FOUND;
+	}
+
 	// Get the room of the player
 	Room* player_room = getRoom(player->getZone());
-	if (!player_room)
-		return false;
+	if (!player_room) {
+		print_log("GasterManager: can't get the room of \"" + player->getName() + "\".");
+		return ReturnState::ROOM_NOT_FOUND;
+	}
+
 	// Get the item requested
 	Item* item = getItem(item_name);
-	if (!item)
-		return false;
+	if (!item) {
+		print_log("GasterManager: can't get item \"" + item_name + "\".");
+		return ReturnState::ITEM_NOT_FOUND;
+	}
 
 	// Pop item from player inventory
 	Item *item_player = player->popItemFromInventory(item->getUniqueID());
 	if (!item_player) {
 		print_log("GasterManager: item '" + item_name + "' not in player inventory.");
-		return false;
+		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
 	}
 
 	// Add to the room
 	player_room->placeItem(item_player);
-	return true;
+	return ReturnState::VALID;
+}
+
+// * Get the inventory of a player. *
+const std::string	GasterManager::getPlayerInventory(const std::string& player_name, bool add_details) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "Player not found";
+
+	return player->getItemInInventory(add_details);
+}
+
+// * Equip a new weapon (switch with the current one and place it in the player inventory). *
+ReturnState	GasterManager::equipNewWeapon(const std::string &player_name, const std::string &item_name) {
+	Player* player = getPlayer(player_name);
+	if (!player) {
+		print_log("GasterManager: can't find player \"" + player_name + "\"");
+		return ReturnState::PLAYER_NOT_FOUND;
+	}
+
+	Item* item = getItem(item_name);
+	if (!item) {
+		print_log("GasterManager: can't get item \"" + item_name + "\".");
+		return ReturnState::ITEM_NOT_FOUND;
+	}
+
+	if (!player->checkItemInInventory(item->getUniqueID())) {
+		print_log("GasterManager: item \"" + item_name + "\" not in player inventory.");
+		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
+	}
+
+	if (item->getType() != ItemType::WEAPON) {
+		print_log("GasterManager: item \"" + item_name + "\"is not a weapon. Can't equipp.");
+		return ReturnState::ITEM_NOT_WEAPON;
+	}
+
+	Item* old_player_item = player->getEquippedWeapon();
+	player->setEquippedWeapon(item);
+	player->removeItemFromInventory(item->getUniqueID());
+	player->addItemToInventory(old_player_item);
+
+	return ReturnState::VALID;
+}
+
+const std::string	GasterManager::getItemStat(const std::string &player_name, const std::string &item_name) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	// Get the item requested
+	Item* item = getItem(item_name);
+	if (!item) {
+		print_log("GasterManager: can't get item \"" + item_name + "\".");
+		return "";
+	}
+
+	return player->getItemStats(item->getUniqueID());
+}
+
+// ============================================================================
+// ===================      COMMANDS - COMBATS       ==========================
+// ============================================================================
+// * Called at each turn of the server loop. Make the enemies play and return the messages to send. *
+std::vector<CombatMessage>	GasterManager::updateCombats() {
+	std::vector<CombatMessage> result;
+
+	if (_combat_lists.empty())
+		return result;
+
+	// Copy the names first: checkCombatStatus() can erase a combat from _combat_lists,
+	// and erasing while looping on the map would invalidate the loop.
+	std::vector<std::string> player_names;
+	for (const auto& it : _combat_lists)
+		player_names.push_back(it.first);
+
+	const auto now = std::chrono::steady_clock::now();
+
+	for (const std::string& name : player_names) {
+		auto it = _combat_lists.find(name);
+		if (it == _combat_lists.end())
+			continue;
+		CombatProgress& combat = it->second;
+
+		// Nothing to do if it's the player turn or if the delay is not over
+		if (combat.turn != CombatTurn::ENTITY || now < combat.next_action_time)
+			continue;
+
+		// The queue is empty: the enemy plays and we fill the queue with what happened
+		if (combat.messages.empty()) {
+			combat.messages.push(_combat_manager.enemyBasicAttack(combat.player, combat.entity));
+
+			// Only read the result here (no erase). The combat really ends when the queue is empty.
+			combat.end_status = _combat_manager.getCombatStatus(combat.player, combat.entity);
+			if (combat.end_status == CombatStatus::NOTHING) {
+				combat.messages.push(_combat_manager.getCombatStats(combat.player, combat.entity));
+				combat.messages.push(_dialogue_manager.getNeutralDialogue(combat.entity->getID()));
+				combat.messages.push("- Your turn -");
+			}
+			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
+				combat.messages.push("You lose the combat.");
+			else
+				combat.messages.push("You won the combat.");
+		}
+
+		// Send only ONE message, then wait for the delay before the next one
+		CombatMessage message;
+		message.player_name = name;
+		message.text = combat.messages.front();
+		combat.messages.pop();
+		combat.next_action_time = now + COMBAT_CLOCK_DELAY;
+
+		// Queue empty: it was the last message
+		if (combat.messages.empty()) {
+			if (combat.end_status == CombatStatus::NOTHING)
+				combat.turn = CombatTurn::PLAYER;
+			else {
+				message.combat_over = true;
+				result.push_back(message);
+				checkCombatStatus(name);	// erase the combat: "combat" is not valid anymore!
+				continue;
+			}
+		}
+		result.push_back(message);
+	}
+
+	return result;
+}
+
+// * Check if the requested enemy is a enemy and launch the combat. *
+ReturnState			GasterManager::isEnemyType(const std::string& player_name, const std::string& entity_id) {
+	Player* player = getPlayer(player_name);
+	if (!player) {
+		print_log("GasterManager: can't find player \"" + player_name + "\"");
+		return ReturnState::PLAYER_NOT_FOUND;
+	}
+
+	Entity* entity = getEntity(entity_id);
+	if (!entity) {
+		print_log("GasterManager: can't find entity \"" + entity_id + "\"");
+		return ReturnState::ENTITY_NOT_FOUND;
+	}
+
+	// Get the room of the player
+	Room* player_room = getRoom(player->getZone());
+	if (!player_room) {
+		print_log("GasterManager: can't get the room of \"" + player->getName() + "\".");
+		return ReturnState::ROOM_NOT_FOUND;
+	}
+
+	// Check if entity is in player room
+	Entity* entity_in_room = player_room->getEntity(entity->getName());
+	if (!entity_in_room) {
+		print_log("GasterManager: \"" + entity->getName() + "\" not in player room.");
+		return ReturnState::ENTITY_NOT_IN_PLAYER_ROOM;
+	}
+
+	if (entity_in_room->getType() != EnemyType::ENEMY) {
+		print_log("GasterManager: \"" + entity->getName() + "\" not an enemy.");
+		return ReturnState::ENTITY_NOT_ENEMY;
+	}
+
+	CombatProgress combat_progress;
+	combat_progress.entity = entity;
+	combat_progress.player = player;
+	combat_progress.turn = CombatTurn::PLAYER;
+	_combat_lists[player->getName()] = combat_progress;
+	print_log("GasterManager: combat have started between " + player_name + " and " + entity_id);
+
+
+	return ReturnState::VALID;
+}
+
+// * Init a combat with a player and an entity. *
+const std::string	GasterManager::initCombat(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a combat yet.");
+		return "";
+	}
+
+	return _combat_manager.initCombat(it->second.player, it->second.entity);
+}
+
+// * Get the combat status of a current combat. *
+const std::string	GasterManager::getCombatStatus(const std::string &player_name) {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a combat yet.");
+		return "";
+	}
+
+	return _combat_manager.getCombatStats(it->second.player, it->second.entity);
+}
+
+// * Make the player attack the entity. *
+const std::string	GasterManager::combatPlayerAttack(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return "";
+	}
+
+	return _combat_manager.playerBasicAttack(it->second.player, it->second.entity);
+}
+
+const std::string	GasterManager::combatEnemyAttack(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return "";
+	}
+
+	return _combat_manager.enemyBasicAttack(it->second.player, it->second.entity);
+}
+
+// * Check if a combat is finished. *
+CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " have not started a combat yet. Can't check status of his combat.");
+		return CombatStatus::NOTHING;
+	}
+
+	// Get the result of the combat
+	CombatStatus result = _combat_manager.getCombatStatus(it->second.player, it->second.entity);
+
+	bool flag = false;
+	if (result == CombatStatus::PLAYER_LOSE) {
+		it->second.entity->setHealth(it->second.entity->getMaxHealth());		// fill entity with max hp
+		// respawn player
+		respawnPlayer(it->second.player);
+		print_log("GasterManager: player \"" + it->second.player->getName() + "\" have respawned to.");
+		flag = true;
+	}
+	else if (result == CombatStatus::ENTITY_LOSE) {
+		std::string entity_id = it->second.entity->getID();
+		deleteEntity(it->second.entity);
+		print_log("GasterManager: entity \"" + entity_id + "\" have been deleted.");
+		flag = true;
+	}
+	if (flag) {
+		_combat_manager.finishCombat(it->second.player);
+		_combat_lists.erase(it);
+	}
+	return result;
+}
+
+bool				GasterManager::tryFlee(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return false;
+	}
+
+	return _combat_manager.tryFlee(it->second.player, it->second.entity);
+}
+
+void				GasterManager::finishCombat(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return;
+	}
+
+	it->second.entity->setHealth(it->second.entity->getMaxHealth());
+	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the combat.");
+	_combat_manager.finishCombat(it->second.player);
+	_combat_lists.erase(it);
+}
+
+const std::string	GasterManager::combatCheck(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return "";
+	}
+
+	return _combat_manager.getCheckMsg(it->second.entity);
+}
+
+CombatTurn			GasterManager::getCombatWhoTurn(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return CombatTurn::NONE;
+	}
+
+	return it->second.turn;
+}
+
+const std::string	GasterManager::changeCombatWhoTurn(const std::string &player_name, CombatTurn turn) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
+		return "";
+	}
+
+	if (turn == CombatTurn::ENTITY || turn == CombatTurn::NONE) {
+		it->second.turn = CombatTurn::ENTITY;
+		it->second.next_action_time = std::chrono::steady_clock::now() + COMBAT_CLOCK_DELAY;
+		return "- Turn of " + it->second.entity->getName() + " -";
+	}
+
+	it->second.turn = CombatTurn::PLAYER;
+	return "Your turn";
+}
+
+// ============================================================================
+// ===================      COMMANDS - QUESTS        ==========================
+// ============================================================================
+// * Get the quests of a player. *
+const std::string	GasterManager::getPlayerQuests(const std::string& player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	std::string str_list_quests = "[";
+
+	for (const std::string& act_quests :   player->getCurrentQuests()) {
+		str_list_quests += "{\"quest_id\": \"" + act_quests + "\", \"status\": \"";
+		str_list_quests += quest_state_to_string(player->getQuestStatut(act_quests)) + "\"}, ";
+	}
+
+	for (const std::string& cmplt_quests :  player->getCompletedQuests()) {
+		str_list_quests += "{\"quest_id\": \"" + cmplt_quests + "\", \"status\": \"";
+		str_list_quests += quest_state_to_string(player->getQuestStatut(cmplt_quests)) + "\"}, ";
+	}
+
+	if (str_list_quests.size() > 1)
+		str_list_quests.erase(str_list_quests.size() - 2);
+	str_list_quests += "]";
+
+	return str_list_quests;
+
+}
+
+// * Get the name and description of a quest. *
+const std::string	GasterManager::getQuestDescription(const std::string& player_name, const std::string& quest_id) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	if (player->getQuestStatut(quest_id) == QuestState::NOT_FOUND)
+		return "Quest not found.";
+
+	std::unordered_map<std::string, std::string> quest_info = _quest_manager.getQuestInformation(quest_id);
+	if (quest_info.empty())
+		return "Quest not found.";
+
+	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
 }
 
 // ============================================================================
@@ -406,7 +748,9 @@ Entity*	GasterManager::getEntity(const std::string& entity_id) {
 	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
 }
 
-// --- DIALOGUES ---
+// ============================================================================
+// ==================       	DIALOGUES            ==========================
+// ============================================================================
 // * Check if condition is met to change stage of a dialogue. *
 bool	GasterManager::isConditionMet(const Player& player, const DialogueStage& stage) const {
 	if (stage.quest_id.empty())
@@ -442,7 +786,6 @@ int		GasterManager::getTalkLimit(const Player& player, const std::vector<Dialogu
 // ============================================================================
 // ==================       OBJECTS MANAGEMENTS      ==========================
 // ============================================================================
-// CREATE OBJECTS
 // * Create the rooms and add them to the world state. *
 void	GasterManager::createRoom() {
 	for (const auto& [loc_id, loc] : _world_data.locations) {
@@ -484,6 +827,8 @@ void	GasterManager::createEntities() {
 		}
 
 		if (new_entity) {
+			new_entity->setAttackValue(entity.attack);
+			new_entity->setBehavior(entity.behavior);
 			_world_state.entities[entity_id] = std::move(new_entity);
 		}
 	}
@@ -497,26 +842,25 @@ void	GasterManager::createItems() {
 		switch (item.type) {
 			case ItemType::CONSUMABLE:
 				new_item = std::make_unique<ItemConsumable>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
 				break;
 
 			case ItemType::KEY:
 				new_item = std::make_unique<ItemKey>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
 				break;
 
 			case ItemType::WEAPON:
 				new_item = std::make_unique<ItemWeapon>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp);
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
 				break;
 
 			default:
 					continue;
 		}
 
-		if (new_item) {
+		if (new_item)
 			_world_state.items[new_item->getID()] = std::move(new_item);
-		}
 	}
 }
 
@@ -550,9 +894,71 @@ void	GasterManager::fillRoomsData() {
 		}
 		// Fill entities
 		for (const auto& entity : config.spawns) {
-			data->addEntity(_world_state.entities[entity].get());
+			Entity* entity_ptr = _world_state.entities[entity].get();
+			data->addEntity(entity_ptr);
+			entity_ptr->setZone(room_id);
 		}
 	}
+}
+
+std::string	GasterManager::createStartingWeapon(std::string& player_name) {
+	std::string item_id = player_name + "_spoon";
+	std::string item_name = player_name + "_spoon";
+
+	std::unique_ptr<Item> new_item = std::make_unique<ItemWeapon>(
+		item_id, item_name, "A spoon found in your kitchen. At least you can do damage!",
+		ItemType::WEAPON, 2, 0, 0, 1
+	);
+
+	std::string id = new_item->getID();
+	_world_state.items[new_item->getID()] = std::move(new_item);
+	return id;
+}
+
+void	GasterManager::deleteEntity(Entity* entity) {
+	// Get room where entity is
+	std::string room = entity->getZone();
+	_world_state.rooms[room]->popEntity(entity->getName());
+
+	// Delete it from world state
+	_world_state.entities.erase(entity->getID());
+}
+
+void	GasterManager::respawnPlayer(Player *player) {
+	Room* old_room = getRoom(player->getZone());
+
+	Room* spawn = getRoom("spawn");
+	if (old_room)
+		old_room->popPlayer(player->getName());
+	if (spawn) {
+		spawn->addPlayer(player);
+		player->setZone(spawn->getID());
+		player->setHealth(player->getMaxHealth() / 2);
+		print_log("GasterManager: player \"" + player->getName() + "\" have respawned to spawn.");
+	}
+}
+
+// ============================================================================
+// ===================      COMMANDS - ADMIN         ==========================
+// ============================================================================
+// * Kill a player: end his combat, send him back to the spawn. *
+ReturnState	GasterManager::adminKill(const std::string& player_name) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return ReturnState::PLAYER_NOT_FOUND;
+
+	// End the combat if the player is fighting
+	auto combat_it = _combat_lists.find(player_name);
+	if (combat_it != _combat_lists.end()) {
+		combat_it->second.entity->setHealth(combat_it->second.entity->getMaxHealth());
+		_combat_manager.finishCombat(player);
+		_combat_lists.erase(combat_it);
+	}
+
+	respawnPlayer(player);
+
+	print_log("GasterManager: player \"" + player_name + "\" has been killed by the admin.");
+	return ReturnState::VALID;
 }
 
 // ============================================================================
@@ -578,29 +984,5 @@ void	GasterManager::debugPrintStructureState() {
 	std::cout << RED << "ITEMS:\n" << RESET;
 	for (const auto& [id, item] : _world_state.items) {
 		std::cout << item->getID() << " is at " << item.get() << " and is named " << CYN << item->getName() << RESET << " and his type is " << item_type_to_string(item->getType()) << ".\n";
-	}
-}
-
-void	GasterManager::debugTrySimulate(bool try_move) {
-	std::string	test_player = "Nono la racaille";
-	createPlayer(test_player);
-
-	if (try_move) {
-		std::cout << RED << "State of Spawn:\n" << RESET;
-		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
-
-		std::cout << RED << "Try to move player to an bad direction: \n" << RESET;
-		movePlayer(test_player, Direction::NORTH);
-		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
-
-		std::cout << RED << "Try to move player to an good direction: \n" << RESET;
-		if (!movePlayer(test_player, Direction::EAST)) {
-			return;
-		}
-		std::cout << _world_state.rooms["spawn"]->getRoomData(false) << "\n\n";
-		Room* room_east = _world_state.rooms["spawn"]->getFromDirection(Direction::EAST);
-		if (room_east != nullptr) {
-			std::cout << _world_state.rooms[room_east->getID()]->getRoomData(false) << "\n\n";
-		}
 	}
 }

@@ -10,10 +10,12 @@
 /*                                                                         */
 /* *********************************************************************** */
 
+# include <algorithm>
 # include <string>
 # include <utility>
 
 # include "base_class/entities/Player.hpp"
+#include "base_class/items/Item.hpp"
 # include "utils.h"
 # include "config/Enums.hpp"
 
@@ -22,16 +24,16 @@
 // =====================       CONSTRUCTOR      ===============================
 // ============================================================================
 Player::Player(const std::string& name):
-	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100) {}
+	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100)
+	{}
 
 // ============================================================================
 // ====================       PUBLIC METHODS      =============================
 // ============================================================================
-// --- GETTER ---
-// * Get the current zone of the player. *
-const std::string&	Player::getZone() const { return _zone; }
 
-// * Return player not completed quests. *
+// ============================================================================
+// ====================          GETTER      ==================================
+// ============================================================================
 std::vector<std::string>	Player::getCurrentQuests() const {
 	std::vector<std::string>	quests_list;
 
@@ -42,7 +44,6 @@ std::vector<std::string>	Player::getCurrentQuests() const {
 	return quests_list;
 }
 
-// * Return player completed quests. *
 std::vector<std::string>	Player::getCompletedQuests() const {
 	std::vector<std::string>	quests_list;
 
@@ -60,26 +61,52 @@ QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	return it->second;
 }
 
-// --- SETTER ---
-// * Set the new zone of the player. *
-void	Player::setZone(const std::string& new_zone) {
-	_zone = new_zone;
+int	Player::getDefense() const { return _defense; }
+
+int	Player::getLuck() const { return _luck; }
+
+const std::string	Player::getItemStats(ItemID id) {
+	Item* item = getItem(id);
+	if (!item)
+		return "";
+
+	std::string result = "name: \"" + item->getName() + "\" | ";
+	result += "description: | \"" + item->getDescription() + "\" | ";
+	result += "type: " + item_type_to_string(item->getType()) + " | ";
+
+	if (item->getType() == ItemType::WEAPON) {
+		result += "damage: " + std::to_string(item->getDamage()) + " | ";
+		if (item->getBonusMin() > 0) {
+			result += "(bonus_min: " + std::to_string(item->getBonusMin()) + " | ";
+			result += "bonus_max: " + std::to_string(item->getBonusMax()) + ")";
+		}
+		else
+			result.pop_back();
+	}
+
+	else if (item->getType() == ItemType::CONSUMABLE)
+		result += "+ " + std::to_string(item->getHP()) + " HP";
+
+	return result;
 }
 
+// ============================================================================
+// ====================          SETTER      ==================================
+// ============================================================================
 // * Add a quest to the player. *
-void	Player::addQuest(const std::string& quest_id) {
-	_quests[quest_id] = QuestState::IN_PROGRESS;
-}
+void	Player::addQuest(const std::string& quest_id) { _quests[quest_id] = QuestState::IN_PROGRESS; }
 
 // * Remove a quest from the player. *
-void	Player::removeQuest(const std::string& quest_id) {
-	_quests.erase(quest_id);
-}
+void	Player::removeQuest(const std::string& quest_id) { _quests.erase(quest_id); }
 
 // * Set a quest as completed. *
-void	Player::setQuestCompleted(const std::string& quest_id) {
-	_quests[quest_id] = QuestState::COMPLETED;
-}
+void	Player::setQuestCompleted(const std::string& quest_id) { _quests[quest_id] = QuestState::COMPLETED; }
+
+// * Set the new defense value. *
+void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
+
+// * Set the new luck value. *
+void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
 
 // ============================================================================
 // ====================      INVENTORY SYSTEM      ============================
@@ -144,11 +171,14 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 
 // * Get the inventory of the player. *
 std::string Player::getItemInInventory(bool add_details) const {
-	if (_inventory.empty()) {
-		return "No item in inventory.\n";
+	if (_inventory.empty() && _equipped_weapon == nullptr) {
+		return "No item in inventory.";
 	}
 
 	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
+	if (this->getEquippedWeapon() != nullptr)
+		inventory += "{Equipped: \"" + _equipped_weapon->getName() + "\"}, ";
+
 	for (const auto& [id, item] : _inventory) {
 		if (item) {
 			if (add_details)
@@ -169,6 +199,13 @@ std::string Player::getItemInInventory(bool add_details) const {
 	inventory += "]";
 
 	return inventory;
+}
+
+Item*	Player::getEquippedWeapon() const { return _equipped_weapon; }
+
+void	Player::setEquippedWeapon(Item* new_weapon) {
+	_equipped_weapon = new_weapon;
+	Entity::setAttackValue(new_weapon ? new_weapon->getDamage() : 1);
 }
 
 // ============================================================================
