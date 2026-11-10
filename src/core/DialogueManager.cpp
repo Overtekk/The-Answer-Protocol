@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:50:29 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:39:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ DialogueManager::DialogueManager(const std::unordered_map<std::string, EntityCon
 				_stages_map[id].push_back(stage);
 			}
 
-			// get the "neutral_" dialogue
-			count = 0;
-			while (entity.dialogue.find("neutral_" + std::to_string(count + 1)) != entity.dialogue.end())
-				count++;
-			if (count > 0)
-				_neutral_count_map[id] = count;
+		// get the "neutral_" dialogue
+		count = 0;
+		while (entity.dialogue.find("neutral_" + std::to_string(count + 1)) != entity.dialogue.end())
+			count++;
+		if (count > 0)
+			_neutral_count_map[id] = count;
 		}
 	}
 }
@@ -103,10 +103,12 @@ const std::string	DialogueManager::getNeutralDialogue(const std::string &entity_
 		return entity_id + " is watching at you.";
 
 	static std::mt19937 gen(std::random_device{}());
-	std::uniform_int_distribution<int> dist(1, _neutral_count_map.size());
+	std::uniform_int_distribution<int> dist(1, result->second);
 	int n = dist(gen);
 
 	std::optional<std::string> result_line = getLine(entity_id, "neutral_" + std::to_string(n));
+	if (!result_line)
+		return entity_id + " is watching at you.";
 	return *result_line;
 }
 
