@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 15:37:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 15:38:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ inline std::string	SuccessAddDefaultQuest(const std::string& player_name, const 
 }
 inline std::string	SuccessAddDefaultWeapon(const std::string& player_name, const std::string& item_name) {
 	return NAME_GASTER_MANAGER "add starting weapon \"" + item_name + "\" for " + player_name + ".";
+}
+inline std::string	SuccessPlayerMoved(const std::string& player_name, const std::string& old_zone, const std::string& new_zone) {
+	return NAME_GASTER_MANAGER "moved player '" + player_name + "' from '" + old_zone + "' to '" + new_zone + "'.";
 }
 
 // ERRORS

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 15:36:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 15:40:08 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ ReturnState	GasterManager::movePlayer(const std::string& player_name, const Dire
 	new_room->addPlayer(player);
 	player->setZone(new_room->getID());
 
-	print_log("GasterManager: moved player '" + player_name + "' from '" + zone_player + "' to '" + new_room->getName() + "'.");
+	print_log(SuccessPlayerMoved(player_name, zone_player, new_room->getName()));
 	return ReturnState::VALID;
 }
 
