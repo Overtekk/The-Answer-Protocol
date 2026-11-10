@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 16:31:35 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/10 13:55:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <typeinfo>
+# include <iostream>
+# include <string>
+# include <yaml-cpp/yaml.h>
 
 # include "raylib.h"
 # include "gui/entities/VisualPlayer.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
-# include "base_class/rooms/Room.hpp"
-# include "base_class/entities/NPC.hpp"
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemConsumable.hpp"
 # include "config/LoadedAssets.hpp"
 # include "config/Enums.hpp"
+# include "config/config.hpp"
+# include "config/config_messages.h"
 # include "parser.h"
 # include "gui.h"
-# include "utils.h"
-# include "debug.h"
 
 int gui_parser(WorldConfig& world_data);
 void graphic(WorldConfig& world_data);
@@ -33,8 +33,7 @@ void graphic(WorldConfig& world_data);
 
 int main() {
 	WorldConfig world_data;
-	if (gui_parser(world_data) == 0)
-	{
+	if (gui_parser(world_data) == 0) {
 		graphic(world_data);
 		return (0);
 	}
@@ -42,23 +41,22 @@ int main() {
 }
 
 int gui_parser(WorldConfig& world_data) {
-	YAML::Node root = load_file("data/world_data.yaml");
-	YAML::Node root_sounds = load_file("data/sounds_data.yaml");
-	YAML::Node root_sprites = load_file("data/sprites_data.yaml");
-	if (root.IsNull() or root_sounds.IsNull() or root_sprites.IsNull()) {
+	YAML::Node root = load_file(DATA_PATH);
+	YAML::Node root_sounds = load_file(DATA_SOUNDS_PATH);
+	YAML::Node root_sprites = load_file(DATA_SPRITES_PATH);
+	if (root.IsNull() or root_sounds.IsNull() or root_sprites.IsNull())
 		return EXIT_FAILURE;
-	}
+
 	std::queue<YAML::Node> nodes_list;
 	nodes_list.push(root);
 	nodes_list.push(root_sounds);
 	nodes_list.push(root_sprites);
 
 	if (!parse_file_for_gui(nodes_list, world_data)) {
-		std::cerr << "\n❌ Server aborting: invalid world data configuration.\n";
+		std::cerr << INVALID_DATA;
 		return 1;
 	 }
 
-	// debug_print_structure(world_data, true);
 	 return 0;
 }
 
@@ -78,10 +76,10 @@ void graphic(WorldConfig& world_data)
 
 	LoadedAssets	assets;
 	LoadAssets(world_data, assets);
-	
+
 	// Animation		test_animation(assets.sprits["player"], {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
-	ItemWeapon			sword("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10);
-	ItemConsumable		cookie("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10);
+	ItemWeapon			sword("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10, 0, 2);
+	ItemConsumable		cookie("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10, 0, 2);
 	VisualItemWeapon	v_sword(sword, assets, 2.0f);
 	VisualItemConsumable	v_cookie(cookie, assets, 2.0f);
 	bool				Icon = false;
@@ -103,7 +101,7 @@ void graphic(WorldConfig& world_data)
 			{
 				v_sword.DrawWeaponIcon(495, 180);
 			}
-			
+
 			v_kris.update();
 			v_kris.onDraw();
 

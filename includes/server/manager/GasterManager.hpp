@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:25:29 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:14:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,4 @@ class GasterManager {
 
 		// --- ADMIN ---
 		ReturnState	adminKill(const std::string& player_name);
-
-		// --- DEBUG ---
-		void	debugPrintStructureData(bool show_gui_data = false);
-		void	debugPrintStructureState();
 };

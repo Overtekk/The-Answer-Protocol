@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 08:21:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:56:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:05:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <filesystem>
 
+# include "config/config_messages.h"
 # include "gui.h"
 # include "parser.h"
 # include "utils.h"
@@ -77,11 +78,11 @@ bool parse_file_for_gui(std::queue<YAML::Node>& nodes_list, WorldConfig& world) 
 		}
 	}
 	catch (const std::exception& e) {
-		print_error(std::string("PARSING FAILED!\n") + e.what());
+		print_error(std::string(ERR_PARSING_FAILED) + e.what());
 		return false;
 	}
 
-	print_success("World Data (gui) loaded!");
+	print_success(SUCCESS_DATA_GUI_LOADED);
 
 	return true;
 }
@@ -145,13 +146,13 @@ MusicConfig parse_musicConfig(const std::string& music_id, const YAML::Node& nod
 void check_resource(const std::string& sprite, const std::string& id, DataType type) {
 	if (sprite.empty()) {
 		if (type == DataType::SOUND) {
-			throw std::runtime_error(id + " missing sound.\n");
+			throw std::runtime_error(errMissingResource(id, "sound"));
 		}
 		else if (type == DataType::MUSIC) {
-			throw std::runtime_error(id + " missing music.\n");
+			throw std::runtime_error(errMissingResource(id, "music"));
 		}
 		else {
-			throw std::runtime_error(id + " missing sprite for this " + data_type_to_string(type) + ".\n");
+			throw std::runtime_error(errMissingResource(id, "sprite for this " + data_type_to_string(type)));
 		}
 	}
 
@@ -160,28 +161,28 @@ void check_resource(const std::string& sprite, const std::string& id, DataType t
 	std::error_code ec;
 	if (!fs::exists(p, ec) || ec) {
 		if (type == DataType::SOUND) {
-			throw std::runtime_error("'" + id + "'" + " missing sound.");
+			throw std::runtime_error(errMissingResource(id, "sound"));
 		}
 		else if (type == DataType::MUSIC) {
-			throw std::runtime_error("'" + id + "'" + " missing music.");
+			throw std::runtime_error(errMissingResource(id, "music"));
 		}
-		throw std::runtime_error("'" + id + "'" + " missing sprite.");
+		throw std::runtime_error(errMissingResource(id, "sprite"));
 	}
 
 	// Check extension
 	if (type == DataType::SOUND) {
 		if (p.extension() != ".ogg" && p.extension() != ".wav") {
-			throw std::runtime_error("'" + id + "'" + + " sound must be in wav or ogg.");
+			throw std::runtime_error(errBadResourceExt(id, "sound", "wav or ogg"));
 		}
 	}
 	else if (type == DataType::MUSIC) {
 		if (p.extension() != ".ogg") {
-			throw std::runtime_error("'" + id + "'" + + " music must be in ogg.");
+			throw std::runtime_error(errBadResourceExt(id, "music", "ogg"));
 		}
 	}
 	else {
 		if (p.extension() != ".png") {
-			throw std::runtime_error("'" + id + "'" + + " sprite must be in png.");
+			throw std::runtime_error(errBadResourceExt(id, "sprite", "png"));
 		}
 	}
 }

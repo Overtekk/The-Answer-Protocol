@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cli_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:14:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 13:06:58 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/10 13:50:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,16 @@
 
 # include "server/TCPSocket.hpp"
 # include "common.h"
+# include "config/config_messages.h"
+
+
 
 # define MAX_BUFFER_SIZE 1024
 using namespace std;
 
+
 static volatile sig_atomic_t cli_quit = 0;
-void on_sigint(int){
-	cli_quit = 1;
-}
+void on_sigint(int) { cli_quit = 1; }
 
 static std::string translate(const std::string &input){
 	size_t start = input.find_first_not_of(" \t\r");
@@ -43,7 +45,7 @@ static bool send_line(int fd, std::string line){
 	while (off < line.size()){
 		ssize_t n = send(fd, line.c_str() + off, line.size() - off, MSG_NOSIGNAL);
 		if (n <= 0)
-		return false;
+			return false;
 
 		off += n;
 	}
@@ -73,7 +75,7 @@ int main(int argc, char** argv) {
 			char tmp[MAX_BUFFER_SIZE];
 			ssize_t n = client_socket.receiveData(tmp, sizeof tmp);
 			if (n <= 0){
-				std::cout << "Connection closed\n";
+				std::cout << CONNEXION_CLOSED;
 				connect = false;
 				break;
 			}
@@ -83,8 +85,8 @@ int main(int argc, char** argv) {
 			while ((pos = buff.find('\n')) != string::npos){
 				std::string line = buff.substr(0, pos);
 				buff.erase(0, pos + 1);
-				std::cout << "[Server] " << line << std::endl;
-				if (line == "OK bye"){
+				std::cout << NAME_SERVER << line << std::endl;
+				if (line == CONNEXION_FAREWELL){
 					connect = false;
 					goto finish;
 				}
@@ -95,10 +97,10 @@ int main(int argc, char** argv) {
 		if (fds[0].revents & POLLIN){
 			std::string cmd;
 			if (!std::getline(std::cin, cmd))
-			break;
+				break;
 
 			std::string line = translate(cmd);
-			if (line == "QUIT")
+			if (line == QUIT_CMD)
 				quit = true;
 
 			if (!send_line(client_fd, line)){
@@ -109,7 +111,7 @@ int main(int argc, char** argv) {
 	}
 	finish:
 	if (connect && !quit)
-		send_line(client_fd, "QUIT");
+		send_line(client_fd, QUIT_CMD);
 
 	close(client_fd);
 
