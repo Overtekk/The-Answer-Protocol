@@ -279,7 +279,7 @@ entities:
       neutral_3: "A fly lands on Dummy."
       neutral_4: "Silent is the favorite word of Dummy."
     type: "enemy"
-    hp: 33
+    hp: 11
     attack: 0
 
   virovirokun: # mini-games = just act
