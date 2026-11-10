@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:16:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:28:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,17 +412,17 @@ std::vector<CombatMessage>	GasterManager::updateCombats() {
 		if (combat.messages.empty()) {
 			combat.messages.push(_combat_manager.enemyBasicAttack(combat.player, combat.entity));
 
-			// Only read the result here (no erase). The battle really ends when the queue is empty.
-			combat.end_status = _combat_manager.getBattleStatus(combat.player, combat.entity);
+			// Only read the result here (no erase). The combat really ends when the queue is empty.
+			combat.end_status = _combat_manager.getCombatStatus(combat.player, combat.entity);
 			if (combat.end_status == CombatStatus::NOTHING) {
-				combat.messages.push(_combat_manager.getBattleStats(combat.player, combat.entity));
+				combat.messages.push(_combat_manager.getCombatStats(combat.player, combat.entity));
 				combat.messages.push("Your turn");
 				combat.messages.push(_dialogue_manager.getNeutralDialogue(combat.entity->getID()));
 			}
 			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
-				combat.messages.push("You lose the battle.");
+				combat.messages.push("You lose the combat.");
 			else
-				combat.messages.push("You won the battle.");
+				combat.messages.push("You won the combat.");
 		}
 
 		// Send only ONE message, then wait for the delay before the next one
@@ -493,18 +493,18 @@ ReturnState			GasterManager::isEnemyType(const std::string& player_name, const s
 	return ReturnState::VALID;
 }
 
-// * Init a battle with a player and an entity. *
+// * Init a combat with a player and an entity. *
 const std::string	GasterManager::initCombat(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a battle yet.");
+		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a combat yet.");
 		return "";
 	}
 
-	return _combat_manager.initBattle(it->second.player, it->second.entity);
+	return _combat_manager.initCombat(it->second.player, it->second.entity);
 }
 
-// * Get the combat status of a current battle. *
+// * Get the combat status of a current combat. *
 const std::string	GasterManager::getCombatStatus(const std::string &player_name) {
 	const Player* player = getPlayer(player_name);
 	if (!player)
@@ -512,18 +512,18 @@ const std::string	GasterManager::getCombatStatus(const std::string &player_name)
 
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a battle yet.");
+		print_log("GasterManager: can't init combat for " + player_name + ". He have not started a combat yet.");
 		return "";
 	}
 
-	return _combat_manager.getBattleStats(it->second.player, it->second.entity);
+	return _combat_manager.getCombatStats(it->second.player, it->second.entity);
 }
 
 // * Make the player attack the entity. *
 const std::string	GasterManager::combatPlayerAttack(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return "";
 	}
 
@@ -533,23 +533,23 @@ const std::string	GasterManager::combatPlayerAttack(const std::string &player_na
 const std::string	GasterManager::combatEnemyAttack(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return "";
 	}
 
 	return _combat_manager.enemyBasicAttack(it->second.player, it->second.entity);
 }
 
-// * Check if a battle is finished. *
+// * Check if a combat is finished. *
 CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " have not started a battle yet. Can't check status of his battle.");
+		print_log("GasterManager: " + player_name + " have not started a combat yet. Can't check status of his combat.");
 		return CombatStatus::NOTHING;
 	}
 
-	// Get the result of the battle
-	CombatStatus result = _combat_manager.getBattleStatus(it->second.player, it->second.entity);
+	// Get the result of the combat
+	CombatStatus result = _combat_manager.getCombatStatus(it->second.player, it->second.entity);
 
 	bool flag = false;
 	if (result == CombatStatus::PLAYER_LOSE) {
@@ -566,7 +566,7 @@ CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
 		flag = true;
 	}
 	if (flag) {
-		_combat_manager.finishBattle(it->second.player);
+		_combat_manager.finishCombat(it->second.player);
 		_combat_lists.erase(it);
 	}
 	return result;
@@ -575,50 +575,50 @@ CombatStatus		GasterManager::checkCombatStatus(const std::string &player_name) {
 bool				GasterManager::tryFlee(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return false;
 	}
 
 	return _combat_manager.tryFlee(it->second.player, it->second.entity);
 }
 
-void				GasterManager::finishBattle(const std::string &player_name) {
+void				GasterManager::finishCombat(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return;
 	}
 
 	it->second.entity->setHealth(it->second.entity->getMaxHealth());
-	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the battle.");
-	_combat_manager.finishBattle(it->second.player);
+	print_log("GasterManager: player \"" + it->second.player->getName() + "\" have flee the combat.");
+	_combat_manager.finishCombat(it->second.player);
 	_combat_lists.erase(it);
 }
 
 const std::string	GasterManager::combatCheck(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return "";
 	}
 
 	return _combat_manager.getCheckMsg(it->second.entity);
 }
 
-CombatTurn			GasterManager::getBattleWhoTurn(const std::string &player_name) {
+CombatTurn			GasterManager::getCombatWhoTurn(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return CombatTurn::NONE;
 	}
 
 	return it->second.turn;
 }
 
-const std::string	GasterManager::changeBattleWhoTurn(const std::string &player_name, CombatTurn turn) {
+const std::string	GasterManager::changeCombatWhoTurn(const std::string &player_name, CombatTurn turn) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
-		print_log("GasterManager: " + player_name + " can't attack. He have not started a battle yet.");
+		print_log("GasterManager: " + player_name + " can't attack. He have not started a combat yet.");
 		return "";
 	}
 
@@ -941,17 +941,17 @@ void	GasterManager::respawnPlayer(Player *player) {
 // ============================================================================
 // ===================      COMMANDS - ADMIN         ==========================
 // ============================================================================
-// * Kill a player: end his battle, send him back to the spawn. *
+// * Kill a player: end his combat, send him back to the spawn. *
 ReturnState	GasterManager::adminKill(const std::string& player_name) {
 	Player* player = getPlayer(player_name);
 	if (!player)
 		return ReturnState::PLAYER_NOT_FOUND;
 
-	// End the battle if the player is fighting
+	// End the combat if the player is fighting
 	auto combat_it = _combat_lists.find(player_name);
 	if (combat_it != _combat_lists.end()) {
 		combat_it->second.entity->setHealth(combat_it->second.entity->getMaxHealth());
-		_combat_manager.finishBattle(player);
+		_combat_manager.finishCombat(player);
 		_combat_lists.erase(combat_it);
 	}
 

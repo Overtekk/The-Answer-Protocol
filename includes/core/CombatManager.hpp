@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:07:55 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:05:05 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:29:04 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,12 @@ class CombatManager {
 		~CombatManager() = default;
 
 		// INIT & FINISH
-		const std::string	initBattle(Player* player, Entity* entity);
-		void				finishBattle(Player* player);
+		const std::string	initCombat(Player* player, Entity* entity);
+		void				finishCombat(Player* player);
 
-		// BATTLE STATUS
-		const std::string	getBattleStats(Player* player, Entity* entity) const;
-		CombatStatus		getBattleStatus(Player* player, Entity* entity) const;
+		// COMBAT STATUS
+		const std::string	getCombatStats(Player* player, Entity* entity) const;
+		CombatStatus		getCombatStatus(Player* player, Entity* entity) const;
 
 		// MESSAGES
 		const std::string	getCheckMsg(Entity* entity) const;

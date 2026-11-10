@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:05:04 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:25:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ class GasterManager {
 
 		// --- COMBAT MANAGEMENT ---
 		std::vector<CombatMessage>	updateCombats();
+
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
 		const std::string	getCombatStatus(const std::string& player_name);
@@ -131,10 +132,10 @@ class GasterManager {
 		const std::string	combatEnemyAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);
 		bool				tryFlee(const std::string& player_name);
-		void				finishBattle(const std::string& player_name);
+		void				finishCombat(const std::string& player_name);
 		const std::string	combatCheck(const std::string& player_name);
-		CombatTurn			getBattleWhoTurn(const std::string& player_name);
-		const std::string	changeBattleWhoTurn(const std::string& player_name, CombatTurn turn);
+		CombatTurn			getCombatWhoTurn(const std::string& player_name);
+		const std::string	changeCombatWhoTurn(const std::string& player_name, CombatTurn turn);
 
 		// --- QUESTS ---
 		const std::string	getPlayerQuests(const std::string& player_name) const;

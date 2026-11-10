@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:04:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:32:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ void	TCPServer::handleStdinRead() {
 		// Free the client if he was in a battle
 		for (auto& [fd, session] : _sessions) {
 			if (session->getUsername() == target
-				&& session->getSubSessionState() == SubSessionState::IN_BATTLE) {
+				&& session->getSubSessionState() == SubSessionState::IN_COMBAT) {
 				session->setSubSessionState(SubSessionState::MOVING);
 				session->add_msg_to_buffer(getTCP_OK_operation("You have been killed by a god of an other world."));
 			}

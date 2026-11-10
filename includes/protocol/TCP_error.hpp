@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 10:36:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:31:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ enum class TCPErrorCode {
 	MISSING_NPC,				// CLIENT FORGOT TO ADD ENTITY TO A COMMAND
 	ITEM_NOT_WEAPON,			// ITEM IS NOT A WEAPON
 	MISSING_ITEM,				// ITEM IS MISSING
-	NOT_IN_BATTLE,				// CLIENT IS NOT IN A BATTLE
+	NOT_IN_COMBAT,				// CLIENT IS NOT IN A COMBAT
 	NOT_YOUR_TURN				// NOT THE CLIENT TURN
 };
 

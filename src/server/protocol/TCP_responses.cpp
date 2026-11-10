@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 10:37:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:31:59 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ namespace {
 			case TCPErrorCode::NPC_NOT_IN_ROOM:			return {408, "NPC_NOT_IN_ROOM",			"The requested NPC is not in the same room as you."};
 			case TCPErrorCode::ITEM_NOT_IN_ROOM:		return {408, "ITEM_NOT_IN_ROOM",		"Item not in the same room as you."};
 			case TCPErrorCode::ITEM_NOT_WEAPON:			return {409, "ITEM_NOT_WEAPON",			"Item requested is not a weapon."};
-			case TCPErrorCode::NOT_IN_BATTLE:			return {500, "NOT_IN_BATTLE",			"You are not in a battle currently."};
+			case TCPErrorCode::NOT_IN_COMBAT:			return {500, "NOT_IN_COMBAT",			"You are not in a combat currently."};
 			case TCPErrorCode::NOT_YOUR_TURN:			return {501, "NOT_YOURN_TURN",			"It's not your turn. Be patient."};
 			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
