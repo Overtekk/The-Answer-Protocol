@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:28:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:41:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,8 +416,8 @@ std::vector<CombatMessage>	GasterManager::updateCombats() {
 			combat.end_status = _combat_manager.getCombatStatus(combat.player, combat.entity);
 			if (combat.end_status == CombatStatus::NOTHING) {
 				combat.messages.push(_combat_manager.getCombatStats(combat.player, combat.entity));
-				combat.messages.push("Your turn");
 				combat.messages.push(_dialogue_manager.getNeutralDialogue(combat.entity->getID()));
+				combat.messages.push("- Your turn -");
 			}
 			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
 				combat.messages.push("You lose the combat.");
@@ -625,7 +625,7 @@ const std::string	GasterManager::changeCombatWhoTurn(const std::string &player_n
 	if (turn == CombatTurn::ENTITY || turn == CombatTurn::NONE) {
 		it->second.turn = CombatTurn::ENTITY;
 		it->second.next_action_time = std::chrono::steady_clock::now() + COMBAT_CLOCK_DELAY;
-		return "Turn of " + it->second.entity->getName();
+		return "- Turn of " + it->second.entity->getName() + " -";
 	}
 
 	it->second.turn = CombatTurn::PLAYER;
