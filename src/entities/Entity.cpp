@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 10:59:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 15:17:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 # include <string>
 
 # include "base_class/entities/Entity.hpp"
-#include "config/Enums.hpp"
+# include "config/Enums.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 
@@ -69,5 +70,5 @@ void	Entity::setBehavior(EnemyBehavior new_behavior) { _behavior = new_behavior;
 // =====================           ERROR      =================================
 // ============================================================================
 void Entity::sendObjectError(const std::string& error) const {
-	print_log(" ERROR: " + error + "\n");
+	print_log(errObject(error));
 }

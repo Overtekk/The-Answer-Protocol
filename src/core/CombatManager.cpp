@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:29:06 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 13:33:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ const std::string	CombatManager::initCombat(Player* player, Entity* entity) {
 	return _dialogue_manager.getEncounterDialogue(entity->getID());
 }
 
-void				CombatManager::finishCombat(Player *player) {
-	player->setCombat(false);
-}
+void				CombatManager::finishCombat(Player *player) { player->setCombat(false); }
 
 // COMBAT STATUS
 const std::string	CombatManager::getCombatStats(Player *player, Entity *entity) const {

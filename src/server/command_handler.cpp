@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:31:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:09:53 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 # include <cctype>
 # include <tuple>
 
-# include "config/Enums.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/TCPSession.hpp"
 # include "server/TCP_EnumsType.hpp"
 # include "server/manager/GasterManager.hpp"
 # include "server/logger.hpp"
 # include "protocol/TCP_error.hpp"
+# include "config/Enums.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 # define IGNORED_CHARS	" \t\r\n"
@@ -184,7 +185,7 @@ void	CommandHandler::processAdminCommand(const std::string& raw_line) {
 
 	if (command == "KILL") {
 		if (argument.empty()) {
-			print_error("usage: kill [player name]");
+			print_error(ERR_KILL_CMD);
 			return;
 		}
 
@@ -547,13 +548,13 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argumen
 
 	bool result = _manager.tryFlee(session.getUsername());
 	if (result) {
-		session.add_msg_to_buffer(getTCP_OK_operation("You take your shoes and flee with success!"));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_SUCCESS_FLEE));
 		_manager.finishCombat(session.getUsername());
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}
 
-	session.add_msg_to_buffer(getTCP_OK_operation("You slipped on a rock. You didn't succeed!"));
+	session.add_msg_to_buffer(getTCP_OK_operation(ACT_FAILED_FLEE));
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
 	return;
 }
@@ -609,12 +610,12 @@ bool	CommandHandler::manageCombatTurn(TCPSession& session) {
 
 void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& result, std::string& argument) {
 	if (result == CombatStatus::PLAYER_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation("You lose the combat."));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation("You won the combat."));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}

@@ -6,12 +6,13 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 08:21:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 09:56:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:05:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <filesystem>
 
+# include "config/config_messages.h"
 # include "gui.h"
 # include "parser.h"
 # include "utils.h"
@@ -77,11 +78,11 @@ bool parse_file_for_gui(std::queue<YAML::Node>& nodes_list, WorldConfig& world) 
 		}
 	}
 	catch (const std::exception& e) {
-		print_error(std::string("PARSING FAILED!\n") + e.what());
+		print_error(std::string(ERR_PARSING_FAILED) + e.what());
 		return false;
 	}
 
-	print_success("World Data (gui) loaded!");
+	print_success(SUCCESS_DATA_GUI_LOADED);
 
 	return true;
 }

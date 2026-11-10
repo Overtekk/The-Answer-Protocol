@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:14:26 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:03:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
 # include "config/EnemyTemplate.hpp"
+# include "config/config_messages.h"
 # include "parser.h"
 # include "utils.h"
 
@@ -43,6 +44,7 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 	std::unordered_set<std::string> knows_locations; // used to check if a location exist
 	std::unordered_set<std::string> knows_items; // used to check if a item exist
 	std::unordered_set<std::string> knows_entities; // used to check if a entity exist
+
 	try {
 		// Check LOCATIONS
 		if (root["world"] && root["world"]["locations"] && root["world"]["locations"].IsMap()) {
@@ -50,13 +52,11 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				std::string loc_id = entry.first.as<std::string>();
 				world.locations[loc_id] = parse_locationConfig(loc_id, entry.second, knows_locations);
 			}
-			if (7 > knows_locations.size()) {
-				throw std::runtime_error("You need to have a least 8 different locations.");
-			}
+			if (7 > knows_locations.size())
+				throw std::runtime_error(ERR_NOT_ENOUGHT_LOCATIONS);
 		}
-		else {
-			throw std::runtime_error("Missing locations. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_LOCATIONS_KEY);
 
 		// Check ITEMS
 		if (root["items"] && root["items"].IsMap()) {
@@ -65,9 +65,8 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.items[item_id] = parse_itemConfig(item_id, entry.second, knows_items);
 			}
 		}
-		else {
-			throw std::runtime_error("Missing items. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_ITEMS_KEY);
 
 		// Check ENTITIES
 		if (root["entities"] && root["entities"].IsMap()) {
@@ -76,9 +75,8 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.entities[entity_id] = parse_entityConfig(entity_id, entry.second, knows_entities);
 			}
 		}
-		else {
-			throw std::runtime_error("Missing entities. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_ENTITIES_KEY);
 
 		// Check QUESTS
 		if (root["quests"] && root["quests"].IsMap()) {
@@ -87,20 +85,23 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.quests[quest_id] = parse_questConfig(quest_id, entry.second);
 			}
 		}
-		else {
-			throw std::runtime_error("Missing quests. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_QUESTS_KEY);
 
 		// Check if all data are valid
 		check_locations_data(world, knows_locations, knows_items, knows_entities);
+
 		// Check numbers of quests
 		if (world.quests.size() < 3)
 			throw std::runtime_error("You need to have a least 3 quests. Only " + std::to_string(world.quests.size() ) + " found.");
+
 		// Check if quests are valid in the dialogue stage
 		for (const auto& [entity_id, entity] : world.entities) {
 			for (const auto& stage : entity.dialogue_stage) {
+
 				if (!stage.quest_id.empty()) {
 					const auto& quest_id = world.quests.find(stage.quest_id);
+
 					if (quest_id == world.quests.end()) {
 						throw std::runtime_error("Invalid quest id for dialogue stage of entity \"" + entity_id +
 							"\" (" + stage.quest_id + ").");
@@ -110,11 +111,11 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 		}
 	}
 	catch (const std::exception& e) {
-		print_error(std::string("PARSING FAILED!\n") + e.what());
+		print_error(std::string(ERR_PARSING_FAILED) + e.what());
 		return false;
 	}
 
-	print_success("World Data loaded!");
+	print_success(SUCCESS_DATA_LOADED);
 
 	return true;
 }
@@ -355,12 +356,12 @@ ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 // --- CHECKER ---
 // Checker for the name and description.
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id) {
-	if (name.empty()) {
+	if (name.empty())
 		throw std::runtime_error(id + " name can't be empty.");
-	}
-	if (desc.empty()) {
+
+	if (desc.empty())
 		throw std::runtime_error(id + " description can't be empty.");
-	}
+
 }
 
 // Check if the key is the prefix followed by a number only (ex: "talk_" + "12").
@@ -380,9 +381,8 @@ bool is_numbered_key(const std::string& key, const std::string& prefix) {
 
 // Check if int is positive.
 void check_int(int value, const std::string& id) {
-	if (0 > value) {
+	if (0 > value)
 		throw std::runtime_error(id + " invalid integer. Need to be positive.");
-	}
 }
 
 void check_locations_data(
@@ -396,9 +396,8 @@ void check_locations_data(
 	for (const auto& [loc_id, loc] : world.locations) {
 	for (const auto& [dir, name] : loc.exits) {
 		// Check if "spawn" ID is found.
-		if (loc_id == "spawn") {
+		if (loc_id == "spawn")
 			spawn_found = true;
-		}
 
 		// Check if a location exist in the directions maps
 		if (knows_locations.count(name) == 0) {
@@ -431,7 +430,6 @@ void check_locations_data(
 		}
 	}
 
-	if (!spawn_found) {
-		throw std::runtime_error("spawn is missing. Make sure a zone ID is named 'spawn'.");
-	}
+	if (!spawn_found)
+		throw std::runtime_error(ERR_MISSING_SPAWN_KEY);
 }

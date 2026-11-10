@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:39:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 13:34:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include <unordered_map>
 # include <random>
 
-#include "config/Enums.hpp"
+# include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
 # include "core/DialogueManager.hpp"
 # include "utils.h"

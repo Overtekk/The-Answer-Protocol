@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:07:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:45:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 15:17:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <string>
 
 # include "base_class/items/Item.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 
@@ -50,5 +51,5 @@ int 				Item::getBonusMax() { return _bonus_max; }
 // =====================         ERROR       ==================================
 // ============================================================================
 void	Item::sendObjectError(const std::string& error) const {
-	print_log(" ERROR: " + error + "\n");
+	print_log(errObject(error));
 }

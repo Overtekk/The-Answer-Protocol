@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 13:55:03 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/10 15:18:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <iostream>
 # include <cmath>
 # include <algorithm>
 
 # include "gui/entities/VisualEntity.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 # define FRAME_DURATION 0.18f
@@ -154,5 +156,5 @@ int		VisualEntity::getHeight() const
 
 // Error
 void VisualEntity::sendObjectError(const std::string &error) {
-   print_log(" ERROR: " + error + "\n");
+   print_log(errObject(error));
 }
