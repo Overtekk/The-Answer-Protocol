@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 14:06:10 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:17:04 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 10:56:56 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ class Entity {
 		int			_max_health;
 		EnemyType	_type;
 		int			_attack = 1;
+
+		EnemyBehavior	_behavior = EnemyBehavior::BASIC;
 
 		std::string	_zone;
 		bool		_in_combat = false;
@@ -50,12 +52,14 @@ class Entity {
 		bool				inCombat();
 		int					getAttackValue() const;
 		const std::string&	getZone() const;
+		EnemyBehavior		getBehavior() const;
 
 		// --- SETTER ---
 		void	setHealth(int new_value);
 		void	setCombat(bool new_state);
 		void	setAttackValue(int new_value);
 		void	setZone(const std::string& new_zone);
+		void	setBehavior(EnemyBehavior new_behavior);
 
 		// --- ERROR ---
 		void sendObjectError(const std::string& error) const;

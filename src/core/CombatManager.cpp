@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:19:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:10:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ CombatManager::CombatManager(DialogueManager& dialogue_manager):
 // ============================================================================
 // =====================         PUBLIC      ==================================
 // ============================================================================
+// INIT & FINISH
 const std::string	CombatManager::initBattle(Player* player, Entity* entity) {
 	player->setCombat(true);
 	entity->setCombat(true);
@@ -42,6 +43,7 @@ void				CombatManager::finishBattle(Player *player) {
 	player->setCombat(false);
 }
 
+// BATTLE STATUS
 const std::string	CombatManager::getBattleStats(Player *player, Entity *entity) const {
 	std::string result = "{ YOU: HP: ";
 
@@ -64,6 +66,7 @@ CombatStatus		CombatManager::getBattleStatus(Player *player, Entity *entity) con
 	return CombatStatus::NOTHING;
 }
 
+// MESSAGES
 const std::string	CombatManager::getCheckMsg(Entity *entity) const { return _dialogue_manager.getCheckDialogue(entity->getID()); }
 
 // ATTACK
@@ -104,6 +107,9 @@ const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity
 
 	int	entity_damage = entity->getAttackValue();
 
+	if (entity_damage <= 0)
+		return entity->getName() + " dealt no damage to you.";
+
 	// get random value from player defense
 	int player_defense = 0;
 	if (player->getDefense() > 0) {
@@ -121,6 +127,24 @@ const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity
 		return entity->getName() + " attacked you with a strength of " + std::to_string(total_damage);
 	}
 	return "You blocked " + entity->getName() + " damage.";
+}
+
+// TURN
+const std::string	CombatManager::enemyTurn(Player* player, Entity* entity) {
+	std::string	result;
+
+	switch (entity->getBehavior()) {
+		case EnemyBehavior::BASIC:			result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::VIROVIROKUN:	result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::MAUS:			result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::KAWKAW:			result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::SWATCHLINGS:	result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::K_ROUND:		result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::GUARD_DOG:		result = enemyBasicAttack(player, entity);	break;
+		case EnemyBehavior::QUEEN:			result = enemyBasicAttack(player, entity);	break;
+	}
+
+	return result;
 }
 
 // RUNAWAY

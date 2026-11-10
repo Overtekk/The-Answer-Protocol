@@ -6,17 +6,19 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 15:26:34 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:14:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <cctype>
-#include <stdexcept>
+# include <cstddef>
+# include <stdexcept>
 # include <string>
 
 # include "yaml-cpp/yaml.h"
 # include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
+# include "config/EnemyTemplate.hpp"
 # include "parser.h"
 # include "utils.h"
 
@@ -172,8 +174,12 @@ ItemConfig parse_itemConfig(
 	check_int(config.bonus_min, item_id);
 	config.bonus_max = getValue<int>(node, "bonus_max", 0);
 	check_int(config.bonus_max, item_id);
-	if (config.bonus_min > config.bonus_max)
-		throw std::runtime_error(item_id + " bonus_min can't be higher than bonus_max. bonus_min= " + std::to_string(config.bonus_min) + " > " + std::to_string(config.bonus_max));
+	if (config.bonus_min > config.bonus_max) {
+		throw std::runtime_error(
+			item_id + " bonus_min can't be higher than bonus_max. bonus_min= " +
+			std::to_string(config.bonus_min) + " > " + std::to_string(config.bonus_max)
+		);
+	}
 
 	return config;
 }
@@ -189,7 +195,30 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
-	if (node["dialogue"] && node["dialogue"].IsMap()) {
+	config.type = convert_enemyType(getValue<std::string>(node, "type", ""));
+	if (config.type == EnemyType::UNKNOWN) {
+		throw std::runtime_error(entity_id + " missing type for this entity. Use: ENEMY, BOSS, NPC or SHOP.");
+	}
+
+	config.hp = getValue<int>(node, "hp", 100);
+	check_int(config.hp, entity_id);
+	config.attack = getValue<int>(node, "attack", 1);
+	check_int(config.attack, entity_id);
+
+	config.behavior = EnemyBehavior::BASIC;
+	// get the custom behavior
+	const EnemyTemplate* enemy_template = nullptr;
+	if (config.type == EnemyType::ENEMY || config.type == EnemyType::BOSS)
+		enemy_template = find_enemy_template(entity_id);
+
+	if (enemy_template) {
+		if (node["dialogue"])
+			print_warning("Dialogues will be ignored for \"" + entity_id + "\" because it as custom behavior.");
+		config.dialogue = enemy_template->dialogue;
+		config.behavior = enemy_template->behavior;
+		if (!node["attack"]) config.attack = enemy_template->attack;
+	}
+	else if (node["dialogue"] && node["dialogue"].IsMap()) {
 		for (const auto& entry : node["dialogue"]) {
 			std::string dial_key = entry.first.as<std::string>();
 			if (!entry.second.IsScalar()) {
@@ -242,13 +271,6 @@ EntityConfig parse_entityConfig(
 		}
 	}
 
-	config.type = convert_enemyType(getValue<std::string>(node, "type", ""));
-	if (config.type == EnemyType::UNKNOWN) {
-		throw std::runtime_error(entity_id + " missing type for this item. Use: ENEMY, BOSS, NPC or SHOP.");
-	}
-
-	config.hp = getValue<int>(node, "hp", 100);
-	check_int(config.hp, entity_id);
 	return config;
 }
 
@@ -311,12 +333,7 @@ ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 	if (is_numbered_key(dialogue_key_str, "shop_")) return ValidDialogueKey::SHOP_;
 	if (is_numbered_key(dialogue_key_str, "neutral_")) return ValidDialogueKey::NEUTRAL_;
 	if (is_numbered_key(dialogue_key_str, "check_")) return ValidDialogueKey::CHECK_;
-	if (is_numbered_key(dialogue_key_str, "check_bow_")) return ValidDialogueKey::CHECK_BOW_;
 	if (is_numbered_key(dialogue_key_str, "act_")) return ValidDialogueKey::ACT_;
-	if (is_numbered_key(dialogue_key_str, "act_coldify_")) return ValidDialogueKey::ACT_COLDIFY_;
-	if (is_numbered_key(dialogue_key_str, "act_warmify_")) return ValidDialogueKey::ACT_WARMIFY_;
-	if (is_numbered_key(dialogue_key_str, "act_pet_")) return ValidDialogueKey::ACT_PET_;
-	if (is_numbered_key(dialogue_key_str, "act_play_")) return ValidDialogueKey::ACT_PLAY_;
 
 	// --- Shop keys ---
 	if (dialogue_key_str == "no_money") return ValidDialogueKey::NO_MONEY;
@@ -331,18 +348,6 @@ ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 	if (dialogue_key_str == "spare") return ValidDialogueKey::SPARE;
 	if (dialogue_key_str == "killed") return ValidDialogueKey::KILLED;
 	if (dialogue_key_str == "can_spare") return ValidDialogueKey::CAN_SPARE;
-	if (dialogue_key_str == "act_result_failed") return ValidDialogueKey::ACT_RESULT_FAILED;
-	if (dialogue_key_str == "act_result_won") return ValidDialogueKey::ACT_RESULT_WON;
-	if (dialogue_key_str == "act_ignore") return ValidDialogueKey::ACT_IGNORE;
-	if (dialogue_key_str == "act_bow") return ValidDialogueKey::ACT_BOW;
-	if (dialogue_key_str == "act_bow_result") return ValidDialogueKey::ACT_BOW_RESULT;
-	if (dialogue_key_str == "act_check_oufit_half_warm") return ValidDialogueKey::ACT_CHECK_OUFIT_HALF_WARM;
-	if (dialogue_key_str == "act_check_oufit_half_cold") return ValidDialogueKey::ACT_CHECK_OUFIT_HALF_COLD;
-	if (dialogue_key_str == "act_check_oufit_nothing") return ValidDialogueKey::ACT_CHECK_OUFIT_NOTHING;
-	if (dialogue_key_str == "act_check_oufit_green") return ValidDialogueKey::ACT_CHECK_OUFIT_GREEN;
-	if (dialogue_key_str == "act_check_oufit_orange") return ValidDialogueKey::ACT_CHECK_OUFIT_ORANGE;
-	if (dialogue_key_str == "act_check_oufit_yellow") return ValidDialogueKey::ACT_CHECK_OUFIT_YELLOW;
-	if (dialogue_key_str == "act_check_oufit_red") return ValidDialogueKey::ACT_CHECK_OUFIT_RED;
 
 	return ValidDialogueKey::UNKNOWN;
 }

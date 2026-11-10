@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:53:09 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:16:18 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,7 @@ std::vector<CombatMessage>	GasterManager::updateCombats() {
 			if (combat.end_status == CombatStatus::NOTHING) {
 				combat.messages.push(_combat_manager.getBattleStats(combat.player, combat.entity));
 				combat.messages.push("Your turn");
-				combat.messages.push(combat.entity->getName() + ": " + _dialogue_manager.getNeutralDialogue(combat.entity->getID()));
+				combat.messages.push(_dialogue_manager.getNeutralDialogue(combat.entity->getID()));
 			}
 			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
 				combat.messages.push("You lose the battle.");
@@ -827,6 +827,8 @@ void	GasterManager::createEntities() {
 		}
 
 		if (new_entity) {
+			new_entity->setAttackValue(entity.attack);
+			new_entity->setBehavior(entity.behavior);
 			_world_state.entities[entity_id] = std::move(new_entity);
 		}
 	}

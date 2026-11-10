@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:06:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:17:36 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 10:59:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # include <string>
 
 # include "base_class/entities/Entity.hpp"
+#include "config/Enums.hpp"
 # include "utils.h"
 
 
@@ -49,6 +50,8 @@ int					Entity::getAttackValue() const { return _attack; }
 
 const std::string&	Entity::getZone() const { return _zone; }
 
+EnemyBehavior		Entity::getBehavior() const { return _behavior; }
+
 // ============================================================================
 // =====================           SETTER      ================================
 // ============================================================================
@@ -59,6 +62,8 @@ void	Entity::setCombat(bool new_state) { _in_combat = new_state; }
 void	Entity::setAttackValue(int new_value) { _attack = std::max(0, new_value); }
 
 void	Entity::setZone(const std::string& new_zone) { _zone = new_zone; }
+
+void	Entity::setBehavior(EnemyBehavior new_behavior) { _behavior = new_behavior; }
 
 // ============================================================================
 // =====================           ERROR      =================================

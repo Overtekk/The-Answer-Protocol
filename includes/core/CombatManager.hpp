@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:07:55 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 11:23:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 11:05:05 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ class CombatManager {
 		// ATTACK
 		const std::string	playerBasicAttack(Player* player, Entity* entity);
 		const std::string	enemyBasicAttack(Player* player, Entity* entity);
+
+		// TURN
+		const std::string	enemyTurn(Player* player, Entity* entity);
 
 		// RUNAWAY
 		bool	tryFlee(Player* player, Entity* entity);
