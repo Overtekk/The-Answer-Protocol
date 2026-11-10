@@ -146,13 +146,13 @@ MusicConfig parse_musicConfig(const std::string& music_id, const YAML::Node& nod
 void check_resource(const std::string& sprite, const std::string& id, DataType type) {
 	if (sprite.empty()) {
 		if (type == DataType::SOUND) {
-			throw std::runtime_error(id + " missing sound.\n");
+			throw std::runtime_error(errMissingResource(id, "sound"));
 		}
 		else if (type == DataType::MUSIC) {
-			throw std::runtime_error(id + " missing music.\n");
+			throw std::runtime_error(errMissingResource(id, "music"));
 		}
 		else {
-			throw std::runtime_error(id + " missing sprite for this " + data_type_to_string(type) + ".\n");
+			throw std::runtime_error(errMissingResource(id, "sprite for this " + data_type_to_string(type)));
 		}
 	}
 
@@ -161,28 +161,28 @@ void check_resource(const std::string& sprite, const std::string& id, DataType t
 	std::error_code ec;
 	if (!fs::exists(p, ec) || ec) {
 		if (type == DataType::SOUND) {
-			throw std::runtime_error("'" + id + "'" + " missing sound.");
+			throw std::runtime_error(errMissingResource(id, "sound"));
 		}
 		else if (type == DataType::MUSIC) {
-			throw std::runtime_error("'" + id + "'" + " missing music.");
+			throw std::runtime_error(errMissingResource(id, "music"));
 		}
-		throw std::runtime_error("'" + id + "'" + " missing sprite.");
+		throw std::runtime_error(errMissingResource(id, "sprite"));
 	}
 
 	// Check extension
 	if (type == DataType::SOUND) {
 		if (p.extension() != ".ogg" && p.extension() != ".wav") {
-			throw std::runtime_error("'" + id + "'" + + " sound must be in wav or ogg.");
+			throw std::runtime_error(errBadResourceExt(id, "sound", "wav or ogg"));
 		}
 	}
 	else if (type == DataType::MUSIC) {
 		if (p.extension() != ".ogg") {
-			throw std::runtime_error("'" + id + "'" + + " music must be in ogg.");
+			throw std::runtime_error(errBadResourceExt(id, "music", "ogg"));
 		}
 	}
 	else {
 		if (p.extension() != ".png") {
-			throw std::runtime_error("'" + id + "'" + + " sprite must be in png.");
+			throw std::runtime_error(errBadResourceExt(id, "sprite", "png"));
 		}
 	}
 }

@@ -40,7 +40,7 @@ int	connect_client_to_tcp(int argc, char **argv) {
 		}
 
 		if (port != SERVER_PORT) {
-			print_error("Incorrect port. Use: " + std::to_string(SERVER_PORT));
+			print_error(errIncorrectPort());
 			return -1;
 		}
 	}
@@ -58,13 +58,13 @@ int	connect_client_to_tcp(int argc, char **argv) {
     serv_addr.sin_port = htons(static_cast<uint16_t>(port));
 
     if (inet_pton(AF_INET, ip.c_str(), &serv_addr.sin_addr) <= 0) {
-        print_error("Invalid IP address: " + ip);
+        print_error(errInvalidIp(ip));
         close(client_fd);
         return -1;
     }
 
     if (connect(client_fd, reinterpret_cast<struct sockaddr*>(&serv_addr), sizeof(serv_addr)) == -1) {
-        print_error("Connection to server failed (" + ip + ":" + std::to_string(port) + ").");
+        print_error(errConnectionFailed(ip, port));
         close(client_fd);
         return -1;
     }

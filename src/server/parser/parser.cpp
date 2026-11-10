@@ -93,7 +93,7 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 
 		// Check numbers of quests
 		if (world.quests.size() < 3)
-			throw std::runtime_error("You need to have a least 3 quests. Only " + std::to_string(world.quests.size() ) + " found.");
+			throw std::runtime_error(errNotEnoughQuests(world.quests.size()));
 
 		// Check if quests are valid in the dialogue stage
 		for (const auto& [entity_id, entity] : world.entities) {
@@ -103,8 +103,7 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 					const auto& quest_id = world.quests.find(stage.quest_id);
 
 					if (quest_id == world.quests.end()) {
-						throw std::runtime_error("Invalid quest id for dialogue stage of entity \"" + entity_id +
-							"\" (" + stage.quest_id + ").");
+						throw std::runtime_error(errInvalidStageQuest(entity_id, stage.quest_id));
 					}
 				}
 			}
@@ -164,7 +163,7 @@ ItemConfig parse_itemConfig(
 	// Check the type of the item and add it
 	config.type = convert_itemType(getValue<std::string>(node, "type", ""));
 	if (config.type == ItemType::UNKNOWN) {
-		throw std::runtime_error(item_id + " missing type for this item. Use: WEAPON, KEY or CONSUMABLE.");
+		throw std::runtime_error(errItemMissingType(item_id));
 	}
 
 	config.damage = getValue<int>(node, "damage", 0);
@@ -198,7 +197,7 @@ EntityConfig parse_entityConfig(
 
 	config.type = convert_enemyType(getValue<std::string>(node, "type", ""));
 	if (config.type == EnemyType::UNKNOWN) {
-		throw std::runtime_error(entity_id + " missing type for this entity. Use: ENEMY, BOSS, NPC or SHOP.");
+		throw std::runtime_error(errEntityMissingType(entity_id));
 	}
 
 	config.hp = getValue<int>(node, "hp", 100);
@@ -214,7 +213,7 @@ EntityConfig parse_entityConfig(
 
 	if (enemy_template) {
 		if (node["dialogue"])
-			print_warning("Dialogues will be ignored for \"" + entity_id + "\" because it as custom behavior.");
+			print_warning(warnDialogueIgnored(entity_id));
 		config.dialogue = enemy_template->dialogue;
 		config.behavior = enemy_template->behavior;
 		if (!node["attack"]) config.attack = enemy_template->attack;
@@ -223,13 +222,13 @@ EntityConfig parse_entityConfig(
 		for (const auto& entry : node["dialogue"]) {
 			std::string dial_key = entry.first.as<std::string>();
 			if (!entry.second.IsScalar()) {
-				print_warning("Dialogue not scalar for \"" + entity_id + " \" and key:\"" + dial_key + "\"");
+				print_warning(warnDialogueNotScalar(entity_id, dial_key));
 				continue;
 			}
 
 			// check if dialogue is a valid key
 			if (convert_DialogueKey(dial_key) == ValidDialogueKey::UNKNOWN) {
-				throw std::runtime_error("invalid dialogue key \"" + dial_key + "\" for entity \"" + entity_id + "\".");
+				throw std::runtime_error(errInvalidDialogueKey(entity_id, dial_key));
 			}
 
 			config.dialogue[dial_key] = entry.second.as<std::string>();
@@ -241,32 +240,29 @@ EntityConfig parse_entityConfig(
 		for (const auto& entry : node["talk_stages"]) {
 			// if entry not a dict
 			if (!entry.IsMap()) {
-				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = not a map");
+				throw std::runtime_error(errInvalidStage(entity_id, STAGE_REASON_NOT_MAP));
 			}
 
 			DialogueStage config_dialogue;
 			config_dialogue.last_stage = getValue<int>(entry, "last_stage", 0);
 			// if last stage value in negative.
 			if (config_dialogue.last_stage <= 0) {
-				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
-					+ std::to_string(config_dialogue.last_stage) + ".");
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonNotPositive(config_dialogue.last_stage)));
 			}
 			// if next stage value is lower than the previous one.
 			if (!config.dialogue_stage.empty() && config_dialogue.last_stage <= config.dialogue_stage.back().last_stage) {
-				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = "
-					+ std::to_string(config_dialogue.last_stage) + " must be greater than previous stage "
-					+ std::to_string(config.dialogue_stage.back().last_stage) + ".");
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonNotIncreasing(config_dialogue.last_stage, config.dialogue_stage.back().last_stage)));
 			}
 			// if dialogue is not starting with "talk_"
 			auto it = config.dialogue.find("talk_" + std::to_string(config_dialogue.last_stage));
 			if (it == config.dialogue.end()) {
-				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = missing dialogue key: " + std::to_string(config_dialogue.last_stage));
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonMissingKey(config_dialogue.last_stage)));
 			}
 			config_dialogue.quest_id = getValue<std::string>(entry, "wait_quest", "");
 			config_dialogue.condition = convert_questStage(getValue<std::string>(entry, "wait_for", ""));
 			// if condition is not "COMPLETED" or "HAVE"
 			if (!config_dialogue.quest_id.empty() && config_dialogue.condition == QuestStage::UNKNOWN) {
-				throw std::runtime_error("invalid dialogue stage for entity \"" + entity_id + "\" : invalid = invalid condition (valid are \"completed\" or \"have\").");
+				throw std::runtime_error(errInvalidStage(entity_id, STAGE_REASON_BAD_CONDITION));
 			}
 			config.dialogue_stage.push_back(config_dialogue);
 		}
@@ -357,10 +353,10 @@ ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 // Checker for the name and description.
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id) {
 	if (name.empty())
-		throw std::runtime_error(id + " name can't be empty.");
+		throw std::runtime_error(errNameEmpty(id));
 
 	if (desc.empty())
-		throw std::runtime_error(id + " description can't be empty.");
+		throw std::runtime_error(errDescEmpty(id));
 
 }
 
@@ -382,7 +378,7 @@ bool is_numbered_key(const std::string& key, const std::string& prefix) {
 // Check if int is positive.
 void check_int(int value, const std::string& id) {
 	if (0 > value)
-		throw std::runtime_error(id + " invalid integer. Need to be positive.");
+		throw std::runtime_error(errNotPositive(id));
 }
 
 void check_locations_data(

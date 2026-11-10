@@ -191,9 +191,9 @@ void	CommandHandler::processAdminCommand(const std::string& raw_line) {
 
 		ReturnState state = _manager.adminKill(argument);
 		if (state == ReturnState::VALID)
-			print_success("player '" + argument + "' has been killed with success.");
+			print_success(SuccessAdminKill(argument));
 		else
-			print_error("can't kill '" + argument + "': player not found.");
+			print_error(errCantKillPlayer(argument));
 	}
 }
 
@@ -224,7 +224,7 @@ void	CommandHandler::updateCombats(std::unordered_map<int, std::unique_ptr<TCPSe
 void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw_line) {
 	// Clear the line received
 	std::string raw_command = clean_line(raw_line);
-	print_log_message(session, "entered command: " + raw_command);
+	print_log_message(session, logCommandEntered(raw_command));
 
 	// Get the command and the arguments
 	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
@@ -252,7 +252,7 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& raw_line) {
 	// Clear the line received
 	std::string raw_command = clean_line(raw_line);
-	print_log_message(session, "entered command: " + raw_command);
+	print_log_message(session, logCommandEntered(raw_command));
 
 	// Get the command and the arguments
 	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
@@ -297,7 +297,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string &raw_line) {
 	// Clear the line received
 	std::string raw_command = clean_line(raw_line);
-	print_log_message(session, "entered command: " + raw_command);
+	print_log_message(session, logCommandEntered(raw_command));
 
 	// Get the command and the arguments
 	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
@@ -339,7 +339,7 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 // =========================      COMMANDS      ===============================
 // ============================================================================
 void	CommandHandler::commandUnknown(TCPSession& session, std::string& command) {
-	print_log_message(session, "rejected command: '" + command + "'");
+	print_log_message(session, logCommandRejected(command));
 	session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
 	return;
 }
@@ -347,33 +347,33 @@ void	CommandHandler::commandUnknown(TCPSession& session, std::string& command) {
 void	CommandHandler::commandConnect(TCPSession& session, std::string& argument) {
 	if (argument.empty()) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_USERNAME));
-		print_log_message(session, "error: 203 MISSING_USERNAME");
+		print_log_message(session, ERR_LOG_MISSING_USERNAME);
 		return;
 	}
 	if (argument.length() < 3 || argument.length() > 20) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::INVALID_USERNAME));
-		print_log_message(session, "error: 202 INVALID_USERNAME");
+		print_log_message(session, ERR_LOG_INVALID_USERNAME);
 		return;
 	}
 	if (_manager.checkIfUserExist(argument)) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NAME_IN_USE));
-		print_log_message(session, "error: 201 NAME_IN_USE");
+		print_log_message(session, ERR_LOG_NAME_IN_USE);
 		return;
 	}
 
 	session.setUsername(argument);
 	session.setSessionState(SessionState::AUTHENTICATED);
-	session.add_msg_to_buffer(getTCP_OK_operation("CONNECTED"));
+	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_OK_CONNECTED));
 	_manager.createPlayer(argument);
-	print_log_message(session, "new player created: '" + argument + "'");
+	print_log_message(session, SuccessNewPlayerCreated(argument));
 	return;
 }
 
 void	CommandHandler::commandQuit(TCPSession& session, std::string& argument) {
 	std::ignore = argument;
-	print_log_message(session, "requested graceful disconnect (QUIT).");
+	print_log_message(session, LOG_QUIT_REQUEST);
 	session.setSessionState(SessionState::CLOSING);
-	session.add_msg_to_buffer(getTCP_OK_operation("bye"));
+	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_BYE));
 	return;
 }
 
@@ -405,7 +405,7 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 		argument != direction_to_string(Direction::EAST) &&
 		argument != direction_to_string(Direction::WEST)) {
 			session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NO_EXIT));
-			print_log_message(session, "error: 301 Invalid movement direction (bad input).");
+			print_log_message(session, ERR_LOG_BAD_DIRECTION);
 			return;
 		}
 
@@ -417,7 +417,7 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 	}
 
 	// Move player
-	session.add_msg_to_buffer(getTCP_OK_operation("room=" + _manager.getPlayerRoom(session.getUsername())));
+	session.add_msg_to_buffer(getTCP_OK_operation(okRoom(_manager.getPlayerRoom(session.getUsername()))));
 	return;
 }
 
@@ -432,7 +432,7 @@ void	CommandHandler::commandTake(TCPSession& session, std::string& argument) {
 		return;
 	}
 
-	session.add_msg_to_buffer(getTCP_OK_operation("taken=" + argument));
+	session.add_msg_to_buffer(getTCP_OK_operation(okTaken(argument)));
 	return;
 }
 
@@ -447,7 +447,7 @@ void	CommandHandler::commandDrop(TCPSession& session, std::string& argument) {
 		return;
 	}
 
-	session.add_msg_to_buffer(getTCP_OK_operation("dropped=" + argument));
+	session.add_msg_to_buffer(getTCP_OK_operation(okDropped(argument)));
 	return;
 }
 
@@ -483,16 +483,16 @@ void	CommandHandler::commandTalk(TCPSession& session, std::string& argument) {
 	TalkResult result = _manager.getDialogue(session.getUsername(), argument);
 	if (result.status == TalkStatus::NOT_FOUND) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NPC_NOT_FOUND));
-		print_log_message(session, "error 404: Requested NPC not present in room.");
+		print_log_message(session, ERR_LOG_NPC_NOT_FOUND);
 		return;
 	}
 	if (result.status == TalkStatus::NO_DIALOGUE) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NPC_NO_DIALOGUE));
-		print_log_message(session, "error 407: Requested NPC have no available dialogue.");
+		print_log_message(session, ERR_LOG_NPC_NO_DIALOGUE);
 		return;
 	}
 
-	session.add_msg_to_buffer(getTCP_OK_operation( result.entity_name + ": \"" + result.text + "\""));
+	session.add_msg_to_buffer(getTCP_OK_operation(okTalk(result.entity_name, result.text)));
 	return;
 }
 
@@ -501,7 +501,7 @@ void	CommandHandler::commandEquip(TCPSession &session, std::string& argument) {
 
 	ReturnState command_state = _manager.equipNewWeapon(session.getUsername(), argument);
 	if (command_state == ReturnState::VALID)
-		session.add_msg_to_buffer(getTCP_OK_operation(argument + " is now equipped!"));
+		session.add_msg_to_buffer(getTCP_OK_operation(okEquipped(argument)));
 	else
 		sendErrorToUser(session, command_state);
 	return;
@@ -512,7 +512,7 @@ void	CommandHandler::commandAttack(TCPSession &session, std::string& argument) {
 
 	if (argument.empty()) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_NPC));
-		print_log_message(session, "error 204: Missing argument (NPC) after command.");
+		print_log_message(session, ERR_LOG_MISSING_NPC);
 		return;
 	}
 

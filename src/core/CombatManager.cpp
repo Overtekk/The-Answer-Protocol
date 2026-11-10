@@ -19,6 +19,7 @@
 # include "base_class/entities/Entity.hpp"
 # include "core/DialogueManager.hpp"
 # include "config/Enums.hpp"
+# include "config/config_messages.h"
 
 
 // ============================================================================
@@ -93,10 +94,7 @@ const std::string	CombatManager::playerBasicAttack(Player *player, Entity *entit
 	int result = (entity->getHealth() - damage);
 	entity->setHealth(result);
 
-	if (bonus > 0) {
-		return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + " (bonus +" + std::to_string(bonus) + ").";
-	}
-	return "You attacked " + entity->getName() + " with a strength of " + std::to_string(damage) + ".";
+	return actPlayerAttack(entity->getName(), damage, bonus);
 }
 
 const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity) {
@@ -106,7 +104,7 @@ const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity
 	int	entity_damage = entity->getAttackValue();
 
 	if (entity_damage <= 0)
-		return entity->getName() + " dealt no damage to you.";
+		return actEnemyNoDamage(entity->getName());
 
 	// get random value from player defense
 	int player_defense = 0;
@@ -122,9 +120,9 @@ const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity
 
 	if (total_damage > 0) {
 		player->setHealth(player->getHealth() - total_damage);
-		return entity->getName() + " attacked you with a strength of " + std::to_string(total_damage);
+		return actEnemyAttack(entity->getName(), total_damage);
 	}
-	return "You blocked " + entity->getName() + " damage.";
+	return actPlayerBlocked(entity->getName());
 }
 
 // TURN

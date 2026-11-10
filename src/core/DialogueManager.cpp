@@ -17,6 +17,7 @@
 
 # include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
+# include "config/config_messages.h"
 # include "core/DialogueManager.hpp"
 # include "utils.h"
 
@@ -67,7 +68,7 @@ bool								DialogueManager::hasKey(const std::string& entity_id, const std::str
 std::optional<std::string>			DialogueManager::getLine(const std::string& entity_id, const std::string& dialogue_key) const {
 	const std::string*	line = findLine(entity_id, dialogue_key);
 	if (!line) {
-		print_log("DialogueManager: can't find dialogue \"" + dialogue_key + "\" for entity \"" + entity_id + "\".");
+		print_log(errDialogueNotFound(entity_id, dialogue_key));
 		return std::nullopt;
 	}
 

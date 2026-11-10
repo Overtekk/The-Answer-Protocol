@@ -16,6 +16,7 @@
 
 # include "core/QuestManager.hpp"
 # include "config/WorldConfig.hpp"
+# include "config/config_messages.h"
 # include "base_class/entities/Player.hpp"
 # include "utils.h"
 
@@ -99,7 +100,7 @@ void	QuestManager::addDefaultQuests(Player& player) {
 bool	QuestManager::checkQuestExist(const std::string& quest_id) const {
 	auto it = _quests_dict.find(quest_id);
 	if (it == _quests_dict.end()) {
-		print_log("\"" + quest_id + "\"" " doesn't exist.");
+		print_log(errQuestNotExist(quest_id));
 		return false;
 	}
 

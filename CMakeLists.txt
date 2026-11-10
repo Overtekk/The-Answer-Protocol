@@ -47,7 +47,6 @@ set(COMMON_SOURCES
     src/rooms/Room.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
-	src/debug/debug_structure.cpp
 )
 
 set(SERVER_MAIN		src/main.cpp)

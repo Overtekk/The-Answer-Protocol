@@ -196,7 +196,7 @@ void	TCPServer::handleNewConnection() {
 
 	TCPSocket client_socket(client_fd);
 	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
-	print_log_message(*_sessions[client_fd], "connected to server (socket " + std::to_string(client_fd) + ").");
+	print_log_message(*_sessions[client_fd], logClientConnected(client_fd));
 }
 
 // * Handle standard input from console. *
@@ -211,7 +211,7 @@ void	TCPServer::handleStdinRead() {
 		return;
 	}
 	else if (command.rfind("kill", 0) == 0) {
-		print_log("Server used " + command);
+		print_log(logServerCommand(command));
 		_cmd_handler.processAdminCommand(command);
 
 		// Get the killed player name (after "kill ")
