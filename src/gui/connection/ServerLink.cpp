@@ -6,15 +6,19 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/21 17:05:51 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 14:02:24 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
+#include <iostream>
 # include <poll.h>
 # include <csignal>
 # include <string.h>
 # include <queue>
+#include <string>
+#include <type_traits>
+#include <utility>
 
 # include "server/TCPSocket.hpp"
 # include "gui/connection/ServerLink.hpp"
@@ -98,16 +102,46 @@ const std::string	ServerLink::getLookReply() {
 	return (line);
 }
 
+const std::string	ServerLink::getMoveReply() {
+	if (this->lines.empty() == true) { return ("");}
+
+	// if the commande is not the move response
+	if (this->lines.front().find("OK room=") != 0) {
+		// and if there is no movement error msg
+		if (this->lines.front().find("Invalid movement direction.") != std::string::npos) { // <-- npos is the returned value when find() found nothing
+			// this is not our message
+			return ("") ;
+		}
+	}
+
+	// get the commande result and pop it
+	std::string line = std::move(this->lines.front());
+	this->lines.pop();
+
+	// remove the commande LOOK from the commande_log to recall it later if needed
+	_commande_log.erase(std::remove(_commande_log.begin(), _commande_log.end(), Commande::MOVE), _commande_log.end());
+	
+	return (line);
+}
+
 const std::string	ServerLink::look() {
 	// if look was already sent by someone we will wait the next call
 	if (std::count(_commande_log.begin(), _commande_log.end(), Commande::LOOK) <= 0) {
-		std::cout << "COMMAND_LOG BEFOR SENDING = [" << this->_commande_log.size() << "]\n";
+		// std::cout << "COMMAND_LOG BEFOR SENDING = [" << this->_commande_log.size() << "]\n";
 		this->send_commande("LOOK --details", Commande::LOOK);
 	}
 	return (this->getLookReply());
 }
 
-bool						ServerLink::isConnected() const
+const std::string	ServerLink::move(const std::string &direction) {
+	// if move was already sent by someone we will wait the next call
+	if (std::count(_commande_log.begin(), _commande_log.end(), Commande::MOVE) <= 0) {
+		this->send_commande("MOVE " + direction, Commande::LOOK);
+	}
+	return (this->getMoveReply());
+}
+
+bool				ServerLink::isConnected() const
 {
 	return (this->_connected);
 }

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:34:47 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/21 16:36:29 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 10:10:55 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ VisualWorldState::VisualWorldState(
     user(std::make_unique<User>(id, texture, sprite_dim, scale))
 {
     for (auto room_tile_map: assets.tile_maps) {
-        this->rooms.emplace(room_tile_map.first, std::make_unique<VisualRoom>(room_tile_map.second));
+        this->rooms.emplace(room_tile_map.first, std::make_unique<VisualRoom>(room_tile_map.second, room_tile_map.first));
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/22 11:16:59 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 14:40:30 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,15 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
     SetTargetFPS(60);
 
 	ServerLink			connection(argc, argv);
-	
+
 	LoadedAssets		assets;
 	LoadAssets(world_config, assets);
 	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 2.0f, assets);
 	RoomManager			room(data, connection, data.user.get());
 
 	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
-	
+	connection.send_commande("LOOK --details", Commande::LOOK);
+
 	data.user->setPos(Vector2 {400, 225});
 	// Check if the player is correctly connected and update the spawn room
 	while (room.updateRoomState() == false) {
@@ -97,7 +98,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 			}
 		}
 	}
-	
+
     while (!WindowShouldClose())
     {
 		connection.recive();

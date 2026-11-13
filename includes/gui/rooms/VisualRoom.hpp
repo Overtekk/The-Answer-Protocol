@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/22 10:56:54 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 10:28:43 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # include <unordered_map>
 # include <string>
+# include <tuple>
 
 # include "raylib.h"
 # include "gui/Items/VisualItem.hpp"
@@ -24,9 +25,13 @@ class VisualRoom
         std::unordered_map<std::string, VisualItem*>	items;
 
 		Texture2D										tile_map;
+        std::tuple<int, int>                            size;
     public:
+        const std::string                               name;
+
         VisualRoom(
-			const Texture2D	&tile_map
+			const Texture2D	&tile_map,
+            const std::string name
 		);
 
         ~VisualRoom() = default;
@@ -34,6 +39,9 @@ class VisualRoom
         void    										addItem(VisualItem *item, const std::string &id);
 
 		std::unordered_map<std::string, VisualItem*>	&getItems();
+        
+        int                                             getWidth();
+        int                                             getHeight();
         
 		void											drawItems();
 

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:34 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/21 17:04:57 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 09:59:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 enum class Commande {
 	CONNECT,
 	LOOK,
+	MOVE,
 	QUIT
 };
 
@@ -60,10 +61,16 @@ class ServerLink
 
 	// return server LOOK reply
 	const std::string				getLookReply();
+	// return server MOVE reply
+	const std::string				getMoveReply();
 
 	// send LOOK commande on the first call and retrun the reply when it arrive.
 	// in the meantime, it returns an empty string
 	const std::string				look();
+
+	// send MOVE commande on the first call and retrun the reply when it arrive.
+	// in the meantime, it returns an empty string
+	const std::string				move(const std::string &direction);
 	
 	bool							isConnected() const;
 };

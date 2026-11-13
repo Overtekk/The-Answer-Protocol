@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:44:56 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/22 10:54:41 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 13:46:40 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ class RoomManager
 
         User*					_user;
         VisualRoom*				_current_room;
-		bool					_changing = false;
     public:
         RoomManager(
             VisualWorldState &data,
@@ -42,7 +41,7 @@ class RoomManager
         void    addItemsToRoom(const json &data);
         bool    updateRoomState();
         
-		void	changeRoom();
+		void	changeRoom(const std::string &room_id);
 		
         void    checkItemsPickedUp();
         

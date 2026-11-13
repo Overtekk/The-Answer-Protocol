@@ -6,10 +6,11 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/22 11:14:38 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/13 14:39:34 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
 # include <cstdlib>
 # include <csetjmp>
 # include <iostream>
@@ -25,6 +26,7 @@
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "gui/entities/User.hpp"
+#include "utils.h"
 
 using json = nlohmann::json;
 
@@ -67,18 +69,22 @@ void    RoomManager::addItemsToRoom(const json &data) {
 bool    RoomManager::updateRoomState() {
 	std::string line = "";
 
-	line = _link.look();
-	if (line.empty()) { std::cout << "Waiting response\n"; return (false); }
+	line = _link.getLookReply();
+	if (line.empty()) {return(false) ;}
 	
 	std::cout << "Data recived, parsing started\n";
+	std::cout << "DEBUG =[" << line << "]\n";
 	this->addItemsToRoom(json::parse(line.substr(3)));
 	return (true);
 }
 
-void	RoomManager::changeRoom() {
-	if (this->updateRoomState() == false) { return; }
+void	RoomManager::changeRoom(const std::string &room_id) {
+	this->_current_room = this->_data.getRoom(room_id);
 
-	this->_changing = false;
+	std::cout << "Current location = [" << room_id << "]\n";
+	this->_user->setPos(Vector2 {400, 225});
+
+	this->_link.send_commande("LOOK --details", Commande::LOOK);
 }
 
 void    RoomManager::checkItemsPickedUp() {
@@ -99,20 +105,42 @@ void    RoomManager::checkItemsPickedUp() {
 void	RoomManager::updateRoom() {
 	this->isPlayerOut();
 
-	if (this->_changing == true) {
-		this->changeRoom();
-	}
-	else if (this->_changing == false) {
-		this->checkItemsPickedUp();
-	}
+	this->updateRoomState();
+	
+	this->checkItemsPickedUp();
 }
 
 
 void	RoomManager::isPlayerOut() {
-	if (IsKeyReleased(KEY_N)) {
-		std::cout << "player is leaving\n";
-		this->_changing = true;
+	std::string direction = "";
+	std::string response = "";
+	Vector2		user_pos = this->_user->getPos();
+
+	if (user_pos.x <= 400.0 - (float)this->_current_room->getWidth() / 2) {
+		direction = "west";
 	}
+	else if (user_pos.x >= 400.0 + (float)this->_current_room->getWidth() / 2) {
+		direction = "east";
+	}
+	else if (user_pos.y <= 225.0 - (float)this->_current_room->getHeight() / 2) {
+		direction = "north";
+	}
+	else if (user_pos.y >= 225.0 + (float)this->_current_room->getHeight() / 2) {
+		direction = "south";
+	}
+
+	if (direction.empty() == true) {return ;}
+
+	// get the respone
+	response = this->_link.move(direction);
+	if (response.empty() or response.find("ERR") == 0) {
+		if (response.find("ERR") == 0) {std:: cout << "DEBUG, NO PATH THIS WAY\n"; }
+		// std::cout << "Waiting response\n";
+		return ;
+	}
+	size_t start_pos = response.find("=") + 1;
+	size_t lenght = response.size() - start_pos;
+	this->changeRoom(response.substr(start_pos, lenght));
 }
 
 void	RoomManager::drawRoom() {
