@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 14:15:05 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 14:37:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,20 @@ bool	GasterManager::reconnectPlayer(const std::string &player_name) {
 	_world_state.players[player_name] = std::move(_world_state.old_players[player_name]);
 	_world_state.old_players.erase(player_name);
 	print_log(logReconnectPlayer(player_name));
+
+	Player* player = _world_state.players[player_name].get();
+
+
+	Room* old_room = getRoom(player->getZone());
+
+	Room* spawn = getRoom("spawn");
+	if (old_room)
+		old_room->addPlayer(player);
+	else {
+		spawn->addPlayer(player);
+		player->setZone(spawn->getID());
+	}
+
 	return true;
 }
 
@@ -116,6 +130,11 @@ bool	GasterManager::disconnectPlayer(const std::string &player_name) {
 		print_log(errCantFindPlayer(player_name));
 		return false;
 	}
+
+	// remove player from the zone
+	Room* player_room = getRoom(player->getZone());
+	if (player_room)
+		player_room->popPlayer(player->getName());
 
 	// if in battle, stop it
 	if (_combat_lists.find(player_name) != _combat_lists.end())
