@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 14:02:24 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/16 13:23:05 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,18 @@
 # include "server/TCPSocket.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "common.h"
+#include "utils.h"
 
 
 ServerLink::ServerLink(
 	int argc,
-	char** argv
+	char** argv,
+	bool debug
 ):
 	_fd(connect_client_to_tcp(argc, argv)),
 	_sock(TCPSocket(this->_fd)),
-	_connected(this->_fd != -1)
+	_connected(this->_fd != -1),
+	debug(debug)
 {}
 
 ServerLink::~ServerLink() {
@@ -92,6 +95,8 @@ const std::string	ServerLink::getLookReply() {
 	if (this->lines.empty() == true) { return (""); }
 	if (this->lines.front().find("OK { \"room\"") != 0) { return (""); }
 
+	if (this->debug == true) {std::cout << "[DEBUG] Look responce = [" << this->lines.front() << "]\n"; }
+
 	// get the commande result and pop it
 	std::string line = std::move(this->lines.front());
 	this->lines.pop();
@@ -108,11 +113,13 @@ const std::string	ServerLink::getMoveReply() {
 	// if the commande is not the move response
 	if (this->lines.front().find("OK room=") != 0) {
 		// and if there is no movement error msg
-		if (this->lines.front().find("Invalid movement direction.") != std::string::npos) { // <-- npos is the returned value when find() found nothing
+		if (this->lines.front().find("ERR 301") == std::string::npos) { // <-- npos is the returned value when find() found nothing
 			// this is not our message
 			return ("") ;
 		}
 	}
+
+	if (this->debug == true) {std::cout << "[DEBUG] Move responce = [" << this->lines.front() << "]\n"; }
 
 	// get the commande result and pop it
 	std::string line = std::move(this->lines.front());
@@ -120,7 +127,7 @@ const std::string	ServerLink::getMoveReply() {
 
 	// remove the commande LOOK from the commande_log to recall it later if needed
 	_commande_log.erase(std::remove(_commande_log.begin(), _commande_log.end(), Commande::MOVE), _commande_log.end());
-	
+
 	return (line);
 }
 
@@ -136,7 +143,7 @@ const std::string	ServerLink::look() {
 const std::string	ServerLink::move(const std::string &direction) {
 	// if move was already sent by someone we will wait the next call
 	if (std::count(_commande_log.begin(), _commande_log.end(), Commande::MOVE) <= 0) {
-		this->send_commande("MOVE " + direction, Commande::LOOK);
+		this->send_commande("MOVE " + direction, Commande::MOVE);
 	}
 	return (this->getMoveReply());
 }

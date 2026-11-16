@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 10:28:43 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/16 16:41:17 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,18 @@ class VisualRoom
 
         ~VisualRoom() = default;
 
+        // Add any type of item to the room
         void    										addItem(VisualItem *item, const std::string &id);
 
+        // Get a dict of all items in the room
 		std::unordered_map<std::string, VisualItem*>	&getItems();
         
+        // Return room width
         int                                             getWidth();
+        // Return room height
         int                                             getHeight();
         
+        // draw the room and its items
 		void											drawItems();
 
 		void											shutUp() { std::ignore = this->tile_map; }

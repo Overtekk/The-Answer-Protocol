@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 14:39:34 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/16 16:34:04 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
 # include "gui.h"
 # include "gui/rooms/RoomManager.hpp"
 # include "gui/Items/VisualItem.hpp"
-# include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/rooms/VisualRoom.hpp"
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "gui/entities/User.hpp"
-#include "utils.h"
+# include "config/Enums.hpp"
+# include "utils.h"
 
 using json = nlohmann::json;
 
@@ -39,7 +39,14 @@ RoomManager::RoomManager(
     _link(link),
     _user(user),
 	_current_room(data.getRoom("spawn"))
-{}
+{
+	this->_opposit_position.emplace(Direction::EAST, Vector2{10, 225});
+	this->_opposit_position.emplace(Direction::WEST, Vector2{790, 225});
+	this->_opposit_position.emplace(Direction::NORTH, Vector2{400, 440});
+	this->_opposit_position.emplace(Direction::SOUTH, Vector2{400, 10});
+
+	this->_last_wrong_direction = Direction::UNKNOWN;
+}
 
 void    RoomManager::addItemsToRoom(const json &data) {
 	for (auto item_data : data.at("items")) {
@@ -73,16 +80,17 @@ bool    RoomManager::updateRoomState() {
 	if (line.empty()) {return(false) ;}
 	
 	std::cout << "Data recived, parsing started\n";
-	std::cout << "DEBUG =[" << line << "]\n";
 	this->addItemsToRoom(json::parse(line.substr(3)));
+
+	_changing_room = false;
 	return (true);
 }
 
-void	RoomManager::changeRoom(const std::string &room_id) {
+void	RoomManager::changeRoom(const std::string &room_id, Direction direction) {
 	this->_current_room = this->_data.getRoom(room_id);
 
 	std::cout << "Current location = [" << room_id << "]\n";
-	this->_user->setPos(Vector2 {400, 225});
+	this->_user->setPos(this->_opposit_position.at(direction));
 
 	this->_link.send_commande("LOOK --details", Commande::LOOK);
 }
@@ -105,42 +113,51 @@ void    RoomManager::checkItemsPickedUp() {
 void	RoomManager::updateRoom() {
 	this->isPlayerOut();
 
-	this->updateRoomState();
+	if (_changing_room == true) {
+		this->updateRoomState();
+	}
 	
 	this->checkItemsPickedUp();
 }
 
 
 void	RoomManager::isPlayerOut() {
-	std::string direction = "";
+	Direction direction = Direction::UNKNOWN;
 	std::string response = "";
 	Vector2		user_pos = this->_user->getPos();
 
 	if (user_pos.x <= 400.0 - (float)this->_current_room->getWidth() / 2) {
-		direction = "west";
+		direction = Direction::WEST;
 	}
 	else if (user_pos.x >= 400.0 + (float)this->_current_room->getWidth() / 2) {
-		direction = "east";
+		direction = Direction::EAST;
 	}
 	else if (user_pos.y <= 225.0 - (float)this->_current_room->getHeight() / 2) {
-		direction = "north";
+		direction = Direction::NORTH;
 	}
 	else if (user_pos.y >= 225.0 + (float)this->_current_room->getHeight() / 2) {
-		direction = "south";
+		direction = Direction::SOUTH;
 	}
 
-	if (direction.empty() == true) {return ;}
+	if (direction == Direction::UNKNOWN or direction == this->_last_wrong_direction) {return ;}
 
+	_changing_room = true;
 	// get the respone
-	response = this->_link.move(direction);
-	if (response.empty() or response.find("ERR") == 0) {
-		if (response.find("ERR") == 0) {std:: cout << "DEBUG, NO PATH THIS WAY\n"; }
+	response = this->_link.move(direction_to_string(direction));
+	if (response.empty()) {
 		// std::cout << "Waiting response\n";
 		return ;
 	}
+	if (response.find("ERR") == 0) {
+		std:: cout << "DEBUG, NO PATH THIS WAY\n"; 
+		_last_wrong_direction = direction;
+		return;
+	}
+
 	size_t start_pos = response.find("=") + 1;
 	size_t lenght = response.size() - start_pos;
-	this->changeRoom(response.substr(start_pos, lenght));
+	this->changeRoom(response.substr(start_pos, lenght), direction);
+	_last_wrong_direction = Direction::UNKNOWN;
 }
 
 void	RoomManager::drawRoom() {

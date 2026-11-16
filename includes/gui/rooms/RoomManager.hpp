@@ -6,29 +6,38 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:44:56 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 13:46:40 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/16 16:31:30 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma  once
 
 # include <nlohmann/json.hpp>
+# include <string>
+# include <unordered_map>
 
+# include "config/Enums.hpp"
 # include "gui/rooms/VisualRoom.hpp"
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "gui/entities/User.hpp"
+#include "raylib.h"
 
 using json = nlohmann::json;
+
 
 class RoomManager
 {
     private:
-        VisualWorldState		&_data;
-        ServerLink				&_link;
+        VisualWorldState						&_data;
+        ServerLink								&_link;
 
-        User*					_user;
-        VisualRoom*				_current_room;
+        User*									_user;
+        VisualRoom*								_current_room;
+
+		bool									_changing_room = false;
+		Direction								_last_wrong_direction;
+		std::unordered_map<Direction, Vector2>	_opposit_position;
     public:
         RoomManager(
             VisualWorldState &data,
@@ -38,16 +47,28 @@ class RoomManager
 
         ~RoomManager() = default;
 
+		// add all item returned by the look command to the current room
         void    addItemsToRoom(const json &data);
+		
+		// get the look reply, call addItemsToRoom and set changing_room
+		// variable to false when the current room is correctly updated
         bool    updateRoomState();
         
-		void	changeRoom(const std::string &room_id);
+		// Change current room, set the player coordinates to the opposite 
+		// direction from the last room and set the changing_room
+		// variable to false
+		void	changeRoom(const std::string &room_id, Direction direction);
 		
+		// Update items (in the current room) state if the player picked it up
         void    checkItemsPickedUp();
         
+		// Update current room state
 		void	updateRoom();
+		// Draw current room
 		void	drawRoom();
 
+		// Check if the player reached the limit of the current room and
+		// init a room change if the server validate the move
 		void	isPlayerOut();
 
         void	shutUp() { std::ignore = this->_user; std::ignore = this->_data; }

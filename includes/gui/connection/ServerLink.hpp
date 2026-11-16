@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:34 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 09:59:12 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/16 12:02:09 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ class ServerLink
 		std::vector<Commande>	_commande_log;
 	public:
 		std::queue<std::string>	lines;
+		bool					debug;
 
-        ServerLink(int argc, char** argv);
+        ServerLink(int argc, char** argv, bool debug = false);
         ~ServerLink();
 
 		// send a specific commande manually
