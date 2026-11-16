@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 14:01:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:35:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,14 @@ int				TCPSession::getSocketDescriptor() const { return _socket.getFD(); }
 SessionState	TCPSession::getSessionState() const { return _state; }
 SubSessionState	TCPSession::getSubSessionState() const { return _sub_state; }
 std::string		TCPSession::getUsername() const { return _username; }
+std::string		TCPSession::getTmpUsername() const { return _tmp_username; }
 // --- SETTER ---
 void			TCPSession::setSessionState(SessionState new_state) { _state = new_state; }
 
 void			TCPSession::setSubSessionState(SubSessionState new_state) { _sub_state = new_state; }
 
 void			TCPSession::setUsername(const std::string& username) { _username = username; }
+void			TCPSession::setTmpUsername(const std::string &username) {_tmp_username = username; }
 
 // --- NETWORK READER ---
 // * Read what's on the socket and add it to the buffer. *

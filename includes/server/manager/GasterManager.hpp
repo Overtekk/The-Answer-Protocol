@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 14:14:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:52:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,10 @@ class GasterManager {
 
 		// --- CREATE PLAYER ---
 		void	createPlayer(const std::string& player_name);
+		bool	reconnectPlayer(const std::string& player_name);
+		// --- DISCONNECTING ---
+		bool	disconnectPlayer(const std::string& player_name);
+		bool	deletePlayer(const std::string& player_name);
 
 		// --- MOVEMENT ---
 		ReturnState	movePlayer(const std::string& player_name, const Direction direction);
@@ -143,6 +147,7 @@ class GasterManager {
 
 		// --- CHECKER ---
 		bool	checkIfUserExist(const std::string& username) const;
+		bool	checkIfPlayerExist(const std::string& player_name) const;
 
 		// --- ADMIN ---
 		ReturnState	adminKill(const std::string& player_name);

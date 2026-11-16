@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 14:09:53 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 14:10:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ std::tuple<std::string, std::string>	extract_command_and_args(std::string& raw_c
 	return std::make_tuple(command, argument);
 }
 
-// * Check if the command sent is correct. *
 bool	parseHandshakeCommand(const std::string& cmd_str, HandshakeCommand& cmd) {
     static const std::unordered_map<std::string, HandshakeCommand> handshake_map = {
         {"CONNECT",	HandshakeCommand::CONNECT},
@@ -87,7 +86,6 @@ bool	parseHandshakeCommand(const std::string& cmd_str, HandshakeCommand& cmd) {
     return true;
 }
 
-// * Check if the command sent is correct. *
 bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 	static const std::unordered_map<std::string, GameCommand> game_map = {
 		{"LOOK",			GameCommand::LOOK},
@@ -121,7 +119,6 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 	return true;
 }
 
-// * Check if the command sent is correct. *
 bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 	static const std::unordered_map<std::string, CombatCommand> combat_map = {
 		{"ATTACK",	CombatCommand::ATTACK},
@@ -142,7 +139,23 @@ bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 	return true;
 }
 
-// Lower the string send in parameters
+bool	parseUsernameLoggingCommand(const std::string& cmd_str, UsernameLoggingCommand& cmd) {
+    static const std::unordered_map<std::string, UsernameLoggingCommand> command_map = {
+        {"CHANGE",	UsernameLoggingCommand::CHANGE},
+        {"KEEP",	UsernameLoggingCommand::KEEP},
+		{"DELETE",	UsernameLoggingCommand::DELETE},
+		{"QUIT",	UsernameLoggingCommand::QUIT}
+    };
+
+    auto it = command_map.find(cmd_str);
+    if (it == command_map.end()) {
+        return false;
+    }
+
+    cmd = it->second;
+    return true;
+}
+
 void	lower_the_string(std::string& text) {
 	for (char& c : text) {
 		c = std::tolower(static_cast<unsigned char>(c));
@@ -160,9 +173,13 @@ CommandHandler::CommandHandler(GasterManager& manager): _manager(manager) {}
 // ============================================================================
 // * Check the line of the current session and return the correct command. *
 void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_line) {
-	// Client is connect but not 'in game'.
+	// Client is connected but not 'in game'.
 	if (session.getSessionState() == SessionState::CONNECTED)
 		handleHandshake(session, raw_line);
+
+	// Client is connected but need to do something with the current username
+	else if (session.getSessionState() == SessionState::LOGGING)
+		handleUsernameLoggingCommand(session, raw_line);
 
 	// Client is 'in game'.
 	else if (session.getSessionState() == SessionState::AUTHENTICATED) {
@@ -240,8 +257,8 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 
 	// Call the good command
 	switch (cmd) {
-		case HandshakeCommand::CONNECT:	commandConnect(session, argument); break;
-		case HandshakeCommand::QUIT:	commandQuit(session, argument); break;
+		case HandshakeCommand::CONNECT:	commandConnect(session, argument);	break;
+		case HandshakeCommand::QUIT:	commandQuit(session, argument);		break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -274,19 +291,19 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 
 	// Call the good command
 	switch (cmd) {
-		case GameCommand::QUIT:			commandQuit(session, argument); break;
-		case GameCommand::WHO:			commandWho(session, argument); break;
-		case GameCommand::LOOK:			commandLook(session, argument); break;
-		case GameCommand::MOVE:			commandMove(session, argument); break;
-		case GameCommand::TAKE:			commandTake(session, argument); break;
-		case GameCommand::DROP:			commandDrop(session, argument); break;
-		case GameCommand::INVENTORY:	commandInventory(session, argument); break;
-		case GameCommand::QUESTS:		commandQuests(session, argument); break;
-		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument); break;
-		case GameCommand::TALK:			commandTalk(session, argument); break;
-		case GameCommand::ATTACK:		commandAttack(session, argument); break;
-		case GameCommand::INFO_ITEM:	commandItemStat(session, argument); break;
-		case GameCommand::EQUIP:		commandEquip(session, argument); break;
+		case GameCommand::QUIT:			commandQuit(session, argument);			break;
+		case GameCommand::WHO:			commandWho(session, argument);			break;
+		case GameCommand::LOOK:			commandLook(session, argument);			break;
+		case GameCommand::MOVE:			commandMove(session, argument);			break;
+		case GameCommand::TAKE:			commandTake(session, argument);			break;
+		case GameCommand::DROP:			commandDrop(session, argument);			break;
+		case GameCommand::INVENTORY:	commandInventory(session, argument);	break;
+		case GameCommand::QUESTS:		commandQuests(session, argument);		break;
+		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument);	break;
+		case GameCommand::TALK:			commandTalk(session, argument);			break;
+		case GameCommand::ATTACK:		commandAttack(session, argument);		break;
+		case GameCommand::INFO_ITEM:	commandItemStat(session, argument);		break;
+		case GameCommand::EQUIP:		commandEquip(session, argument);		break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -321,18 +338,44 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 
 	// Call the good command
 	switch (cmd) {
-		case CombatCommand::ATTACK:			commandCombatAttack(session, argument); break;
-		case CombatCommand::STATUS:			commandCombatStatus(session, argument); break;
-		case CombatCommand::ACT:			commandCombatAct(session, argument); break;
-		case CombatCommand::CHECK:			commandCombatCheck(session, argument); break;
-		// case CombatCommand::ACT:			commandWho(session, argument); break;
-		case CombatCommand::FLEE:			commandCombatFlee(session, argument); break;
-		// case CombatCommand::SPARE:		commandMove(session, argument); break;
-		// case CombatCommand::ITEM:		commandTake(session, argument); break;
+		case CombatCommand::ATTACK:			commandCombatAttack(session, argument);	break;
+		case CombatCommand::STATUS:			commandCombatStatus(session, argument);	break;
+		case CombatCommand::ACT:			commandCombatAct(session, argument);	break;
+		case CombatCommand::CHECK:			commandCombatCheck(session, argument);	break;
+		// case CombatCommand::ACT:			commandWho(session, argument);				break;
+		case CombatCommand::FLEE:			commandCombatFlee(session, argument);	break;
+		// case CombatCommand::SPARE:		commandMove(session, argument);				break;
+		// case CombatCommand::ITEM:		commandTake(session, argument);				break;
 		default:							commandUnknown(session, command);
 	}
 
 	return;
+}
+
+// * Handling commands when the client have the same username than an existing player. *
+void	CommandHandler::handleUsernameLoggingCommand(TCPSession &session, const std::string &raw_line) {
+	std::string raw_command = clean_line(raw_line);
+	print_log_message(session, logCommandEntered(raw_command));
+
+	// Get the command and the arguments
+	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
+	std::string command = std::get<0>(packed_cmd);
+	std::string& argument = std::get<1>(packed_cmd);
+
+	// Check if command exist
+	UsernameLoggingCommand cmd;
+	if (!parseUsernameLoggingCommand(command, cmd)) {
+		commandUnknown(session, command);
+		return;
+	}
+
+	switch (cmd) {
+		case UsernameLoggingCommand::CHANGE:	commandLoggingUsernameChange(session, argument);	break;
+		case UsernameLoggingCommand::KEEP:		commandLoggingUsernameKeep(session, argument);		break;
+		case UsernameLoggingCommand::DELETE:	commandLoggingUsernameErase(session, argument);		break;
+		case UsernameLoggingCommand::QUIT:		commandQuit(session, argument);						break;
+		default:								commandUnknown(session, command);
+	}
 }
 
 // ============================================================================
@@ -360,6 +403,12 @@ void	CommandHandler::commandConnect(TCPSession& session, std::string& argument) 
 		print_log_message(session, ERR_LOG_NAME_IN_USE);
 		return;
 	}
+	if (_manager.checkIfPlayerExist(argument)) {
+		session.add_msg_to_buffer(userAlreadyExist(argument));
+		session.setSessionState(SessionState::LOGGING);
+		session.setTmpUsername(argument);
+		return;
+	}
 
 	session.setUsername(argument);
 	session.setSessionState(SessionState::AUTHENTICATED);
@@ -372,6 +421,10 @@ void	CommandHandler::commandConnect(TCPSession& session, std::string& argument) 
 void	CommandHandler::commandQuit(TCPSession& session, std::string& argument) {
 	std::ignore = argument;
 	print_log_message(session, LOG_QUIT_REQUEST);
+
+	// disconnect the player from the world
+	_manager.disconnectPlayer(session.getUsername());
+
 	session.setSessionState(SessionState::CLOSING);
 	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_BYE));
 	return;
@@ -549,6 +602,7 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argumen
 	bool result = _manager.tryFlee(session.getUsername());
 	if (result) {
 		session.add_msg_to_buffer(getTCP_OK_operation(ACT_SUCCESS_FLEE));
+		print_log(SuccessPlayerFled(session.getUsername()));
 		_manager.finishCombat(session.getUsername());
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
@@ -589,6 +643,41 @@ void	CommandHandler::commandItemStat(TCPSession &session, std::string& argument)
 		return;
 	}
 	session.add_msg_to_buffer(getTCP_OK_operation(result));
+	return;
+}
+
+void	CommandHandler::commandLoggingUsernameChange(TCPSession& session, std::string& argument) {
+	commandConnect(session, argument);
+	return;
+}
+
+void	CommandHandler::commandLoggingUsernameKeep(TCPSession& session, std::string& argument) {
+	std::ignore = argument;
+	std::string wanted_name = session.getTmpUsername();
+
+	 if (!_manager.reconnectPlayer(wanted_name)) {
+		session.setSessionState(SessionState::CONNECTED);
+		session.add_msg_to_buffer(ERR_CONNECTION_FAILED);
+		return;
+	 }
+
+	session.setUsername(wanted_name);
+	session.setSessionState(SessionState::AUTHENTICATED);
+	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_OK_CONNECTED));
+	return;
+}
+
+void	CommandHandler::commandLoggingUsernameErase(TCPSession& session, std::string& argument) {
+	std::ignore = argument;
+	std::string wanted_name = session.getTmpUsername();
+
+	if (!_manager.deletePlayer(wanted_name)) {
+		session.setSessionState(SessionState::CONNECTED);
+		session.add_msg_to_buffer(ERR_CONNECTION_FAILED);
+		return;
+	}
+
+	commandConnect(session, wanted_name);
 	return;
 }
 
