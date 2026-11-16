@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:29:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:20:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // CONNECTED: connected to the server.
 // AUTHENTICATED: connected to the game (have username).
 // CLOSING: asking to quit.
-enum class SessionState {CONNECTED, AUTHENTICATED, CLOSING};
+enum class SessionState {CONNECTED, LOGGING, AUTHENTICATED, CLOSING};
 enum class SubSessionState {MOVING, IN_COMBAT};
 enum class OperationState {SUCCESS, WAITING, DECONNEXION, ERROR, NETWORK_ERROR};
 
@@ -60,4 +60,11 @@ enum class CombatCommand {
 	CHECK, //todo
 	STATUS,
 	HELP, //todo
+};
+
+enum class UsernameLoggingCommand {
+	DELETE,
+	KEEP,
+	CHANGE,
+	QUIT
 };

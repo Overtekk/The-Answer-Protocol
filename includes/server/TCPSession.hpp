@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 13:39:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/02 14:00:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:36:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ class TCPSession {
 		std::string			_out_buffer;
 
 		// Client ID
-		std::string	_username = "";
+		std::string	_tmp_username = "";	// temp name used when in logging stage
+		std::string	_username = "";		// username of the client
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -54,10 +55,12 @@ class TCPSession {
 		SessionState		getSessionState() const;
 		SubSessionState		getSubSessionState() const;
 		std::string			getUsername() const;
+		std::string			getTmpUsername() const;
 		// --- SETTER ---
 		void			setSessionState(SessionState new_state);
 		void			setSubSessionState(SubSessionState new_state);
 		void			setUsername(const std::string& username);
+		void			setTmpUsername(const std::string& username);
 
 		// --- NETWORK READER ---
 		OperationState				readData();

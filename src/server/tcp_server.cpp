@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 14:13:25 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:48:06 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ void	TCPServer::handleNewConnection() {
 	TCPSocket client_socket(client_fd);
 	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
 	print_log_message(*_sessions[client_fd], logClientConnected(client_fd));
+	_sessions[client_fd]->add_msg_to_buffer(SERVER_ASK_USERNAME);
 }
 
 // * Handle standard input from console. *
