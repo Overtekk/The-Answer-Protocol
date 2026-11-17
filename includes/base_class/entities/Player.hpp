@@ -6,19 +6,21 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 16:01:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/03 11:16:47 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+# include <string>
 # include <map>
-# include <memory>
 # include <optional>
 # include <unordered_map>
+# include <vector>
 
 # include "Entity.hpp"
 # include "base_class/items/Item.hpp"
+# include "config/Enums.hpp"
 
 // PlayerID for the session
 using PlayerID = uint64_t;
@@ -27,10 +29,16 @@ using PlayerID = uint64_t;
 // * Represent a player *
 class Player : public Entity {
 	private :
-		std::map<ItemID, Item*>	_inventory;
+		std::map<ItemID, Item*>						_inventory;
+		std::unordered_map<std::string, QuestState>	_quests;
+		Item*										_equipped_weapon = nullptr;
 
 		// Information
-		std::string	_zone;
+		std::unordered_map<std::string, int>	_dialogue_state;
+
+		// Stats
+		int	_defense = 5;
+		int	_luck = 10;
 
 		inline static	PlayerID _id = 1;
 
@@ -41,10 +49,19 @@ class Player : public Entity {
         ~Player() override = default;
 
 		// --- GETTER ---
-		const std::string&	getZone() const;
+		std::vector<std::string>	getCurrentQuests() const;
+		std::vector<std::string>	getCompletedQuests() const;
+		QuestState					getQuestStatut(const std::string& quest_id) const;
+		int							getDefense() const;
+		int							getLuck() const;
+		const std::string			getItemStats(ItemID id);
 
 		// --- SETTER ---
-		void	setZone(const std::string& new_zone);
+		void	addQuest(const std::string& quest_id);
+		void	removeQuest(const std::string& quest_id);
+		void	setQuestCompleted(const std::string& quest_id);
+		void	setDefense(int new_value);
+		void	setLuck(int new_value);
 
 		// --- INVENTORY SYSTEM ---
 		Item* 			addItemToInventory(Item* item);
@@ -53,6 +70,13 @@ class Player : public Entity {
 		const Item*		getItem(ItemID id) const;
 		Item* 			getItem(ItemID id);
 		std::optional<ItemID>	getItemIdByName(const std::string& name) const;
+
+		Item*			getEquippedWeapon() const;
+		void			setEquippedWeapon(Item* new_weapon);
+
+		// --- DIALOGUE SYSTEM ---
+		void	setDialogueIndex(const std::string& entity_id, int new_index);
+		int		getDialogueIndex(const std::string& entity_id) const;
 
 		bool 			checkItemInInventory(ItemID id) const;
 		std::string		getItemInInventory(bool add_details) const;

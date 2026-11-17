@@ -6,13 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/19 13:10:58 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:15:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+# include <memory>
 # include <string>
+# include <unordered_map>
+
+# include "config/Enums.hpp"
 
 class GasterManager;
 class TCPSession;
@@ -22,19 +26,57 @@ class CommandHandler {
 	private :
 		GasterManager&				_manager;
 
-		void handleHandshake(TCPSession& session, const std::string& raw_line);
-		void handleGameCommand(TCPSession& session, const std::string& raw_line);
+		// GET COMMAND TYPE
+		void	handleHandshake(TCPSession& session, const std::string& raw_line);
+		void	handleGameCommand(TCPSession& session, const std::string& raw_line);
+		void	handleCombatCommand(TCPSession& session, const std::string& raw_line);
+		void	handleUsernameLoggingCommand(TCPSession& session, const std::string& raw_line);
 
 		// COMMANDS
-		void	commandUnknown(TCPSession& session, std::string command);
-		void	commandConnect(TCPSession& session, std::string argument);
-		void	commandQuit(TCPSession& session, std::string argument);
-		void	commandWho(TCPSession& session, std::string argument);
-		void	commandLook(TCPSession& session, std::string argument);
-		void	commandMove(TCPSession& session, std::string argument);
-		void	commandTake(TCPSession& session, std::string argument);
-		void	commandDrop(TCPSession& session, std::string argument);
-		void	commandInventory(TCPSession& session, std::string argument);
+		// unknown
+		void	commandUnknown(TCPSession& session, std::string& command);
+		// handshake
+		void	commandConnect(TCPSession& session, std::string& argument);
+		void	commandQuit(TCPSession& session, std::string& argument);
+		// games
+		void	commandWho(TCPSession& session, std::string& argument);
+		void	commandLook(TCPSession& session, std::string& argument);
+		void	commandMove(TCPSession& session, std::string& argument);
+		void	commandTake(TCPSession& session, std::string& argument);
+		void	commandDrop(TCPSession& session, std::string& argument);
+		void	commandInventory(TCPSession& session, std::string& argument);
+		void	commandQuests(TCPSession& session, std::string& argument);
+		void	commandChat(TCPSession& session, std::string& argument);
+		void	commandGroupCreate(TCPSession& session, std::string& argument);
+		void	commandGroupInvite(TCPSession& session, std::string& argument);
+		void	commandGroupJoin(TCPSession& session, std::string& argument);
+		void	commandGroupLeave(TCPSession& session, std::string& argument);
+		void	commandTalk(TCPSession& session, std::string& argument);
+		void	commandAttack(TCPSession& session, std::string& argument);
+		void	commandStatus(TCPSession& session, std::string& argument);
+		void	commandQuest(TCPSession& session, std::string& argument);
+		void	commandQuestInfo(TCPSession& session, std::string& argument);
+		void	commandEquip(TCPSession& session, std::string& argument);
+		void	commandItemStat(TCPSession& session, std::string& argument);
+		// combats
+		void	commandCombatAttack(TCPSession& session, std::string& argument);
+		void	commandCombatCheck(TCPSession& session, std::string& argument);
+		void	commandCombatAct(TCPSession& session, std::string& argument);
+		void	commandCombatItem(TCPSession& session, std::string& argument);
+		void	commandCombatSpare(TCPSession& session, std::string& argument);
+		void	commandCombatFlee(TCPSession& session, std::string& argument);
+		void	commandCombatStatus(TCPSession& session, std::string& argument);
+		// username logging
+		void	commandLoggingUsernameChange(TCPSession& session, std::string& argument);
+		void	commandLoggingUsernameKeep(TCPSession& session, std::string& argument);
+		void	commandLoggingUsernameErase(TCPSession& session, std::string& argument);
+
+		// MANAGEMENTS
+		bool	manageCombatTurn(TCPSession& session);
+		void	manageCombatResult(TCPSession& session, CombatStatus& result, std::string& argument);
+
+		// SEND ERROR
+		void	sendErrorToUser(TCPSession& session, ReturnState return_error);
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -43,7 +85,6 @@ class CommandHandler {
 		~CommandHandler() = default;
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
-
-		// --- DEBUG ---
-		void	debugTrySimulate(bool try_move);
+		void	processAdminCommand(const std::string& cmd);
+		void	updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions);
 };

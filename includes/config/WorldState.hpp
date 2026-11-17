@@ -6,13 +6,12 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 09:27:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 16:00:48 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:54:46 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-# include <iostream>
 # include <unordered_map>
 # include <memory>
 
@@ -24,9 +23,10 @@
 
 // *Structure that contains all objects.*
 struct WorldState {
-	std::unordered_map<std::string, std::unique_ptr<Room>> rooms;
-	std::unordered_map<std::string, std::unique_ptr<Entity>> entities;
-	std::unordered_map<std::string, std::unique_ptr<Item>> items;
-	std::unordered_map<std::string, std::unique_ptr<Player>> players;
+	std::unordered_map<std::string, std::unique_ptr<Room>>		rooms;
+	std::unordered_map<std::string, std::unique_ptr<Entity>>	entities;
+	std::unordered_map<std::string, std::unique_ptr<Item>>		items;
+	std::unordered_map<std::string, std::unique_ptr<Player>>	players;
+	std::unordered_map<std::string, std::unique_ptr<Player>>	old_players;
 };
 

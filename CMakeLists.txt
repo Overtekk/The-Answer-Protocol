@@ -47,7 +47,6 @@ set(COMMON_SOURCES
     src/rooms/Room.cpp
 	src/utils/print.cpp
 	src/utils/enum_convert.cpp
-	src/debug/debug_structure.cpp
 )
 
 set(SERVER_MAIN		src/main.cpp)
@@ -62,6 +61,10 @@ set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 	src/server/tcp_server.cpp
 	src/server/command_handler.cpp
 	src/server/logger.cpp
+	src/core/QuestManager.cpp
+	src/core/DialogueManager.cpp
+	src/core/CombatManager.cpp
+	src/config/enemy_template.cpp
 	src/utils/files.cpp
 )
 

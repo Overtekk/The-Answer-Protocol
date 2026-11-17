@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Animation.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 14:12:37 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/09 15:14:11 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/10 15:16:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "gui/Animation.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 // ============================================================================
@@ -86,12 +87,12 @@ void        Animation::resetTimeLeft()
 void        Animation::updateFrame()
 {
     this->_time_left -= GetFrameTime();
-    
+
     if (this->_time_left <= 0)
     {
         this->_time_left = this->_speed - this->_time_left;
         this->_curent_frame++;
-        
+
         // If we reached our last frame
         if (this->_curent_frame >= this->_frames_number + this->_first_frame)
         {
@@ -141,22 +142,22 @@ void        Animation::drawCurentFrame(float x, float y,
         width = std::get<0>(this->_frame_size);
     if (height < 0)
         height = std::get<1>(this->_frame_size);
-    
+
     Rectangle origin = this->getFrame();
     if (flip == true)
         origin.width *= -1;
-    
+
     Rectangle dest = Rectangle {
         .x = x,
         .y = y,
         .width = width * scale,
         .height = height * scale
     };
-    
+
     DrawTexturePro(this->_img, origin, dest, {dest.width / 2, dest.height / 2}, rotation, WHITE);
 }
 
 // Error
 void Animation::sendObjectError(const std::string &error) {
-   print_log(" ERROR: " + error + "\n");
+   print_log(errObject(error));
 }

@@ -6,29 +6,35 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/09 10:48:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 14:03:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include <filesystem>
+# include <cctype>
+# include <cstddef>
+# include <stdexcept>
+# include <string>
 
 # include "yaml-cpp/yaml.h"
 # include "config/Enums.hpp"
+# include "config/WorldConfig.hpp"
+# include "config/EnemyTemplate.hpp"
+# include "config/config_messages.h"
 # include "parser.h"
 # include "utils.h"
-
-namespace fs = std::filesystem;
 
 LocationConfig parse_locationConfig(const std::string& loc_id, const YAML::Node& node, std::unordered_set<std::string>& knows_locations);
 ItemConfig parse_itemConfig(const std::string& item_id, const YAML::Node& node, std::unordered_set<std::string>& knows_items);
 EntityConfig parse_entityConfig(const std::string& entity_id, const YAML::Node& node, std::unordered_set<std::string>& knows_entities);
+QuestConfig parse_questConfig(const std::string& quest_id, const YAML::Node& node);
 Direction convert_direction(const std::string& direction_str);
 ItemType convert_itemType(const std::string& itemtype_str);
 EnemyType convert_enemyType(const std::string& enemytype_str);
+QuestStage convert_questStage(const std::string& quest_stage_str);
+ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str);
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id);
 void check_int(int value, const std::string& id);
-void check_sprite(const std::string&  sprite, const std::string& id);
+bool is_numbered_key(const std::string& key, const std::string& prefix);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
 
@@ -46,13 +52,11 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				std::string loc_id = entry.first.as<std::string>();
 				world.locations[loc_id] = parse_locationConfig(loc_id, entry.second, knows_locations);
 			}
-			if (7 > knows_locations.size()) {
-				throw std::runtime_error("You need to have a least 8 different locations.");
-			}
+			if (7 > knows_locations.size())
+				throw std::runtime_error(ERR_NOT_ENOUGHT_LOCATIONS);
 		}
-		else {
-			throw std::runtime_error("Missing locations. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_LOCATIONS_KEY);
 
 		// Check ITEMS
 		if (root["items"] && root["items"].IsMap()) {
@@ -61,9 +65,8 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.items[item_id] = parse_itemConfig(item_id, entry.second, knows_items);
 			}
 		}
-		else {
-			throw std::runtime_error("Missing items. Did you forget? 😱");
-		}
+		else
+			throw std::runtime_error(ERR_MISSING_ITEMS_KEY);
 
 		// Check ENTITIES
 		if (root["entities"] && root["entities"].IsMap()) {
@@ -72,20 +75,46 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 				world.entities[entity_id] = parse_entityConfig(entity_id, entry.second, knows_entities);
 			}
 		}
-		else {
-			throw std::runtime_error("Missing entities. Did you forget? 😱");
+		else
+			throw std::runtime_error(ERR_MISSING_ENTITIES_KEY);
+
+		// Check QUESTS
+		if (root["quests"] && root["quests"].IsMap()) {
+			for (const auto& entry : root["quests"]) {
+				std::string quest_id = entry.first.as<std::string>();
+				world.quests[quest_id] = parse_questConfig(quest_id, entry.second);
+			}
 		}
+		else
+			throw std::runtime_error(ERR_MISSING_QUESTS_KEY);
 
 		// Check if all data are valid
 		check_locations_data(world, knows_locations, knows_items, knows_entities);
 
+		// Check numbers of quests
+		if (world.quests.size() < 3)
+			throw std::runtime_error(errNotEnoughQuests(world.quests.size()));
+
+		// Check if quests are valid in the dialogue stage
+		for (const auto& [entity_id, entity] : world.entities) {
+			for (const auto& stage : entity.dialogue_stage) {
+
+				if (!stage.quest_id.empty()) {
+					const auto& quest_id = world.quests.find(stage.quest_id);
+
+					if (quest_id == world.quests.end()) {
+						throw std::runtime_error(errInvalidStageQuest(entity_id, stage.quest_id));
+					}
+				}
+			}
+		}
 	}
 	catch (const std::exception& e) {
-		print_error(std::string("PARSING FAILED!\n") + e.what());
+		print_error(std::string(ERR_PARSING_FAILED) + e.what());
 		return false;
 	}
 
-	print_success("World Data loaded!");
+	print_success(SUCCESS_DATA_LOADED);
 
 	return true;
 }
@@ -134,20 +163,31 @@ ItemConfig parse_itemConfig(
 	// Check the type of the item and add it
 	config.type = convert_itemType(getValue<std::string>(node, "type", ""));
 	if (config.type == ItemType::UNKNOWN) {
-		throw std::runtime_error(item_id + " missing type for this item. Use: WEAPON, KEY or CONSUMABLE.");
+		throw std::runtime_error(errItemMissingType(item_id));
 	}
 
 	config.damage = getValue<int>(node, "damage", 0);
 	check_int(config.damage, item_id);
 	config.hp = getValue<int>(node, "hp", 0);
 	check_int(config.hp, item_id);
+	config.bonus_min = getValue<int>(node, "bonus_min", 0);
+	check_int(config.bonus_min, item_id);
+	config.bonus_max = getValue<int>(node, "bonus_max", 0);
+	check_int(config.bonus_max, item_id);
+	if (config.bonus_min > config.bonus_max) {
+		throw std::runtime_error(
+			item_id + " bonus_min can't be higher than bonus_max. bonus_min= " +
+			std::to_string(config.bonus_min) + " > " + std::to_string(config.bonus_max)
+		);
+	}
+
 	return config;
 }
 
 // Parsing for the entities part.
 EntityConfig parse_entityConfig(
 	const std::string& entity_id, const YAML::Node& node, std::unordered_set<std::string>& knows_entities) {
-	EntityConfig config;
+	EntityConfig	config;
 
 	knows_entities.insert(entity_id); // added to the set to check later
 
@@ -155,22 +195,92 @@ EntityConfig parse_entityConfig(
 	config.description = getValue<std::string>(node, "description", "");
 	check_global_data_validation(config.name, config.description, entity_id);
 
-
-
-	if (node["dialogue"] && node["dialogue"].IsMap()) {
-		for (const auto& entry : node["dialogue"]) {
-			std::string dial_key = entry.first.as<std::string>();
-			config.dialogue[dial_key] = entry.second.as<std::string>();
-		}
-	}
-
 	config.type = convert_enemyType(getValue<std::string>(node, "type", ""));
 	if (config.type == EnemyType::UNKNOWN) {
-		throw std::runtime_error(entity_id + " missing type for this item. Use: ENEMY, BOSS, NPC or SHOP.");
+		throw std::runtime_error(errEntityMissingType(entity_id));
 	}
 
 	config.hp = getValue<int>(node, "hp", 100);
 	check_int(config.hp, entity_id);
+	config.attack = getValue<int>(node, "attack", 1);
+	check_int(config.attack, entity_id);
+
+	config.behavior = EnemyBehavior::BASIC;
+	// get the custom behavior
+	const EnemyTemplate* enemy_template = nullptr;
+	if (config.type == EnemyType::ENEMY || config.type == EnemyType::BOSS)
+		enemy_template = find_enemy_template(entity_id);
+
+	if (enemy_template) {
+		if (node["dialogue"])
+			print_warning(warnDialogueIgnored(entity_id));
+		config.dialogue = enemy_template->dialogue;
+		config.behavior = enemy_template->behavior;
+		if (!node["attack"]) config.attack = enemy_template->attack;
+	}
+	else if (node["dialogue"] && node["dialogue"].IsMap()) {
+		for (const auto& entry : node["dialogue"]) {
+			std::string dial_key = entry.first.as<std::string>();
+			if (!entry.second.IsScalar()) {
+				print_warning(warnDialogueNotScalar(entity_id, dial_key));
+				continue;
+			}
+
+			// check if dialogue is a valid key
+			if (convert_DialogueKey(dial_key) == ValidDialogueKey::UNKNOWN) {
+				throw std::runtime_error(errInvalidDialogueKey(entity_id, dial_key));
+			}
+
+			config.dialogue[dial_key] = entry.second.as<std::string>();
+		}
+	}
+
+	// Check dialogue stages
+	if (node["talk_stages"] && node["talk_stages"].IsSequence()) {
+		for (const auto& entry : node["talk_stages"]) {
+			// if entry not a dict
+			if (!entry.IsMap()) {
+				throw std::runtime_error(errInvalidStage(entity_id, STAGE_REASON_NOT_MAP));
+			}
+
+			DialogueStage config_dialogue;
+			config_dialogue.last_stage = getValue<int>(entry, "last_stage", 0);
+			// if last stage value in negative.
+			if (config_dialogue.last_stage <= 0) {
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonNotPositive(config_dialogue.last_stage)));
+			}
+			// if next stage value is lower than the previous one.
+			if (!config.dialogue_stage.empty() && config_dialogue.last_stage <= config.dialogue_stage.back().last_stage) {
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonNotIncreasing(config_dialogue.last_stage, config.dialogue_stage.back().last_stage)));
+			}
+			// if dialogue is not starting with "talk_"
+			auto it = config.dialogue.find("talk_" + std::to_string(config_dialogue.last_stage));
+			if (it == config.dialogue.end()) {
+				throw std::runtime_error(errInvalidStage(entity_id, stageReasonMissingKey(config_dialogue.last_stage)));
+			}
+			config_dialogue.quest_id = getValue<std::string>(entry, "wait_quest", "");
+			config_dialogue.condition = convert_questStage(getValue<std::string>(entry, "wait_for", ""));
+			// if condition is not "COMPLETED" or "HAVE"
+			if (!config_dialogue.quest_id.empty() && config_dialogue.condition == QuestStage::UNKNOWN) {
+				throw std::runtime_error(errInvalidStage(entity_id, STAGE_REASON_BAD_CONDITION));
+			}
+			config.dialogue_stage.push_back(config_dialogue);
+		}
+	}
+
+	return config;
+}
+
+QuestConfig parse_questConfig(
+	const std::string& quest_id, const YAML::Node& node) {
+	QuestConfig config;
+
+	config.name = getValue<std::string>(node, "name", "");
+	config.description = getValue<std::string>(node, "description", "");
+	check_global_data_validation(config.name, config.description, quest_id);
+
+	config.spawn_with_quest = getValue<bool>(node, "spawn_with_quest", false);
+
 	return config;
 }
 
@@ -204,22 +314,71 @@ EnemyType convert_enemyType(const std::string& enemytype_str) {
 	return EnemyType::UNKNOWN;
 }
 
+// Convert the quest stage in string to an enum.
+QuestStage convert_questStage(const std::string& quest_stage_str) {
+	if (quest_stage_str == "completed") return QuestStage::COMPLETED;
+	if (quest_stage_str == "have") return QuestStage::HAVE;
+
+	return QuestStage::UNKNOWN;
+}
+
+// Convert the dialogue key in string to an enum.
+// Keys ending with "_" are numbered (talk_1, talk_2, ...). The other keys are written exactly as is.
+ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
+	// --- Numbered keys ---
+	if (is_numbered_key(dialogue_key_str, "talk_")) return ValidDialogueKey::TALK_;
+	if (is_numbered_key(dialogue_key_str, "shop_")) return ValidDialogueKey::SHOP_;
+	if (is_numbered_key(dialogue_key_str, "neutral_")) return ValidDialogueKey::NEUTRAL_;
+	if (is_numbered_key(dialogue_key_str, "check_")) return ValidDialogueKey::CHECK_;
+	if (is_numbered_key(dialogue_key_str, "act_")) return ValidDialogueKey::ACT_;
+
+	// --- Shop keys ---
+	if (dialogue_key_str == "no_money") return ValidDialogueKey::NO_MONEY;
+	if (dialogue_key_str == "buy") return ValidDialogueKey::BUY;
+	if (dialogue_key_str == "remote") return ValidDialogueKey::REMOTE;
+	if (dialogue_key_str == "quit") return ValidDialogueKey::QUIT;
+
+	// --- Fight keys ---
+	if (dialogue_key_str == "encounter") return ValidDialogueKey::ENCOUNTER;
+	if (dialogue_key_str == "check_default") return ValidDialogueKey::CHECK_DEFAULT;
+	if (dialogue_key_str == "low_hp") return ValidDialogueKey::LOW_HP;
+	if (dialogue_key_str == "spare") return ValidDialogueKey::SPARE;
+	if (dialogue_key_str == "killed") return ValidDialogueKey::KILLED;
+	if (dialogue_key_str == "can_spare") return ValidDialogueKey::CAN_SPARE;
+
+	return ValidDialogueKey::UNKNOWN;
+}
+
 // --- CHECKER ---
 // Checker for the name and description.
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id) {
-	if (name.empty()) {
-		throw std::runtime_error(id + " name can't be empty.");
+	if (name.empty())
+		throw std::runtime_error(errNameEmpty(id));
+
+	if (desc.empty())
+		throw std::runtime_error(errDescEmpty(id));
+
+}
+
+// Check if the key is the prefix followed by a number only (ex: "talk_" + "12").
+// Because of the number, "act_pet_1" is not seen as an "act_" key.
+bool is_numbered_key(const std::string& key, const std::string& prefix) {
+	if (key.size() <= prefix.size())
+		return false;
+	if (key.compare(0, prefix.size(), prefix) != 0)
+		return false;
+
+	for (size_t i = prefix.size(); i < key.size(); i++) {
+		if (!std::isdigit(static_cast<unsigned char>(key[i])))
+			return false;
 	}
-	if (desc.empty()) {
-		throw std::runtime_error(id + " description can't be empty.");
-	}
+	return true;
 }
 
 // Check if int is positive.
 void check_int(int value, const std::string& id) {
-	if (0 > value) {
-		throw std::runtime_error(id + " invalid integer. Need to be positive.");
-	}
+	if (0 > value)
+		throw std::runtime_error(errNotPositive(id));
 }
 
 void check_locations_data(
@@ -233,9 +392,8 @@ void check_locations_data(
 	for (const auto& [loc_id, loc] : world.locations) {
 	for (const auto& [dir, name] : loc.exits) {
 		// Check if "spawn" ID is found.
-		if (loc_id == "spawn") {
+		if (loc_id == "spawn")
 			spawn_found = true;
-		}
 
 		// Check if a location exist in the directions maps
 		if (knows_locations.count(name) == 0) {
@@ -268,8 +426,6 @@ void check_locations_data(
 		}
 	}
 
-	if (!spawn_found) {
-		throw std::runtime_error("spawn is missing. Make sure a zone ID is named 'spawn'.");
-	}
+	if (!spawn_found)
+		throw std::runtime_error(ERR_MISSING_SPAWN_KEY);
 }
-

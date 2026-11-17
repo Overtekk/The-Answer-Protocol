@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:03:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:48:06 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/logger.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
-// --- CONSTRUCTOR ---
+
+// ============================================================================
+// =====================       CONSTRUCTOR      ===============================
+// ============================================================================
 TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log) :
 	_listen_socket(-1),
 	_cmd_handler(cmd_handler),
@@ -29,11 +33,16 @@ TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_
 	std::ignore=_save_log_in_file; //todo with the logger
 }
 
+// ============================================================================
+// =========================       PUBLIC      ================================
+// ============================================================================
 // * Run the server. *
 void	TCPServer::run() {
 	_is_running = true;
 
 	while (_is_running) {
+		// make the enemies play (before buildPollFds, so new messages are sent right away)
+		_cmd_handler.updateCombats(_sessions);
 		buildPollFds();
 
 		int return_value = poll(_poll_fds.data(), _poll_fds.size(), 100);
@@ -68,7 +77,7 @@ void	TCPServer::run() {
 			else if (revents & (POLLERR | POLLHUP | POLLNVAL)) {
 				auto it = _sessions.find(fd);
 				if (it != _sessions.end()) {
-					print_log_message(*(it->second), "connection dropped (poll error/hangup).");
+					print_log_message(*(it->second), CONNEXION_DROPPED);
 				}
 				disconnectedClient(fd);
 			}
@@ -87,7 +96,9 @@ void	TCPServer::run() {
 // * Stop the server. *
 void	TCPServer::stop() { _is_running = false; }
 
-// ==== PRIVATE ===
+// ============================================================================
+// =========================      PRIVATE      ================================
+// ============================================================================
 // --- INIT SOCKET ---
 // * Init the server with the port in argument. *
 void	TCPServer::init(std::uint16_t port) {
@@ -185,7 +196,8 @@ void	TCPServer::handleNewConnection() {
 
 	TCPSocket client_socket(client_fd);
 	_sessions[client_fd] = std::make_unique<TCPSession>(std::move(client_socket), ip_str, client_port);
-	print_log_message(*_sessions[client_fd], "connected to server (socket " + std::to_string(client_fd) + ").");
+	print_log_message(*_sessions[client_fd], logClientConnected(client_fd));
+	_sessions[client_fd]->add_msg_to_buffer(SERVER_ASK_USERNAME);
 }
 
 // * Handle standard input from console. *
@@ -199,10 +211,28 @@ void	TCPServer::handleStdinRead() {
 		stop();
 		return;
 	}
-	else if (command == "!debug simulate") {
-		_cmd_handler.debugTrySimulate(true);
+	else if (command.rfind("kill", 0) == 0) {
+		print_log(logServerCommand(command));
+		_cmd_handler.processAdminCommand(command);
+
+		// Get the killed player name (after "kill ")
+		size_t	index_arg = command.find_first_of(' ');
+		if (index_arg == std::string::npos) {
+			return;
+		}
+		std::string	target = command.substr(index_arg + 1);
+
+		// Free the client if he was in a battle
+		for (auto& [fd, session] : _sessions) {
+			if (session->getUsername() == target
+				&& session->getSubSessionState() == SubSessionState::IN_COMBAT) {
+				session->setSubSessionState(SubSessionState::MOVING);
+				session->add_msg_to_buffer(getTCP_OK_operation(ADMIN_KILL_CMD));
+			}
+		}
 		return;
 	}
+
 }
 
 // * Read incoming data from a client. *
@@ -216,7 +246,7 @@ void	TCPServer::handleClientRead(int fd) {
 	// Read the message
 	OperationState state = it->second->readData();
 	if (state == OperationState::DECONNEXION || state == OperationState::NETWORK_ERROR) {
-		print_log_message(*(it->second), "connection closed by client.");
+		print_log_message(*(it->second), CONNEXION_CLOSED_CLIENT);
 		disconnectedClient(fd);
 		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR);
 		return;
@@ -242,14 +272,14 @@ void	TCPServer::handleClientWrite(int fd) {
 	//
 	OperationState state = it->second->sendPendingData();
 	if (state == OperationState::ERROR) {
-		print_log_message(*(it->second), "User have been disconnected due to an error.");
+		print_log_message(*(it->second), ERR_DISCONNECTED_MSG);
 		disconnectedClient(fd);
 		return;
 	}
 
 	// Handle question asking to disconnect
 	if (!it->second->hasDataToSend() and it->second->getSessionState() == SessionState::CLOSING) {
-		print_log_message(*(it->second), "left the game.");
+		print_log_message(*(it->second), DISCONNEXION_MSG);
 		disconnectedClient(fd);
 		return;
 	}

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 16:18:57 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:56:52 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # include "base_class/items/ItemConsumable.hpp"
 # include "config/LoadedAssets.hpp"
 # include "config/Enums.hpp"
+# include "config/config.hpp"
+# include "config/config_messages.h"
 # include "parser.h"
 # include "gui.h"
-# include "utils.h"
-# include "debug.h"
 
 # include "gui/connection/ServerLink.hpp"
 # include "common.h"
@@ -50,23 +50,22 @@ int main(int argc, char** argv) {
 }
 
 int gui_parser(WorldConfig& world_data) {
-	YAML::Node root = load_file("data/world_data.yaml");
-	YAML::Node root_sounds = load_file("data/sounds_data.yaml");
-	YAML::Node root_sprites = load_file("data/sprites_data.yaml");
-	if (root.IsNull() or root_sounds.IsNull() or root_sprites.IsNull()) {
+	YAML::Node root = load_file(DATA_PATH);
+	YAML::Node root_sounds = load_file(DATA_SOUNDS_PATH);
+	YAML::Node root_sprites = load_file(DATA_SPRITES_PATH);
+	if (root.IsNull() or root_sounds.IsNull() or root_sprites.IsNull())
 		return EXIT_FAILURE;
-	}
+
 	std::queue<YAML::Node> nodes_list;
 	nodes_list.push(root);
 	nodes_list.push(root_sounds);
 	nodes_list.push(root_sprites);
 
 	if (!parse_file_for_gui(nodes_list, world_data)) {
-		std::cerr << "\n❌ Server aborting: invalid world data configuration.\n";
+		std::cerr << INVALID_DATA;
 		return 1;
 	 }
 
-	// debug_print_structure(world_data, true);
 	 return 0;
 }
 
@@ -105,7 +104,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 
         BeginDrawing();
             ClearBackground(BLACK);
-			
+
 			room.updateRoom();
 			room.drawRoom();
 

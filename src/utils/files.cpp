@@ -13,7 +13,7 @@
 # include <string>
 
 # include "yaml-cpp/yaml.h"
-# include "config/WorldConfig.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 
@@ -23,7 +23,7 @@ YAML::Node load_file(const std::string& filepath) {
 	try {
 		root = YAML::LoadFile(filepath);
 		if (root.IsNull()) {
-			print_error("File is empty.\n");
+			print_error(ERR_EMPTY_FILE);
 		}
 	}
 	catch (const YAML::Exception& e) {

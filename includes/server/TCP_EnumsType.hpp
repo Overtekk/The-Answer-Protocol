@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/08 14:03:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/16 13:20:21 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,55 @@
 // CONNECTED: connected to the server.
 // AUTHENTICATED: connected to the game (have username).
 // CLOSING: asking to quit.
-enum class SessionState {CONNECTED, AUTHENTICATED, CLOSING};
+enum class SessionState {CONNECTED, LOGGING, AUTHENTICATED, CLOSING};
+enum class SubSessionState {MOVING, IN_COMBAT};
 enum class OperationState {SUCCESS, WAITING, DECONNEXION, ERROR, NETWORK_ERROR};
 
 // === COMMANDHANDLER ===
-enum class HandshakeCommand { CONNECT, QUIT };
+enum class HandshakeCommand {
+	CONNECT,
+	QUIT,
+	HELP //todo
+};
 
 enum class GameCommand {
 	LOOK,
 	MOVE,
 	QUIT,
-	CHAT,
+	CHAT, //todo
 	WHO,
-	GROUP_CREATE,
-	GROUP_INVITE,
-	GROUP_JOIN,
-	GROUP_LEAVE,
+	GROUP_CREATE, //todo
+	GROUP_INVITE, //todo
+	GROUP_JOIN, //todo
+	GROUP_LEAVE, //todo
 	TAKE,
 	DROP,
 	INVENTORY,
-	TALK,
+	TALK, //todo
 	ATTACK,
 	STATUS,
 	QUEST,
 	QUESTS,
+	QUEST_INFO,
+	EQUIP,
+	INFO_ITEM,
+	HELP, //todo
+};
+
+enum class CombatCommand {
+	ATTACK,
+	ACT, //todo
+	ITEM, //todo
+	SPARE, //todo
+	FLEE,
+	CHECK, //todo
+	STATUS,
+	HELP, //todo
+};
+
+enum class UsernameLoggingCommand {
+	DELETE,
+	KEEP,
+	CHANGE,
+	QUIT
 };

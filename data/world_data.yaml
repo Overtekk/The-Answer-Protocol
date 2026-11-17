@@ -9,8 +9,8 @@ world:
       exits:
         west: "road_traffic"
         east: "carnival"
-      spawns: []
-      items: ["pipis", "trefoil"]
+      spawns: ["dummy"]
+      items: []
 
   # CITY ROAD TRAFFIC
     road_traffic:
@@ -32,7 +32,7 @@ world:
         north: "manor_entrance"
         south: "road_traffic"
       spawns: ["virovirokun"]
-      items: []
+      items: ["bandage_max"]
 
   # MANOR ENTRANCE
     manor_entrance:
@@ -65,8 +65,8 @@ world:
       exits:
         west: "back_street"
         south: "trash_area"
-      spawns: ["kawkaw", "holy_cow"]
-      items: []
+      spawns: ["kawkaw"]
+      items: ["trefoil"]
 
   # TRASH AREA
     trash_area:
@@ -88,7 +88,7 @@ world:
         north: "trash_area"
         west: "spawn"
       spawns: ["ralsei"]
-      items: []
+      items: ["bandage"]
 
   # MANOR HALL
     hall_shop:
@@ -202,24 +202,32 @@ items:
     description: "A wooden practice blade with a carbon-reinforced core. Mightier than a sword? Maybe equal at best."
     type: "weapon"
     damage: 5
+    bonus_min: 0
+    bonus_max: 2
 
   trefoil:
     name: "Trefoil"
     description: "Mossy rapier with a clover emblem. Covered in green clovers and rainbows."
     type: "weapon"
     damage: 7
+    bonus_min: 0
+    bonus_max: 3
 
   saber10:
     name: "Saber10"
     description: "A saber made of 10 cactus needles. Fortunately, can deal more than 10 damage."
     type: "weapon"
     damage: 11
+    bonus_min: 1
+    bonus_max: 4
 
   ultimate_sword:
     name: "Ultimate Sword"
     description: "'The Ultimate Weapon' that's what is written on the blade."
     type: "weapon"
     damage: 1
+    bonus_min: 0
+    bonus_max: 50
 
   # CONSUMABLES
   bandage:
@@ -227,6 +235,12 @@ items:
     description: "It has cartoon characters on it."
     type: "consumable"
     hp: 4
+
+  bandage_max:
+    name: "Bandage Max"
+    description: "It has big cartoon characters on it."
+    type: "consumable"
+    hp: 8
 
   giga_salad:
     name: "Giga Salad"
@@ -248,75 +262,96 @@ items:
 
 # --- ENTITIES ---
 entities:
-  virovirokun:
+  dummy:
+    name: "Dummy"
+    description: "It's just a simple dummy."
+    sprite: "assets/sprites/player/kris_walk.png"
+    dialogue:
+      talk_1: "..."
+      talk_2: "...."
+      talk_3: "....."
+      talk_4: "......"
+      talk_5: "It's a dummy. He can't talk."
+      encounter: "The dummy stand here."
+      check_default: "It's a dummy. It can't talk, it can't move."
+      neutral_1: "Dummy stands here."
+      neutral_2: "Dummy waits."
+      neutral_3: "A fly lands on Dummy."
+      neutral_4: "Silent is the favorite word of Dummy."
+    type: "enemy"
+    hp: 11
+    attack: 0
+
+  virovirokun: # mini-games = just act
     name: "Virovirokun"
     description: "A virus with a slightly criminal streak... and a heart of gold."
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
     type: "enemy"
-    hp: 20
+    hp: 50
 
-  guard_dog:
-    name: "Guard Dog"
-    description: "It's so excited that it thinks fighting is just play."
-    sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
-    type: "enemy"
-    hp: 20
-
-  maus:
+  maus: # mini-games = catch mouses
     name: "Maus"
     description: "It dreams of re-enacting scenes from cat and mouse cartoons."
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
     type: "enemy"
-    hp: 20
+    hp: 80
 
-  kawkaw:
+  kawkaw: # mini-game = press space at the right times
     name: "KawKaw"
     description: "Nyon"
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
     type: "enemy"
-    hp: 20
+    hp: 75
 
-  swatchlings:
+  swatchlings: # mini-game = make all oufits the same colors
     name: "Swatchlings"
     description: "A conical crow which lives in the ground. Disturbs Shi's crops, only because it wants to play with him."
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
     type: "enemy"
-    hp: 20
+    hp: 111
 
-  k_round:
+  guard_dog: # mini-games = make the dog comes to the player by ignoring it then pet it 5 times
+    name: "Guard Dog"
+    description: "It's so excited that it thinks fighting is just play."
+    sprite: "assets/sprites/player/kris_walk.png"
+    talk_stages:
+      - last_stage: 7
+        wait_quest: "buy_remote"
+        wait_for: "completed"
+      - last_stage: 8
+    type: "boss"
+    hp: 150
+
+  k_round: # mini-game = make the crown falls
     name: "K.Round"
     description: "Despite appearances, it's trying its best to defeat you."
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
+    talk_stages:
+      - last_stage: 2
+        wait_quest: "buy_remote"
+        wait_for: "completed"
+      - last_stage: 3
     type: "boss"
-    hp: 20
+    hp: 400
 
-  queen:
+  queen: # mini-game = just win the fight
     name: "Queen"
     description: "The Queen that has stolen your moss to play with you."
     sprite: "assets/sprites/player/kris_walk.png"
-    dialogue:
-      default: "Hello!"
+    talk_stages:
+      - last_stage: 4
+        wait_quest: "defeat_queen"
+        wait_for: "completed"
+      - last_stage: 8
     type: "boss"
-    hp: 20
+    hp: 500
 
   sans:
     name: "Sans"
     description: "It's Sans the skeleton!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "Hello!"
     type: "boss"
     hp: 20
 
@@ -325,42 +360,163 @@ entities:
     description: "Your best friend, Susie!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "Hey. What's up?"
+      talk_2: "Hey! I know where the other key is. You want it?"
+      talk_3: "But I can't give it like that. I want something."
+      talk_4: "Hum... Let me think..."
+      talk_5: "I know!"
+      talk_6: "I want a chocolate cake. Bring me that."
+      talk_7: "You should talk to Ralsei. He knows how to cook unlike you."
+      talk_8: "Where's my chocolate cake?"
+      talk_9: "Oh! Thanks you."
+      talk_10: "Yummy. Here's the key."
+      talk_11: "I'm eating. Go away."
+    talk_stages:
+      - last_stage: 1
+        wait_quest: "find_key_b"
+        wait_for: "have"
+      - last_stage: 8
+        wait_quest: "talk_to_susie"
+        wait_for: "have"
+      - last_stage: 11
     type: "npc"
-    hp: 20
+    hp: 999
 
   ralsei:
     name: "Ralsei"
     description: "The prince of the Dark World and also your best friend."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "Hey!"
+      talk_2: "You want to do a cake? Well, I can do it..."
+      talk_3: "I just need those ingredients."
+      talk_4: "Wheat,"
+      talk_5: "A chocolate bar,"
+      talk_6: "And milk."
+      talk_7: "You have everything?"
+      talk_8: "I can do the cake know. Wait a minute."
+      talk_9: "Here your cake. Have a good meal!"
+      talk_10: "The cake was good?"
+    talk_stages:
+      - last_stage: 1
+        wait_quest: "find_ralsei"
+        wait_for: "have"
+      - last_stage: 7
+        wait_quest: "find_ralsei"
+        wait_for: "completed"
+      - last_stage: 10
     type: "npc"
-    hp: 20
+    hp: 999
 
   holy_cow:
     name: "Holy Cow"
     description: "A cow blessed by the powered of 'HOLY'(TM) the best drinking of the world!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "Moo!"
+      talk_2: "Moo, moo?"
+      talk_3: "Moo... Moo, moooo, moo."
+      talk_4: "Moo! Moo, moo? Mooooo."
     type: "npc"
-    hp: 20
+    hp: 999
 
   spamton:
     name: "Spamton"
     description: "He wants to make a DEAL, but don't give him your MONEY!"
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      talk_1: "YOU [Little Sponge]! I KNEW YOU'D COME HERE [[On A Saturday Night]]"
+      talk_2: "AFTER ALL, YOU WANNA BE A [Big Shot]! EAHAHAHAHAA!!"
+      talk_3: "COME TO MY [Shopping Mall]."
+      talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
+      talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
+      shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
+      shop_2: "LET'S MAKE A DEAL."
+      no_money: "MONEY NO [Not enought D$]"
+      buy: "DEALS SO GOOD I'LL [$!$$] MYSELF!"
+      remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
+      quit: "HURRY UP AND BUY. NO [exit], NO [return back]!!"
+    talk_stages:
+      - last_stage: 3
+        wait_quest: "find_spamton"
+        wait_for: "completed"
+      - last_stage: 5
+        wait_quest: "bring_pipis"
+        wait_for: "completed"
     type: "shop"
-    hp: 20
+    hp: 999
 
   swatch:
     name: "Swatch"
     description: "He like juice."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      default: "Hello!"
+      shop_1: "..."
+      no_money: ":["
+      buy: ":}"
+      quit: ";)"
     type: "shop"
-    hp: 20
+    hp: 999
+
+# --- QUESTS ---
+quests:
+  defeat_queen:
+    name: "Defeat Queen"
+    description: "Find the Queen. She have taken your delicious and precious moss."
+    spawn_with_quest: true
+
+  find_queen_castle:
+    name: "Find a way to go in the Queen's Castle"
+    description: "The gate is closed... You can try to fight the Guard Dog or try something else?"
+
+  defeat_guard_dog:
+    name: "Fight the Guard Dog"
+    description: "Maybe you can try to defeat him and force your way trought?"
+
+  defeat_k_round:
+    name: "Defeat K.Round"
+    description: "You start the fight. Now it's time to pass!"
+
+  find_spamton:
+    name: "A strange sound..."
+    description: "Investigate the strange noise in the trash area."
+
+  buy_remote:
+    name: "Buy the 'Remote'"
+    description: "Spamton sell a strange remote that can, maybe, open the gates..."
+
+  bring_pipis:
+    name: "Get 7 'Pipis' to Spamton"
+    description: "He just want that in exchange of the remote... strange?"
+
+  talk_to_spamton:
+    name: "Return to Spamton"
+    description: "You've got the Pipis! Go see Spamton!"
+
+  find_key_b:
+    name: "Find the other key"
+    description: "You need a second key to open the castle doors. Find it!"
+
+  find_ralsei:
+    name: "Find Ralsei"
+    description: "Susie want's a chocolate cake and only Ralsei can do it. Find him."
+
+  find_chocolate_bar:
+    name: "Find the chocolate bar"
+    description: "todo"
+
+  find_milk:
+    name: "Find the milk"
+    description: "todo"
+
+  find_wheat:
+    name: "Find the milk"
+    description: "Maybe you can find a cow?"
+
+  talk_to_ralsei:
+    name: "Return talk to Ralsei"
+    description: "You gather the 3 ingredients. Go see Ralsei again."
+
+  talk_to_susie:
+    name: "Give the chocolate cake"
+    description: "Susie is hungry! Hurry up!"

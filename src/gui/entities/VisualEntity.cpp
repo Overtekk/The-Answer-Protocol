@@ -6,14 +6,16 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/15 16:15:41 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:55:27 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include <iostream>
 # include <cmath>
 # include <algorithm>
 
 # include "gui/entities/VisualEntity.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 # define FRAME_DURATION 0.18f
@@ -154,5 +156,5 @@ int		VisualEntity::getHeight() const
 
 // Error
 void VisualEntity::sendObjectError(const std::string &error) {
-   print_log(" ERROR: " + error + "\n");
+   print_log(errObject(error));
 }

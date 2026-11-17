@@ -6,17 +6,17 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 15:57:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/10 15:18:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
 # include <filesystem>
 # include <unordered_map>
 # include <vector>
 
 # include "base_class/rooms/Room.hpp"
 # include "config/Enums.hpp"
+# include "config/config_messages.h"
 # include "utils.h"
 
 namespace fs = std::filesystem;
@@ -316,5 +316,5 @@ bool	Room::isSpecial() const {
 // =======================        ERRORS      =================================
 // ============================================================================
 void	Room::sendObjectError(const std::string& error) const {
-	print_log(" ERROR: " + error + "\n");
+	print_log(errObject(error));
 }

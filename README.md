@@ -92,6 +92,8 @@ todo
 Deltarune assets are created by Toby Fox and Temmie. They were gathered on [The Spriters Resource](https://www.spriters-resource.com/pc_computer/deltarune/asset/110448/).
 
 ### IA was use to:
-- todo
+- **As teacher**: help understand notions that we don't understand, helping with the architecture and parts of the code. Everything is verified by us and understood. IA did not this project. It was only used like a supervisor to see if things works and if things were valids.
+- **To be more efficient**: instead of writting boring code or same code (e.g. `convert enum to str`), IA was asked to write this for us with clear instructions, then inspected. Helping us to speed us the process.
+- **As a code-checker**: check if some part of codes are valids and if it's the best methods. Since we learn c++, we didn't know the best approch.
 
 ---
