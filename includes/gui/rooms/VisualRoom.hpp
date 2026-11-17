@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/16 16:41:17 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:36:13 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ class VisualRoom
 
         // Get a dict of all items in the room
 		std::unordered_map<std::string, VisualItem*>	&getItems();
+        // Clean the items dict of the room
+        void                                            RemoveAllItems();
         
         // Return room width
         int                                             getWidth();

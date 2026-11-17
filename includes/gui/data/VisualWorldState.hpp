@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:35:42 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/21 14:00:44 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 08:57:52 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ class VisualWorldState
         //===============================================================================
         //=============================== ITEM GETER ====================================
         //===============================================================================
-        VisualItem*				getAddItem(const std::string &id);
-        VisualItemWeapon*		getAddWeapon(const std::string &id);
-        VisualItemKey*			getAddKey(const std::string &id);
-        VisualItemConsumable*	getAddConsumable(const std::string &id);
+        VisualItem*				getAddItem(const std::string &id, const Vector2 &creation_pos = Vector2{0.0, 0.0});
+        VisualItemWeapon*		getAddWeapon(const std::string &id, const Vector2 &creation_pos = Vector2{0.0, 0.0});
+        VisualItemKey*			getAddKey(const std::string &id, const Vector2 &creation_pos = Vector2{0.0, 0.0});
+        VisualItemConsumable*	getAddConsumable(const std::string &id, const Vector2 &creation_pos = Vector2{0.0, 0.0});
 
         //===============================================================================
         //=============================== ROOM GETER ====================================

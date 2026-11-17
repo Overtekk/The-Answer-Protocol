@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:34:47 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 10:10:55 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 08:58:31 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,41 +44,45 @@ VisualWorldState::VisualWorldState(
     }
 }
 
-VisualItem*			VisualWorldState::getAddItem(const std::string &id) {
+VisualItem*			VisualWorldState::getAddItem(const std::string &id, const Vector2 &creation_pos) {
     try { return (this->items.at(id).get()); }
     catch(...)
     {
         this->items.emplace(id, std::make_unique<VisualItem>(id, this->assets, 2.0f));
+        this->items.at(id).get()->setPos(creation_pos);
 		return (this->items.at(id).get());
     }
 }
 
-VisualItemWeapon*	VisualWorldState::getAddWeapon(const std::string &id)
+VisualItemWeapon*	VisualWorldState::getAddWeapon(const std::string &id, const Vector2 &creation_pos)
 {
 	try { return ((VisualItemWeapon *)this->items.at(id).get()); }
     catch(...)
     {
         this->items.emplace(id, std::make_unique<VisualItemWeapon>(id, this->assets, 2.0f));
+        this->items.at(id).get()->setPos(creation_pos);
 		return ((VisualItemWeapon *)this->items.at(id).get());
     }
 }
 
-VisualItemKey*		VisualWorldState::getAddKey(const std::string &id)
+VisualItemKey*		VisualWorldState::getAddKey(const std::string &id, const Vector2 &creation_pos)
 {
 	try { return ((VisualItemKey *)this->items.at(id).get()); }
     catch(...)
     {
         this->items.emplace(id, std::make_unique<VisualItemKey>(id, this->assets, 2.0f));
+        this->items.at(id).get()->setPos(creation_pos);
 		return ((VisualItemKey *)this->items.at(id).get());
     }
 }
 
-VisualItemConsumable*	VisualWorldState::getAddConsumable(const std::string &id)
+VisualItemConsumable*	VisualWorldState::getAddConsumable(const std::string &id, const Vector2 &creation_pos)
 {
 	try { return ((VisualItemConsumable *)this->items.at(id).get()); }
     catch(...)
     {
         this->items.emplace(id, std::make_unique<VisualItemConsumable>(id, this->assets, 2.0f));
+        this->items.at(id).get()->setPos(creation_pos);
 		return ((VisualItemConsumable *)this->items.at(id).get());
     }
 }

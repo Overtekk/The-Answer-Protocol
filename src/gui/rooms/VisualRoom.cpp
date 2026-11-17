@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:00:27 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/13 10:45:03 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:36:56 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ void    VisualRoom::addItem(VisualItem *item, const std::string &id) {
 
 std::unordered_map<std::string, VisualItem*>	&VisualRoom::getItems() {
     return (this->items);
+}
+
+void                                            VisualRoom::RemoveAllItems() {
+    this->items.clear();
 }
 
 int												VisualRoom::getWidth() {

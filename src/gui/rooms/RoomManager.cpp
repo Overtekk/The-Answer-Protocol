@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/16 16:34:04 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 09:48:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,26 +49,30 @@ RoomManager::RoomManager(
 }
 
 void    RoomManager::addItemsToRoom(const json &data) {
+	Vector2	creation_position;
+	this->_current_room->RemoveAllItems(); // remove all items
+
 	for (auto item_data : data.at("items")) {
 		VisualItem	*item;
+		creation_position = Vector2 {(float)(rand() % 800), (float)(rand() % 450)};
+
 		if (item_data[1] == "weapon") {
 			std::cout << "weapon item ";
-			item = this->_data.getAddWeapon(item_data[0]);
+			item = this->_data.getAddWeapon(item_data[0], creation_position);
 		}
 		else if (item_data[1] == "key") {
 			std::cout << "key item ";	
-			item = this->_data.getAddKey(item_data[0]);
+			item = this->_data.getAddKey(item_data[0], creation_position);
 		}
 		else if (item_data[1] == "consumable") {
 			std::cout << "consumable item ";
-			item = this->_data.getAddConsumable(item_data[0]);
+			item = this->_data.getAddConsumable(item_data[0], creation_position);
 		}
 		else {
 			std::cout << "untyped item ";
-			item = this->_data.getAddItem(item_data[0]);
+			item = this->_data.getAddItem(item_data[0], creation_position);
 		}
 
-		item->setPos(Vector2 {(float)(rand() % 800), (float)(rand() % 450)});
 		this->_current_room->addItem(item, item_data[0]);
 	}
 }
@@ -161,5 +165,7 @@ void	RoomManager::isPlayerOut() {
 }
 
 void	RoomManager::drawRoom() {
-	this->_current_room->drawItems();
+	if (this->_changing_room == false){
+		this->_current_room->drawItems();
+	}
 }
