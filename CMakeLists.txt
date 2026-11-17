@@ -120,6 +120,7 @@ target_link_libraries(tap_cli_client PRIVATE
 # 3. Client GUI
 add_executable(tap_gui_client ${GUI_SOURCES})
 target_include_directories(tap_gui_client PRIVATE
+	libraries/hoxml
     libraries/raytmx
 )
 target_link_libraries(tap_gui_client PRIVATE

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
+#    By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/10/22 18:02:30 by roandrie         ###   ########.fr        #
+#    Updated: 2026/11/17 16:25:32 by nbuchy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
 
-SUBMODULE_DIRS	= libraries/raylib libraries/raytmx libraries/yaml-cpp libraries/json
+SUBMODULE_DIRS	= libraries/raylib libraries/raytmx libraries/hoxml libraries/yaml-cpp libraries/json
 
 # --------------- #
 #      RULES      #

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:00:27 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/17 09:36:56 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 16:35:15 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 # include <tuple>
 # include <iostream>
 
-# include "raylib.h"
+# include "raytmx.h"
+
 # include "gui/rooms/VisualRoom.hpp"
 # include "gui/Items/VisualItem.hpp"
+#include "utils.h"
 
 
 VisualRoom::VisualRoom(
-    const Texture2D	&tile_map,
+    TmxMap *tile_map,
     const std::string name
 ):
     tile_map(tile_map),
@@ -59,4 +61,8 @@ void	VisualRoom::drawItems() {
     for (auto item : this->items) {
         item.second->DrawInRoom();
     }
+}
+
+void    VisualRoom::drawRoom() {
+    pass;
 }

@@ -6,9 +6,12 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/17 09:56:52 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 16:26:17 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+# define HOXML_IMPLEMENTATION
+# define RAYTMX_IMPLEMENTATION
 
 # include <poll.h>
 # include <csignal>
@@ -33,6 +36,7 @@
 
 # include "gui/connection/ServerLink.hpp"
 # include "common.h"
+
 
 int 	gui_parser(WorldConfig& world_config);
 void 	graphic(WorldConfig& world_config, int argc, char** argv);

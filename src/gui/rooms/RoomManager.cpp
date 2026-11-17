@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/17 09:48:23 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/17 16:33:09 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,6 @@ void	RoomManager::isPlayerOut() {
 
 	if (direction == Direction::UNKNOWN or direction == this->_last_wrong_direction) {return ;}
 
-	_changing_room = true;
 	// get the respone
 	response = this->_link.move(direction_to_string(direction));
 	if (response.empty()) {
@@ -158,6 +157,7 @@ void	RoomManager::isPlayerOut() {
 		return;
 	}
 
+	_changing_room = true;
 	size_t start_pos = response.find("=") + 1;
 	size_t lenght = response.size() - start_pos;
 	this->changeRoom(response.substr(start_pos, lenght), direction);
