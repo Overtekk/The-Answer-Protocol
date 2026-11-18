@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:10:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:55:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:58:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 class Enemy : public Entity {
 	private:
 
-		bool	_can_be_spared = true;
+		bool	_can_be_spared = false;
 
 	public :
 		// --- CONSTRUCTOR ---
