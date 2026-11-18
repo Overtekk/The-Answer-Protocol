@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 12:32:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:11:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -782,6 +782,15 @@ void	CommandHandler::commandCombatItem(TCPSession &session, std::string &argumen
 		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getConsumableItemsList(session.getUsername())));
 		return;
 	}
+
+	const std::string result = _manager.useConsumableItem(session.getUsername(), argument);
+	if (result.empty()) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_FOUND));
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation(result));
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
 
 	return;
 }
