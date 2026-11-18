@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 14:10:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 10:48:32 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ std::tuple<std::string, std::string>	extract_command_and_args(std::string& raw_c
 bool	parseHandshakeCommand(const std::string& cmd_str, HandshakeCommand& cmd) {
     static const std::unordered_map<std::string, HandshakeCommand> handshake_map = {
         {"CONNECT",	HandshakeCommand::CONNECT},
-        {"QUIT",	HandshakeCommand::QUIT}
+        {"QUIT",	HandshakeCommand::QUIT},
+		{"HELP",	HandshakeCommand::HELP}
     };
 
     auto it = handshake_map.find(cmd_str);
@@ -93,10 +94,10 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"QUIT",			GameCommand::QUIT},
 		{"CHAT",			GameCommand::CHAT},
 		{"WHO",				GameCommand::WHO},
-		{"GROUP CREATE",	GameCommand::GROUP_CREATE},
-		{"GROUP INVITE",	GameCommand::GROUP_INVITE},
-		{"GROUP JOIN",		GameCommand::GROUP_JOIN},
-		{"GROUP LEAVE",		GameCommand::GROUP_LEAVE},
+		{"GROUP_CREATE",	GameCommand::GROUP_CREATE},
+		{"GROUP_INVITE",	GameCommand::GROUP_INVITE},
+		{"GROUP_JOIN",		GameCommand::GROUP_JOIN},
+		{"GROUP_LEAVE",		GameCommand::GROUP_LEAVE},
 		{"TAKE",			GameCommand::TAKE},
 		{"DROP",			GameCommand::DROP},
 		{"INVENTORY",		GameCommand::INVENTORY},
@@ -105,9 +106,9 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"STATUS",			GameCommand::STATUS},
 		{"QUEST",			GameCommand::QUEST},
 		{"QUESTS",			GameCommand::QUESTS},
-		{"QUEST INFO",		GameCommand::QUEST_INFO},
 		{"EQUIP",			GameCommand::EQUIP},
-		{"INFO_ITEM",		GameCommand::INFO_ITEM}
+		{"INFO_ITEM",		GameCommand::INFO_ITEM},
+		{"HELP",			GameCommand::HELP}
 	};
 
 	auto it = game_map.find(cmd_str);
@@ -127,7 +128,8 @@ bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 		{"FLEE",	CombatCommand::FLEE},
 		{"SPARE",	CombatCommand::SPARE},
 		{"CHECK",	CombatCommand::CHECK},
-		{"STATUS",	CombatCommand::STATUS}
+		{"STATUS",	CombatCommand::STATUS},
+		{"HELP",	CombatCommand::HELP}
 	};
 
 	auto it = combat_map.find(cmd_str);
@@ -144,7 +146,8 @@ bool	parseUsernameLoggingCommand(const std::string& cmd_str, UsernameLoggingComm
         {"CHANGE",	UsernameLoggingCommand::CHANGE},
         {"KEEP",	UsernameLoggingCommand::KEEP},
 		{"DELETE",	UsernameLoggingCommand::DELETE},
-		{"QUIT",	UsernameLoggingCommand::QUIT}
+		{"QUIT",	UsernameLoggingCommand::QUIT},
+		{"HELP",	UsernameLoggingCommand::HELP}
     };
 
     auto it = command_map.find(cmd_str);
@@ -157,9 +160,13 @@ bool	parseUsernameLoggingCommand(const std::string& cmd_str, UsernameLoggingComm
 }
 
 void	lower_the_string(std::string& text) {
-	for (char& c : text) {
+	for (char& c : text)
 		c = std::tolower(static_cast<unsigned char>(c));
-	}
+}
+
+void	captalize_the_string(std::string& text) {
+	for (char& c : text)
+		c = std::toupper(static_cast<unsigned char>(c));
 }
 
 // ============================================================================
@@ -257,8 +264,9 @@ void	CommandHandler::handleHandshake(TCPSession& session, const std::string& raw
 
 	// Call the good command
 	switch (cmd) {
-		case HandshakeCommand::CONNECT:	commandConnect(session, argument);	break;
-		case HandshakeCommand::QUIT:	commandQuit(session, argument);		break;
+		case HandshakeCommand::CONNECT:	commandConnect(session, argument);		break;
+		case HandshakeCommand::QUIT:	commandQuit(session, argument);			break;
+		case HandshakeCommand::HELP:	commandHelpHandShake(session, argument);	break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -299,11 +307,17 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::DROP:			commandDrop(session, argument);			break;
 		case GameCommand::INVENTORY:	commandInventory(session, argument);	break;
 		case GameCommand::QUESTS:		commandQuests(session, argument);		break;
-		case GameCommand::QUEST_INFO:	commandQuestInfo(session, argument);	break;
+		case GameCommand::QUEST:		commandQuestInfo(session, argument);	break;
 		case GameCommand::TALK:			commandTalk(session, argument);			break;
 		case GameCommand::ATTACK:		commandAttack(session, argument);		break;
 		case GameCommand::INFO_ITEM:	commandItemStat(session, argument);		break;
 		case GameCommand::EQUIP:		commandEquip(session, argument);		break;
+		case GameCommand::HELP:			commandHelpGame(session, argument);		break;
+		case GameCommand::CHAT:			commandChat(session, argument);			break;
+		case GameCommand::GROUP_CREATE:	commandGroupCreate(session, argument);	break;
+		case GameCommand::GROUP_INVITE:	commandGroupInvite(session, argument);	break;
+		case GameCommand::GROUP_JOIN:	commandGroupJoin(session, argument);	break;
+		case GameCommand::GROUP_LEAVE:	commandGroupLeave(session, argument);	break;
 		default:						commandUnknown(session, command);
 	}
 
@@ -342,10 +356,10 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 		case CombatCommand::STATUS:			commandCombatStatus(session, argument);	break;
 		case CombatCommand::ACT:			commandCombatAct(session, argument);	break;
 		case CombatCommand::CHECK:			commandCombatCheck(session, argument);	break;
-		// case CombatCommand::ACT:			commandWho(session, argument);				break;
 		case CombatCommand::FLEE:			commandCombatFlee(session, argument);	break;
-		// case CombatCommand::SPARE:		commandMove(session, argument);				break;
-		// case CombatCommand::ITEM:		commandTake(session, argument);				break;
+		case CombatCommand::SPARE:			commandCombatSpare(session, argument);	break;
+		case CombatCommand::ITEM:			commandCombatItem(session, argument);	break;
+		case CombatCommand::HELP:			commandHelpCombat(session, argument);	break;
 		default:							commandUnknown(session, command);
 	}
 
@@ -374,6 +388,7 @@ void	CommandHandler::handleUsernameLoggingCommand(TCPSession &session, const std
 		case UsernameLoggingCommand::KEEP:		commandLoggingUsernameKeep(session, argument);		break;
 		case UsernameLoggingCommand::DELETE:	commandLoggingUsernameErase(session, argument);		break;
 		case UsernameLoggingCommand::QUIT:		commandQuit(session, argument);						break;
+		case UsernameLoggingCommand::HELP:		commandHelpLogging(session, argument);				break;
 		default:								commandUnknown(session, command);
 	}
 }
@@ -381,12 +396,34 @@ void	CommandHandler::handleUsernameLoggingCommand(TCPSession &session, const std
 // ============================================================================
 // =========================      COMMANDS      ===============================
 // ============================================================================
+// === UNKOWN ===
 void	CommandHandler::commandUnknown(TCPSession& session, std::string& command) {
 	print_log_message(session, logCommandRejected(command));
 	session.add_msg_to_buffer(getTCP_error(TCPErrorCode::COMMAND_NOT_FOUND));
 	return;
 }
 
+// === COMMON COMMANDS ===
+void	CommandHandler::commandQuit(TCPSession& session, std::string& argument) {
+	std::ignore = argument;
+	print_log_message(session, LOG_QUIT_REQUEST);
+
+	// disconnect the player from the world
+	_manager.disconnectPlayer(session.getUsername());
+
+	session.setSessionState(SessionState::CLOSING);
+	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_BYE));
+	return;
+}
+
+void	CommandHandler::commandCombatStatus(TCPSession &session, std::string& argument) {
+	std::ignore = argument;
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getCombatStatus(session.getUsername())));
+}
+
+
+// === HANDSHAKE COMMANDS ===
 void	CommandHandler::commandConnect(TCPSession& session, std::string& argument) {
 	if (argument.empty()) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_USERNAME));
@@ -418,24 +455,31 @@ void	CommandHandler::commandConnect(TCPSession& session, std::string& argument) 
 	return;
 }
 
-void	CommandHandler::commandQuit(TCPSession& session, std::string& argument) {
-	std::ignore = argument;
-	print_log_message(session, LOG_QUIT_REQUEST);
+void	CommandHandler::commandHelpHandShake(TCPSession &session, std::string &argument) {
+	// No argument: show the general list
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpHandshakeCommand));
+		return;
+	}
 
-	// disconnect the player from the world
-	_manager.disconnectPlayer(session.getUsername());
+	captalize_the_string(argument);
 
-	session.setSessionState(SessionState::CLOSING);
-	session.add_msg_to_buffer(getTCP_OK_operation(SERVER_BYE));
+	// Unknown command: show the general list
+	HandshakeCommand	help_cmd;
+	if (!parseHandshakeCommand(argument, help_cmd)) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpHandshakeCommand));
+		return;
+	}
+
+	switch (help_cmd) {
+		case HandshakeCommand::CONNECT:	session.add_msg_to_buffer(getTCP_OK_operation(helpConnectCommand));	break;
+		case HandshakeCommand::QUIT:	session.add_msg_to_buffer(getTCP_OK_operation(helpQuitCommand));	break;
+		case HandshakeCommand::HELP:	session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));	break;
+	}
 	return;
 }
 
-void	CommandHandler::commandWho(TCPSession& session, std::string& argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
-	return;
-}
-
+// === GAME COMMANDS ===
 void	CommandHandler::commandLook(TCPSession& session, std::string& argument) {
 	lower_the_string(argument);
 
@@ -471,6 +515,12 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 
 	// Move player
 	session.add_msg_to_buffer(getTCP_OK_operation(okRoom(_manager.getPlayerRoom(session.getUsername()))));
+	return;
+}
+
+void	CommandHandler::commandWho(TCPSession& session, std::string& argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getListOfPlayers()));
 	return;
 }
 
@@ -513,6 +563,24 @@ void	CommandHandler::commandInventory(TCPSession& session, std::string& argument
 	}
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getPlayerInventory(session.getUsername(), false)));
+	return;
+}
+
+void	CommandHandler::commandItemStat(TCPSession &session, std::string& argument) {
+	lower_the_string(argument);
+
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_ITEM));
+		print_log_message(session, getTCP_error(TCPErrorCode::MISSING_ITEM));
+		return;
+	}
+
+	std::string result = _manager.getItemStat(session.getUsername(), argument);
+	if (result.empty()) {
+		sendErrorToUser(session, ReturnState::ITEM_NOT_FOUND);
+		return;
+	}
+	session.add_msg_to_buffer(getTCP_OK_operation(result));
 	return;
 }
 
@@ -580,6 +648,78 @@ void	CommandHandler::commandAttack(TCPSession &session, std::string& argument) {
 	return;
 }
 
+void	CommandHandler::commandChat(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandGroupCreate(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandGroupInvite(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandGroupJoin(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandGroupLeave(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandHelpGame(TCPSession &session, std::string &argument) {
+	// No argument: show the general list
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpGameCommand));
+		return;
+	}
+
+	captalize_the_string(argument);
+
+	// Unknown command: show the general list
+	GameCommand	help_cmd;
+	if (!parseGameCommand(argument, help_cmd)) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpGameCommand));
+		return;
+	}
+
+	switch (help_cmd) {
+		case GameCommand::LOOK:			session.add_msg_to_buffer(getTCP_OK_operation(helpLookCommand));		break;
+		case GameCommand::MOVE:			session.add_msg_to_buffer(getTCP_OK_operation(helpMoveCommand));		break;
+		case GameCommand::CHAT:			session.add_msg_to_buffer(getTCP_OK_operation(helpChatCommand));		break;
+		case GameCommand::WHO:			session.add_msg_to_buffer(getTCP_OK_operation(helpWhoCommand));			break;
+		case GameCommand::GROUP_CREATE:	session.add_msg_to_buffer(getTCP_OK_operation(helpGroupCreateCommand));	break;
+		case GameCommand::GROUP_INVITE:	session.add_msg_to_buffer(getTCP_OK_operation(helpGroupInviteCommand));	break;
+		case GameCommand::GROUP_JOIN:	session.add_msg_to_buffer(getTCP_OK_operation(helpGroupJoinCommand));	break;
+		case GameCommand::GROUP_LEAVE:	session.add_msg_to_buffer(getTCP_OK_operation(helpGroupLeaveCommand));	break;
+		case GameCommand::TAKE:			session.add_msg_to_buffer(getTCP_OK_operation(helpTakeCommand));		break;
+		case GameCommand::DROP:			session.add_msg_to_buffer(getTCP_OK_operation(helpDropCommand));		break;
+		case GameCommand::INVENTORY:	session.add_msg_to_buffer(getTCP_OK_operation(helpInventoryCommand));	break;
+		case GameCommand::TALK:			session.add_msg_to_buffer(getTCP_OK_operation(helpTalkCommand));		break;
+		case GameCommand::ATTACK:		session.add_msg_to_buffer(getTCP_OK_operation(helpAttackCommand));		break;
+		case GameCommand::STATUS:		session.add_msg_to_buffer(getTCP_OK_operation(helpStatusCommand));		break;
+		case GameCommand::QUEST:		session.add_msg_to_buffer(getTCP_OK_operation(helpQuestCommand));		break;
+		case GameCommand::QUESTS:		session.add_msg_to_buffer(getTCP_OK_operation(helpQuestsCommand));		break;
+		case GameCommand::EQUIP:		session.add_msg_to_buffer(getTCP_OK_operation(helpEquipCommand));		break;
+		case GameCommand::INFO_ITEM:	session.add_msg_to_buffer(getTCP_OK_operation(helpInfoItemCommand));	break;
+		case GameCommand::HELP:			session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));		break;
+		case GameCommand::QUIT:			session.add_msg_to_buffer(getTCP_OK_operation(helpQuitCommand));		break;
+	}
+	return;
+}
+
+// === COMBAT COMMANDS ===
 void	CommandHandler::commandCombatAttack(TCPSession &session, std::string& argument) {
 	std::ignore = argument;
 
@@ -588,12 +728,6 @@ void	CommandHandler::commandCombatAttack(TCPSession &session, std::string& argum
 	CombatStatus result = _manager.checkCombatStatus(session.getUsername());
 	manageCombatResult(session, result, argument);
 	return;
-}
-
-void	CommandHandler::commandCombatStatus(TCPSession &session, std::string& argument) {
-	std::ignore = argument;
-
-	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getCombatStatus(session.getUsername())));
 }
 
 void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argument) {
@@ -615,7 +749,8 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argumen
 
 void	CommandHandler::commandCombatAct(TCPSession &session, std::string& argument) {
 	std::ignore = argument;
-	std::ignore = session;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
 }
 
 void	CommandHandler::commandCombatCheck(TCPSession &session, std::string& argument) {
@@ -628,24 +763,48 @@ void	CommandHandler::commandCombatCheck(TCPSession &session, std::string& argume
 	session.add_msg_to_buffer(getTCP_OK_operation(result));
 }
 
-void	CommandHandler::commandItemStat(TCPSession &session, std::string& argument) {
-	lower_the_string(argument);
-
-	if (argument.empty()) {
-		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::MISSING_ITEM));
-		print_log_message(session, getTCP_error(TCPErrorCode::MISSING_ITEM));
-		return;
-	}
-
-	std::string result = _manager.getItemStat(session.getUsername(), argument);
-	if (result.empty()) {
-		sendErrorToUser(session, ReturnState::ITEM_NOT_FOUND);
-		return;
-	}
-	session.add_msg_to_buffer(getTCP_OK_operation(result));
+void	CommandHandler::commandCombatSpare(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
 	return;
 }
 
+void	CommandHandler::commandCombatItem(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandHelpCombat(TCPSession &session, std::string &argument) {
+	// No argument: show the general list
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpCombatCommand));
+		return;
+	}
+
+	captalize_the_string(argument);
+
+	// Unknown command: show the general list
+	CombatCommand	help_cmd;
+	if (!parseCombatCommand(argument, help_cmd)) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpCombatCommand));
+		return;
+	}
+
+	switch (help_cmd) {
+		case CombatCommand::ATTACK:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatAttackCommand));	break;
+		case CombatCommand::ACT:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatActCommand));	break;
+		case CombatCommand::ITEM:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatItemCommand));	break;
+		case CombatCommand::SPARE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatSpareCommand));	break;
+		case CombatCommand::FLEE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatFleeCommand));	break;
+		case CombatCommand::CHECK:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatCheckCommand));	break;
+		case CombatCommand::STATUS:	session.add_msg_to_buffer(getTCP_OK_operation(helpStatusCommand));	break;
+		case CombatCommand::HELP:	session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));	break;
+	}
+	return;
+}
+
+// === LOGGING COMMANDS ===
 void	CommandHandler::commandLoggingUsernameChange(TCPSession& session, std::string& argument) {
 	commandConnect(session, argument);
 	return;
@@ -678,6 +837,32 @@ void	CommandHandler::commandLoggingUsernameErase(TCPSession& session, std::strin
 	}
 
 	commandConnect(session, wanted_name);
+	return;
+}
+
+void	CommandHandler::commandHelpLogging(TCPSession &session, std::string &argument) {
+	// No argument: show the general list
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpLoggingCommand));
+		return;
+	}
+
+	captalize_the_string(argument);
+
+	// Unknown command: show the general list
+	UsernameLoggingCommand	help_cmd;
+	if (!parseUsernameLoggingCommand(argument, help_cmd)) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpLoggingCommand));
+		return;
+	}
+
+	switch (help_cmd) {
+		case UsernameLoggingCommand::DELETE:	session.add_msg_to_buffer(getTCP_OK_operation(helpDeleteCommand));	break;
+		case UsernameLoggingCommand::KEEP:		session.add_msg_to_buffer(getTCP_OK_operation(helpKeepCommand));	break;
+		case UsernameLoggingCommand::CHANGE:	session.add_msg_to_buffer(getTCP_OK_operation(helpChangeCommand));	break;
+		case UsernameLoggingCommand::QUIT:		session.add_msg_to_buffer(getTCP_OK_operation(helpQuitCommand));	break;
+		case UsernameLoggingCommand::HELP:		session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));	break;
+	}
 	return;
 }
 

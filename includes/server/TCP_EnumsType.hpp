@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 13:20:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 10:30:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ enum class OperationState {SUCCESS, WAITING, DECONNEXION, ERROR, NETWORK_ERROR};
 enum class HandshakeCommand {
 	CONNECT,
 	QUIT,
-	HELP //todo
+	HELP
 };
 
 enum class GameCommand {
@@ -40,15 +40,14 @@ enum class GameCommand {
 	TAKE,
 	DROP,
 	INVENTORY,
-	TALK, //todo
+	TALK,
 	ATTACK,
 	STATUS,
 	QUEST,
 	QUESTS,
-	QUEST_INFO,
 	EQUIP,
 	INFO_ITEM,
-	HELP, //todo
+	HELP,
 };
 
 enum class CombatCommand {
@@ -57,14 +56,15 @@ enum class CombatCommand {
 	ITEM, //todo
 	SPARE, //todo
 	FLEE,
-	CHECK, //todo
+	CHECK,
 	STATUS,
-	HELP, //todo
+	HELP,
 };
 
 enum class UsernameLoggingCommand {
 	DELETE,
 	KEEP,
 	CHANGE,
-	QUIT
+	QUIT,
+	HELP
 };

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 13:15:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 10:22:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class CommandHandler {
 		// handshake
 		void	commandConnect(TCPSession& session, std::string& argument);
 		void	commandQuit(TCPSession& session, std::string& argument);
+		void	commandHelpHandShake(TCPSession& session, std::string& argument);
 		// games
 		void	commandWho(TCPSession& session, std::string& argument);
 		void	commandLook(TCPSession& session, std::string& argument);
@@ -58,6 +59,7 @@ class CommandHandler {
 		void	commandQuestInfo(TCPSession& session, std::string& argument);
 		void	commandEquip(TCPSession& session, std::string& argument);
 		void	commandItemStat(TCPSession& session, std::string& argument);
+		void	commandHelpGame(TCPSession& session, std::string& argument);
 		// combats
 		void	commandCombatAttack(TCPSession& session, std::string& argument);
 		void	commandCombatCheck(TCPSession& session, std::string& argument);
@@ -66,10 +68,12 @@ class CommandHandler {
 		void	commandCombatSpare(TCPSession& session, std::string& argument);
 		void	commandCombatFlee(TCPSession& session, std::string& argument);
 		void	commandCombatStatus(TCPSession& session, std::string& argument);
+		void	commandHelpCombat(TCPSession& session, std::string& argument);
 		// username logging
 		void	commandLoggingUsernameChange(TCPSession& session, std::string& argument);
 		void	commandLoggingUsernameKeep(TCPSession& session, std::string& argument);
 		void	commandLoggingUsernameErase(TCPSession& session, std::string& argument);
+		void	commandHelpLogging(TCPSession& session, std::string& argument);
 
 		// MANAGEMENTS
 		bool	manageCombatTurn(TCPSession& session);
