@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:10:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 09:55:10 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:55:19 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 
 // * REPRESENT AN ENEMY *
 class Enemy : public Entity {
+	private:
+
+		bool	_can_be_spared = true;
+
 	public :
 		// --- CONSTRUCTOR ---
 		Enemy(
@@ -28,4 +32,7 @@ class Enemy : public Entity {
 		);
 		// --- DESTRUCTOR ---
 		~Enemy() override = default;
+
+		bool	getSparedState();
+		void	setSparedState(bool new_state);
 };

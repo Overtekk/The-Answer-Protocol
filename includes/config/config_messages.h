@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 10:12:57 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:52:13 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define ACT_FAILED_FLEE		"You slipped on a rock. You didn't succeed!"
 # define ACT_COMBAT_WON			"You won the combat."
 # define ACT_COMBAT_LOSE		"You lose the combat."
+# define ACT_SUCCESS_SPARE		"You spared the entity successfully!"
+# define ACT_FAILED_SPARE		"The spared act have failed. Entity can't be spared."
 
 # define ADMIN_KILL_CMD			"You have been killed by a god of an other world."
 
