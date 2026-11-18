@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:11:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:38:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,11 @@ void	CommandHandler::processAdminCommand(const std::string& raw_line) {
 		else
 			print_error(errCantKillPlayer(argument));
 	}
+}
+
+// If a player is disconnected other than with the "QUIT" command, the player need to be properly disconnected (finish the combat, clear the ptr...)
+void	CommandHandler::clearDisconnectedPlayer(TCPSession &session) {
+	_manager.disconnectPlayer(session.getUsername());
 }
 
 // * Make the enemies play and send their messages to the right players. Called by the server loop. *
