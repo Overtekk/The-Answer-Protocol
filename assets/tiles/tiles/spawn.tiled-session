@@ -1,0 +1,55 @@
+{
+    "activeFile": "spaw_tile.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "Cyber City.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "Cyber_city.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1.5
+        },
+        "Sidewalk_full.tsx": {
+            "scaleInDock": 1
+        },
+        "spaw_tile.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 456.5,
+                "y": 199.5
+            }
+        }
+    },
+    "last.externalTilesetPath": "/home/nbuchy/Documents/goinfre_mais_pas_local/C++/assets/tiles",
+    "last.imagePath": "/home/nbuchy/Documents/goinfre_mais_pas_local/C++/assets/raw",
+    "map.height": 25,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 20,
+    "map.tileWidth": 20,
+    "map.width": 45,
+    "openFiles": [
+        "spaw_tile.tmx",
+        "Cyber_city.tsx"
+    ],
+    "project": "spawn.tiled-project",
+    "recentFiles": [
+        "Cyber_city.tsx",
+        "spaw_tile.tmx",
+        "Cyber City.tsx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 1,
+    "tileset.spacing": 1,
+    "tileset.tileSize": {
+        "height": 20,
+        "width": 20
+    },
+    "tileset.transparentColor": "#c386ff",
+    "tileset.useTransparentColor": true
+}

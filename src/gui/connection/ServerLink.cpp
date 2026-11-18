@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/16 13:23:05 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/18 11:36:11 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,70 @@ void	ServerLink::recive() {
 		const std::string &sub_str = _buffer.substr(0, pos);
 
 		if (sub_str.length() > 0) {
-			this->lines.push(sub_str);
+			// skip this usless line send automaticaly by the server
+			if (sub_str != "Use \"connect [USERNAME]\" to launch the game") {
+				// std::cout << "DEBUG = [" << sub_str << "]\n";
+				this->lines.push(sub_str);
+			}
 		}
 			this->_buffer.erase(0, pos + 1);
 			pos = this->_buffer.find('\n');
 	}
+}
+
+const std::string	ServerLink::extractLine(Commande type) {
+	// get the commande result and pop it
+	std::string line = std::move(this->lines.front());
+	this->lines.pop();
+
+	// remove the commande from the commande_log to recall it later if needed
+	_commande_log.erase(std::remove(_commande_log.begin(), _commande_log.end(), type), _commande_log.end());
+
+	return (line);
+}
+
+//=============================================================================
+//============================= CONNECT  ======================================
+//=============================================================================
+
+const std::string	ServerLink::getConnectReply(const std::string &user_name) {
+	if (this->lines.empty() == true) { return ("");}
+
+	// if the commande is not the success connect response
+	if (this->lines.front().find("OK CONNECTED") != 0) {
+		// and if it's not the keep or delet option
+		if (this->lines.front().find("\"" + user_name + "\" already exist.") != 0){
+			// this is not our msg
+			return ("");
+		}
+	}
+
+	if (this->debug == true) {std::cout << "[DEBUG] Look responce = [" << this->lines.front() << "]\n"; }
+
+	return (this->extractLine(Commande::CONNECT));
+}
+
+bool				ServerLink::connect(const std::string &user_name, bool keep) {
+	std::string line;
+	if (std::count(_commande_log.begin(), _commande_log.end(), Commande::CONNECT) <= 0) {
+		// std::cout << "COMMAND_LOG BEFOR SENDING = [" << this->_commande_log.size() << "]\n";
+		this->send_commande("CONNECT " + user_name, Commande::CONNECT);
+	}
+
+	line = this->getConnectReply(user_name);
+	// handle the case where the name was arlready used
+	if (line.find("\"" + user_name + "\" already exist.") == 0) {
+		std::cout << "== PLAYER ALREADY USED ==\n";
+		if (keep == true) {this->send_commande("keep " + user_name, Commande::CONNECT); }
+		else {this->send_commande("delete " + user_name, Commande::CONNECT); }
+		return false;
+	}
+	
+	// return true when connected
+	if (line.find("OK CONNECTED") == 0) {std::cout << "CONNECTED !\n"; return (true); }
+
+	// return false otherwise
+	return false;
 }
 
 //=============================================================================
@@ -113,7 +172,7 @@ const std::string	ServerLink::getMoveReply() {
 	// if the commande is not the move response
 	if (this->lines.front().find("OK room=") != 0) {
 		// and if there is no movement error msg
-		if (this->lines.front().find("ERR 301") == std::string::npos) { // <-- npos is the returned value when find() found nothing
+		if (this->lines.front().find("ERR 404") == std::string::npos) { // <-- npos is the returned value when find() found nothing
 			// this is not our message
 			return ("") ;
 		}

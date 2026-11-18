@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:34 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/16 12:02:09 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/18 10:37:53 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,18 @@ class ServerLink
 	//=========================================================================
 	//=============================   GET   ===================================
 	//=========================================================================
+	const std::string				extractLine(Commande type);
+	
+	
+	const std::string				getConnectReply(const std::string &user_name);
 
 	// return server LOOK reply
 	const std::string				getLookReply();
 	// return server MOVE reply
 	const std::string				getMoveReply();
 
+	bool							connect(const std::string &user_name, bool keep = true);
+	
 	// send LOOK commande on the first call and retrun the reply when it arrive.
 	// in the meantime, it returns an empty string
 	const std::string				look();

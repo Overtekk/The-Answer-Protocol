@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/17 16:26:17 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/18 11:31:59 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,18 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 	RoomManager			room(data, connection, data.user.get());
 
 	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
-	connection.send_commande("LOOK --details", Commande::LOOK);
 
 	data.user->setPos(Vector2 {400, 225});
-	// Check if the player is correctly connected and update the spawn room
+
+	// Connect the player
+	while (connection.connect("Nomi") == false) {
+		connection.recive();
+	}
+
+	// Setup the first room
+	connection.send_commande("LOOK --details", Commande::LOOK);
 	while (room.updateRoomState() == false) {
 		connection.recive();
-		if (!connection.lines.empty()) {
-			if (connection.lines.front().find("OK CONNECTE") == 0) {
-				connection.lines.pop();
-				std::cout << "CONNECTED !!!!\n";
-			}
-		}
 	}
 
     while (!WindowShouldClose())

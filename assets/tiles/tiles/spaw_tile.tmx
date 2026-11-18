@@ -90,7 +90,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Walls">
+ <objectgroup id="4" name="Walls" visible="0">
   <object id="1" x="-0.645833" y="60.1667" width="360.667" height="120.5"/>
   <object id="2" x="-0.0304697" y="-0.25" width="280.364" height="63.2652"/>
   <object id="3" x="278" y="0.5" width="163.75" height="19"/>
@@ -99,7 +99,7 @@
   <object id="6" x="-1.50017" y="319.083" width="481" height="183.167"/>
   <object id="7" x="520.5" y="319.417" width="481" height="182.833"/>
  </objectgroup>
- <objectgroup id="5" name="Objects">
+ <objectgroup id="5" name="Objects" visible="0">
   <object id="8" x="369.333" y="170.667"/>
   <object id="9" x="270.333" y="17" width="28.6667" height="23"/>
  </objectgroup>
