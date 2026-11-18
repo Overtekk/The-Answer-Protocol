@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:44:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 12:31:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -580,6 +580,16 @@ const std::string			GasterManager::getCombatStatus(const std::string &player_nam
 	}
 
 	return _combat_manager.getCombatStats(it->second.player, it->second.entity);
+}
+
+const std::string			GasterManager::getConsumableItemsList(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log(errCantAttackNoCombat(player_name));
+		return "";
+	}
+
+	return it->second.player->getConsumableInInventory();
 }
 
 // * Make the player attack the entity. *

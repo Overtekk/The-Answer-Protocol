@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:52:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 12:32:40 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -778,8 +778,11 @@ void	CommandHandler::commandCombatSpare(TCPSession &session, std::string &argume
 }
 
 void	CommandHandler::commandCombatItem(TCPSession &session, std::string &argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getConsumableItemsList(session.getUsername())));
+		return;
+	}
+
 	return;
 }
 
