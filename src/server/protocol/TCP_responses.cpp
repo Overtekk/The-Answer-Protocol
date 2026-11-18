@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:31:59 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 15:00:17 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ namespace {
 			case TCPErrorCode::ITEM_NOT_WEAPON:			return {409, "ITEM_NOT_WEAPON",			"Item requested is not a weapon."};
 			case TCPErrorCode::NOT_IN_COMBAT:			return {500, "NOT_IN_COMBAT",			"You are not in a combat currently."};
 			case TCPErrorCode::NOT_YOUR_TURN:			return {501, "NOT_YOURN_TURN",			"It's not your turn. Be patient."};
+			case TCPErrorCode::ALREADY_IN_COMBAT:		return {502, "ALREADY_IN_COMBAT",		"This entity is already in a combat."};
 			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
 			case TCPErrorCode::SEND_FAILED:				return {901, "SEND_FAILED",				"Message transmission failed."};

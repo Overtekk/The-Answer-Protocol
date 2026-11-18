@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:10:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 15:01:54 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -541,9 +541,15 @@ ReturnState					GasterManager::isEnemyType(const std::string& player_name, const
 		return ReturnState::ENTITY_NOT_IN_PLAYER_ROOM;
 	}
 
+	// check if the entity is enemy type
 	if (entity_in_room->getType() != EnemyType::ENEMY) {
 		print_log(errEntityNotEnemy(entity->getName()));
 		return ReturnState::ENTITY_NOT_ENEMY;
+	}
+
+	if (entity_in_room->inCombat()) {
+		print_log(errEntityAlreadyInCombat(entity->getName()));
+		return ReturnState::ENTITY_ALREADY_IN_BATTLE;
 	}
 
 	CombatProgress combat_progress;
@@ -552,7 +558,6 @@ ReturnState					GasterManager::isEnemyType(const std::string& player_name, const
 	combat_progress.turn = CombatTurn::PLAYER;
 	_combat_lists[player->getName()] = combat_progress;
 	print_log(SuccessCombatStarted(player_name, entity_id));
-
 
 	return ReturnState::VALID;
 }
