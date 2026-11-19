@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 10:22:20 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:47:31 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ class CommandHandler {
 		// MANAGEMENTS
 		bool	manageCombatTurn(TCPSession& session);
 		void	manageCombatResult(TCPSession& session, CombatStatus& result, std::string& argument);
+		void	manageCombatFinish(TCPSession& session);
 
 		// SEND ERROR
 		void	sendErrorToUser(TCPSession& session, ReturnState return_error);

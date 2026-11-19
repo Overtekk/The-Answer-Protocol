@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:13:24 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/27 09:54:52 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:43:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 # include <string>
 
-# include "Entity.hpp"
+# include "base_class/entities/Enemy.hpp"
 # include "config/Enums.hpp"
 
 
 // * Represent a boss enemy *
-class Boss : public Entity {
+class Boss : public Enemy {
 	public :
 		// --- CONSTRUCTOR ---
 		Boss(

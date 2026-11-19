@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 10:48:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:52:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -737,8 +737,7 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argumen
 	if (result) {
 		session.add_msg_to_buffer(getTCP_OK_operation(ACT_SUCCESS_FLEE));
 		print_log(SuccessPlayerFled(session.getUsername()));
-		_manager.finishCombat(session.getUsername());
-		session.setSubSessionState(SubSessionState::MOVING);
+		manageCombatFinish(session);
 		return;
 	}
 
@@ -765,7 +764,16 @@ void	CommandHandler::commandCombatCheck(TCPSession &session, std::string& argume
 
 void	CommandHandler::commandCombatSpare(TCPSession &session, std::string &argument) {
 	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+
+	bool result = _manager.trySpare(session.getUsername());
+	if (result) {
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_SUCCESS_SPARE));
+		manageCombatFinish(session);
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation(ACT_FAILED_SPARE));
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
 	return;
 }
 
@@ -896,6 +904,11 @@ void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& resul
 	commandCombatStatus(session, argument);
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
 	return;
+}
+
+void	CommandHandler::manageCombatFinish(TCPSession &session) {
+	_manager.finishCombat(session.getUsername());
+	session.setSubSessionState(SubSessionState::MOVING);
 }
 
 // ============================================================================

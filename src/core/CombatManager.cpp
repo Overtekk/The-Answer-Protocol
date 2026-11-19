@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 13:33:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 11:42:32 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "core/CombatManager.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
+# include "base_class/entities/Enemy.hpp"
 # include "core/DialogueManager.hpp"
 # include "config/Enums.hpp"
 # include "config/config_messages.h"
@@ -141,6 +142,15 @@ const std::string	CombatManager::enemyTurn(Player* player, Entity* entity) {
 	}
 
 	return result;
+}
+
+// SPARE
+bool				CombatManager::trySpare(Entity *entity) {
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (!enemy)
+		return false;
+
+	return enemy->getSparedState();
 }
 
 // RUNAWAY
