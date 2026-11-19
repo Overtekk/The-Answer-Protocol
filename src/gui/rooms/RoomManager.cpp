@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/17 16:33:09 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 09:09:06 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,10 @@ void	RoomManager::isPlayerOut() {
 	size_t lenght = response.size() - start_pos;
 	this->changeRoom(response.substr(start_pos, lenght), direction);
 	_last_wrong_direction = Direction::UNKNOWN;
+}
+
+VisualRoom	*RoomManager::getCurrentRoom() {
+	return (this->_current_room);
 }
 
 void	RoomManager::drawRoom() {

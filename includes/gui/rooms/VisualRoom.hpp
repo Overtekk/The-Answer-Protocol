@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/17 16:33:54 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 09:10:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,5 @@ class VisualRoom
 
 		void											drawRoom();
 
-		void											shutUp() { std::ignore = this->tile_map; }
+		TmxMap                                          *getTileMap();
 };

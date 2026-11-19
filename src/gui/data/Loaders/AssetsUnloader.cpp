@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 14:04:20 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/18 13:54:39 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 08:50:34 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "config/LoadedAssets.hpp"
 
 void UnloadAssets(LoadedAssets& assets) {
-    for (auto loaded_sprites : assets.sprites) {
+    for (auto loaded_sprites : assets.assets.sprites) {
        UnloadTexture(loaded_sprites.second);
     }
     

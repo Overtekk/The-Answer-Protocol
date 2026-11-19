@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:31:59 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 09:33:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,9 @@ int gui_parser(WorldConfig& world_data) {
 
 void graphic(WorldConfig& world_config, int argc, char** argv)
 {
-    SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
+	const float panSpeed = 150.0f;
 
 	ServerLink			connection(argc, argv);
 
@@ -90,6 +90,12 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
 
 	data.user->setPos(Vector2 {400, 225});
+
+	Camera2D			camera;
+	camera.target = Vector2{data.user->getPos().x, data.user->getPos().y};
+	camera.offset = Vector2{GetRenderWidth()/2.0f, GetRenderHeight()/2.0f};
+	camera.rotation = 0.0f;
+	camera.zoom = 1.0f;
 
 	// Connect the player
 	while (connection.connect("Nomi") == false) {
@@ -105,14 +111,23 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
     while (!WindowShouldClose())
     {
 		connection.recive();
+		if (IsKeyDown(KEY_D)) camera.target.x += panSpeed*GetFrameTime();
+        if (IsKeyDown(KEY_A)) camera.target.x -= panSpeed*GetFrameTime();
+        if (IsKeyDown(KEY_S)) camera.target.y += panSpeed*GetFrameTime();
+        if (IsKeyDown(KEY_W)) camera.target.y -= panSpeed*GetFrameTime();
+
+		room.updateRoom();
+		data.user->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
-
-			room.updateRoom();
-			room.drawRoom();
-
-			data.user->update();
+			BeginMode2D(camera);
+			{
+				DrawTMX(room.getCurrentRoom()->getTileMap(), &camera, NULL, 0, 0, WHITE);
+				room.drawRoom();
+			}
+			EndMode2D();
+			
 			data.user->onDraw();
 
 			// if (IsKeyReleased(KEY_E))

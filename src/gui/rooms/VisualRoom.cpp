@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:00:27 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/17 16:35:15 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 09:10:49 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ int												VisualRoom::getWidth() {
 
 int												VisualRoom::getHeight() {
 	return (std::get<1>(this->size));
+}
+
+TmxMap                                          *VisualRoom::getTileMap() {
+    return (this->tile_map);
 }
 
 void	VisualRoom::drawItems() {

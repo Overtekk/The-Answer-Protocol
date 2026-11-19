@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:44:56 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/16 16:31:30 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/19 09:11:19 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,29 +48,31 @@ class RoomManager
         ~RoomManager() = default;
 
 		// add all item returned by the look command to the current room
-        void    addItemsToRoom(const json &data);
+        void    	addItemsToRoom(const json &data);
 		
 		// get the look reply, call addItemsToRoom and set changing_room
 		// variable to false when the current room is correctly updated
-        bool    updateRoomState();
+        bool    	updateRoomState();
         
 		// Change current room, set the player coordinates to the opposite 
 		// direction from the last room and set the changing_room
 		// variable to false
-		void	changeRoom(const std::string &room_id, Direction direction);
+		void		changeRoom(const std::string &room_id, Direction direction);
 		
 		// Update items (in the current room) state if the player picked it up
-        void    checkItemsPickedUp();
+        void    	checkItemsPickedUp();
         
 		// Update current room state
-		void	updateRoom();
+		void		updateRoom();
 		// Draw current room
-		void	drawRoom();
+		void		drawRoom();
 
 		// Check if the player reached the limit of the current room and
 		// init a room change if the server validate the move
-		void	isPlayerOut();
+		void		isPlayerOut();
 
-        void	shutUp() { std::ignore = this->_user; std::ignore = this->_data; }
+		VisualRoom	*getCurrentRoom();
+
+        void		shutUp() { std::ignore = this->_user; std::ignore = this->_data; }
 };
 
