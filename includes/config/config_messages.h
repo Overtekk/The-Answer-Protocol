@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 14:16:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 10:12:57 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,47 @@ inline std::string	logErasePlayer(const std::string& player_name) { return playe
 inline std::string	logReconnectPlayer(const std::string& player_name) { return player_name + " have reconneted."; }
 
 // === OK REPLIES (sent to the clients) ===
+# define okHelpHandshakeCommand	"Available commands: \"CONNECT {username}\" | \"HELP {command}\" | \"QUIT\""
+# define okHelpGameCommand		"Available commands: \"LOOK\" | \"MOVE {direction}\" | \"WHO\" | \"TAKE {id}\" | \"DROP {id}\" | \"INVENTORY\" | "\
+								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"INFO_ITEM {id}\" | "\
+								"\"CHAT {message}\" | \"GROUP_CREATE {name}\" | \"GROUP_INVITE {username}\" | \"GROUP_JOIN\" | \"GROUP_LEAVE\" | \"HELP {command}\" | \"QUIT\""
+# define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"CHECK\" | \"STATUS\" | \"HELP {command}\""
+# define okHelpLoggingCommand	"Available commands: \"KEEP\" | \"DELETE\" | \"change {username}\" | \"HELP {command}\" | \"QUIT\""
+
+# define helpConnectCommand		"CONNECT: Connect you to the game with the provided username."
+# define helpHelpCommand		"HELP: give information about a command."
+# define helpQuitCommand		"QUIT: leave the game."
+
+# define helpLookCommand		"LOOK: give informations about the current room (name, rooms connexion, players, items, entities...)"
+# define helpMoveCommand		"MOVE: move to the next room using \"NORTH\", \"EAST\", \"WEST\", \"SOUTH\" if possible."
+# define helpWhoCommand			"WHO: show the list of players connected."
+# define helpTakeCommand		"TAKE: take the requested item from the room to your inventory."
+# define helpDropCommand		"DROP: drop an item from your inventory into the current room."
+# define helpInventoryCommand	"INVENTORY: show your current inventory and equipped weapon."
+# define helpTalkCommand		"TALK: talk to the requested NPC in the current room."
+# define helpAttackCommand		"ATTACK: attack the request NPC if it's an enemy and launch a combat."
+# define helpStatusCommand		"STATUS: show your stats (HP, armor, luck...)"
+# define helpQuestCommand		"QUEST: show information about the requested quest."
+# define helpQuestsCommand		"QUESTS: show your current quests."
+# define helpEquipCommand		"EQUIP: equip the requested item if it's a weapon."
+# define helpInfoItemCommand	"INFO_ITEM: give information about the requested item."
+# define helpChatCommand		"CHAT: send a message to the other players."
+# define helpGroupCreateCommand	"GROUP_CREATE: create a group with the provided name."
+# define helpGroupInviteCommand	"GROUP_INVITE: invite the requested player to your group."
+# define helpGroupJoinCommand	"GROUP_JOIN: join the group based of your last invitation."
+# define helpGroupLeaveCommand	"GROUP_LEAVE: leave your current group."
+
+# define helpCombatAttackCommand	"ATTACK: attack the current enemy with your weapon."
+# define helpCombatActCommand		"ACT: show the list of action OR act with the requested action."
+# define helpCombatItemCommand		"ITEM: show the list of your items OR use the requested item."
+# define helpCombatSpareCommand		"SPARE: spare an enemy if possible."
+# define helpCombatFleeCommand		"FLEE: try to flee based on your luck, your hp and the enemy HP."
+# define helpCombatCheckCommand		"CHECK: check the enemy information"
+
+# define helpKeepCommand		"KEEP: keep the current username and progression saved."
+# define helpDeleteCommand		"DELETE: delete the progression of the current username and start fresh."
+# define helpChangeCommand		"CHANGE: change the requested username and connect with it."
+
 inline std::string	okTaken(const std::string& item) { return "taken=" + item; }
 inline std::string	okDropped(const std::string& item) { return "dropped=" + item; }
 inline std::string	okRoom(const std::string& room) { return "room=" + room; }
