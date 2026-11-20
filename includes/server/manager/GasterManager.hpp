@@ -71,10 +71,9 @@ class GasterManager {
 	// --- CREATE OBJECTS ---
 	void	createRoom();
 	void	createEntities();
-	void	createItems();
 	void	fillRoomsData();
 
-	std::string	createStartingWeapon(std::string& player_name);
+	Item*	createStartingWeapon(std::string& player_name);
 
 	// --- DELETE OBJECTS ---
 	void	deleteEntity(Entity* entity);
@@ -84,8 +83,6 @@ class GasterManager {
 	// --- GETTER ---
 	const Player*	getPlayer(const std::string& player_name) const;
 	Player*			getPlayer(const std::string& player_name);
-	const Item*		getItem(const std::string& item_name) const;
-	Item*			getItem(const std::string& item_name);
 	const Room*		getRoom(const std::string& room_id) const;
 	Room*			getRoom(const std::string& room_id);
 	const Entity*	getEntity(const std::string& entity_id) const;
@@ -122,6 +119,7 @@ class GasterManager {
 		ReturnState			dropItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			equipNewWeapon(const std::string& player_name, const std::string& item_name);
 		const std::string	getItemStat(const std::string& player_name, const std::string& item_name);
+		Item*				createItem(const std::string& config_id);
 
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);

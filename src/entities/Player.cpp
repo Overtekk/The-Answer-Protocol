@@ -162,7 +162,7 @@ Item* Player::getItem(ItemID id) {
 // * Get the ID of an item by its name. *
 std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 	for (const auto& [id, item] : _inventory) {
-		if (item && item->getName() == name) {
+		if (item && item->getID() == name) {
 			return id;
 		}
 	}
