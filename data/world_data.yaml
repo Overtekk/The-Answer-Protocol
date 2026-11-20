@@ -443,6 +443,11 @@ entities:
         wait_quest: "bring_pipis"
         wait_for: "completed"
     type: "shop"
+    stock_shop:
+      "ultimate_sword": 100
+      "revive_mint": 30
+      "bandage": 7
+      "bandage_max": 14
     hp: 999
 
   swatch:
@@ -455,6 +460,11 @@ entities:
       buy: ":}"
       quit: ";)"
     type: "shop"
+    stock_shop:
+      "saber10": 45
+      "revive_mint": 29
+      "giga_salad": 10
+      "cd_bagel": 15
     hp: 999
 
 # --- QUESTS ---
