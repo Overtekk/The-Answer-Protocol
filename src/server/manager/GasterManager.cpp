@@ -6,10 +6,11 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:44:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:10:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <algorithm>
 # include <chrono>
 # include <memory>
 # include <optional>
@@ -580,6 +581,40 @@ const std::string			GasterManager::getCombatStatus(const std::string &player_nam
 	}
 
 	return _combat_manager.getCombatStats(it->second.player, it->second.entity);
+}
+
+const std::string			GasterManager::getConsumableItemsList(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log(errCantAttackNoCombat(player_name));
+		return "";
+	}
+
+	return it->second.player->getConsumableInInventory();
+}
+
+const std::string			GasterManager::useConsumableItem(const std::string &player_name, const std::string &item_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log(errCantAttackNoCombat(player_name));
+		return "";
+	}
+
+	Item* item = getItem(item_name);
+	if (!item) {
+		print_log(errCantFindItem(item_name));
+		return "";
+	}
+
+	if (!it->second.player->checkItemInInventory(item->getUniqueID())) {
+		print_log(errItemNotInInventory(item_name));
+		return "";
+	}
+
+	int hp_gained = item->getHP();
+	it->second.player->setHealth(std::clamp(it->second.player->getHealth() + hp_gained, 0, it->second.player->getMaxHealth()));
+	it->second.player->removeItemFromInventory(item->getUniqueID());
+	return "You used " + item_name + ". You gained +" + std::to_string(hp_gained) + " HP.";
 }
 
 // * Make the player attack the entity. *

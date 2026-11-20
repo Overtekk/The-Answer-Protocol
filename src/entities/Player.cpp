@@ -170,10 +170,9 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 }
 
 // * Get the inventory of the player. *
-std::string Player::getItemInInventory(bool add_details) const {
-	if (_inventory.empty() && _equipped_weapon == nullptr) {
+std::string	Player::getItemInInventory(bool add_details) const {
+	if (_inventory.empty() && _equipped_weapon == nullptr)
 		return "No item in inventory.";
-	}
 
 	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
 	if (this->getEquippedWeapon() != nullptr)
@@ -198,6 +197,23 @@ std::string Player::getItemInInventory(bool add_details) const {
 	inventory.pop_back();
 	inventory += "]";
 
+	return inventory;
+}
+
+std::string	Player::getConsumableInInventory() const {
+	if (_inventory.empty())
+		return "No available item";
+
+	std::string inventory = "";
+	for (const auto& [id, item] : _inventory) {
+		if (item) {
+			if (item->getType() == ItemType::CONSUMABLE)
+				inventory += "[\"" + item->getName() + "\", restore " + std::to_string(item->getHP()) + " HP], ";
+		}
+	}
+
+	inventory.pop_back();
+	inventory.pop_back();
 	return inventory;
 }
 
