@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:24:49 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:58:29 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,15 @@
 # include "core/QuestManager.hpp"
 # include "core/DialogueManager.hpp"
 # include "core/CombatManager.hpp"
+# include "core/ShopManager.hpp"
+
 
 // Dialogue
-enum class TalkStatus {OK, NOT_FOUND, NO_DIALOGUE};
+enum class TalkStatus {OK, NOT_FOUND, NO_DIALOGUE, OPEN_SHOP};
 struct TalkResult {
 	TalkStatus	status = TalkStatus::NOT_FOUND;
 	std::string	entity_name;
+	std::string entity_id;
 	std::string	text;
 	bool		has_more = false;
 };
@@ -65,6 +68,7 @@ class GasterManager {
 		QuestManager	_quest_manager;
 		DialogueManager	_dialogue_manager;
 		CombatManager	_combat_manager;
+		ShopManager		_shop_manager;
 
 		std::unordered_map<std::string, CombatProgress>	_combat_lists;
 
@@ -128,6 +132,12 @@ class GasterManager {
 
 		// --- COMBAT MANAGEMENT ---
 		std::vector<CombatMessage>	updateCombats();
+
+		// --- SHOP MANAGEMENT ---
+		const std::string	enterShop(const std::string& player_name, const std::string& entity_id);
+		const std::string	getShopItemsList(const std::string& player_name);
+		const std::string	buyItem(const std::string& player_name);
+		const std::string	leaveShop(const std::string& player_name);
 
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);

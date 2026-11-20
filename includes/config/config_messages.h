@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 10:42:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:36:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,10 @@ inline std::string	SuccessPlayerFled(const std::string& player_name) { return NA
 inline std::string	SuccessPlayerKilledByAdmin(const std::string& player_name) { return NAME_GASTER_MANAGER "player \"" + player_name + "\" has been killed by the admin."; }
 inline std::string	SuccessAdminKill(const std::string& player_name) { return "player '" + player_name + "' has been killed with success."; }
 inline std::string	SuccessNewPlayerCreated(const std::string& player_name) { return "new player created: '" + player_name + "'"; }
+inline std::string	SuccessPlayerEnteredShop(const std::string& player_name, const std::string& entity_name) {
+	return "player '" + player_name + "' have entered in the shop of " + entity_name; }
+inline std::string	SuccessPlayerLeavedShop(const std::string& player_name) {
+	return "player '" + player_name + "' have leaved the shop"; }
 
 
 // ==============
@@ -158,6 +162,12 @@ inline std::string	actPlayerAttack(const std::string& entity_name, int damage, i
 inline std::string	actEnemyNoDamage(const std::string& entity_name) { return entity_name + " dealt no damage to you."; }
 inline std::string	actEnemyAttack(const std::string& entity_name, int damage) { return entity_name + " attacked you with a strength of " + std::to_string(damage); }
 inline std::string	actPlayerBlocked(const std::string& entity_name) { return "You blocked " + entity_name + " damage."; }
+
+// === SHOP MESSAGES (sent to the clients) ===
+# define logLeaveShop	"You've leaved the shop."
+
+inline std::string	logEnterShop(const std::string& entity_name) { return "You've entered - " + entity_name + "'s shop -"; }
+
 
 // ==============
 // === ERRORS ===

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:30:28 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:09:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:48:54 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ enum class	QuestState {IN_PROGRESS, COMPLETED, NOT_FOUND};
 
 // DIALOGUES
 enum class	ValidDialogueKey {
-	TALK_, NO_MONEY, BUY, REMOTE, QUIT, SHOP_,
+	TALK_, SHOP_GREETING, NO_MONEY, BUY, REMOTE, QUIT,
 	ENCOUNTER, CHECK_DEFAULT, NEUTRAL_, ACT_, CHECK_, LOW_HP, SPARE, KILLED, CAN_SPARE,
 	UNKNOWN
 };

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 10:43:55 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 12:00:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -663,9 +663,16 @@ void	CommandHandler::commandTalk(TCPSession& session, std::string& argument) {
 		print_log_message(session, ERR_LOG_NPC_NOT_FOUND);
 		return;
 	}
-	if (result.status == TalkStatus::NO_DIALOGUE) {
+	else if (result.status == TalkStatus::NO_DIALOGUE) {
 		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::NPC_NO_DIALOGUE));
 		print_log_message(session, ERR_LOG_NPC_NO_DIALOGUE);
+		return;
+	}
+	else if (result.status == TalkStatus::OPEN_SHOP) {
+		session.add_msg_to_buffer(getTCP_OK_operation(logEnterShop(result.entity_name)));
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.enterShop(session.getUsername(), result.entity_id)));
+		print_log_message(session, SuccessPlayerEnteredShop(session.getUsername(), result.entity_name));
+		session.setSubSessionState(SubSessionState::IN_SHOP);
 		return;
 	}
 
@@ -883,7 +890,11 @@ void	CommandHandler::commandShopBuy(TCPSession &session, std::string &argument) 
 
 void	CommandHandler::commandShopQuit(TCPSession &session, std::string &argument) {
 	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.leaveShop(session.getUsername())));
+	session.add_msg_to_buffer(getTCP_OK_operation(logLeaveShop));
+	session.setSubSessionState(SubSessionState::MOVING);
+	print_log_message(session, SuccessPlayerLeavedShop(session.getUsername()));
 	return;
 }
 

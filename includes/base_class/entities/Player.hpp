@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 09:05:39 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:39:40 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Player : public Entity {
 
 		// Information
 		std::unordered_map<std::string, int>	_dialogue_state;
+		std::string								_current_shop_id;
 
 		// Stats
 		int	_defense = 5;
@@ -57,6 +58,7 @@ class Player : public Entity {
 		int							getLuck() const;
 		const std::string			getItemStats(ItemID id);
 		int							getMoney() const;
+		const std::string			getCurrentShop() const;
 
 		// --- SETTER ---
 		void	addQuest(const std::string& quest_id);
@@ -65,6 +67,7 @@ class Player : public Entity {
 		void	setDefense(int new_value);
 		void	setLuck(int new_value);
 		void	setMoney(int new_value);
+		void	setCurrentShop(const std::string& entity_id);
 
 		// --- INVENTORY SYSTEM ---
 		Item* 			addItemToInventory(Item* item);

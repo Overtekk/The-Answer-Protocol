@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 14:03:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:54:33 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,9 +227,8 @@ EntityConfig parse_entityConfig(
 			}
 
 			// check if dialogue is a valid key
-			if (convert_DialogueKey(dial_key) == ValidDialogueKey::UNKNOWN) {
+			if (convert_DialogueKey(dial_key) == ValidDialogueKey::UNKNOWN)
 				throw std::runtime_error(errInvalidDialogueKey(entity_id, dial_key));
-			}
 
 			config.dialogue[dial_key] = entry.second.as<std::string>();
 		}
@@ -326,25 +325,25 @@ QuestStage convert_questStage(const std::string& quest_stage_str) {
 // Keys ending with "_" are numbered (talk_1, talk_2, ...). The other keys are written exactly as is.
 ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 	// --- Numbered keys ---
-	if (is_numbered_key(dialogue_key_str, "talk_")) return ValidDialogueKey::TALK_;
-	if (is_numbered_key(dialogue_key_str, "shop_")) return ValidDialogueKey::SHOP_;
-	if (is_numbered_key(dialogue_key_str, "neutral_")) return ValidDialogueKey::NEUTRAL_;
-	if (is_numbered_key(dialogue_key_str, "check_")) return ValidDialogueKey::CHECK_;
-	if (is_numbered_key(dialogue_key_str, "act_")) return ValidDialogueKey::ACT_;
+	if (is_numbered_key(dialogue_key_str, "talk_"))			return ValidDialogueKey::TALK_;
+	if (is_numbered_key(dialogue_key_str, "neutral_"))		return ValidDialogueKey::NEUTRAL_;
+	if (is_numbered_key(dialogue_key_str, "check_"))			return ValidDialogueKey::CHECK_;
+	if (is_numbered_key(dialogue_key_str, "act_"))			return ValidDialogueKey::ACT_;
 
 	// --- Shop keys ---
-	if (dialogue_key_str == "no_money") return ValidDialogueKey::NO_MONEY;
-	if (dialogue_key_str == "buy") return ValidDialogueKey::BUY;
-	if (dialogue_key_str == "remote") return ValidDialogueKey::REMOTE;
-	if (dialogue_key_str == "quit") return ValidDialogueKey::QUIT;
+	if (dialogue_key_str == "no_money")			return ValidDialogueKey::NO_MONEY;
+	if (dialogue_key_str == "buy")				return ValidDialogueKey::BUY;
+	if (dialogue_key_str == "remote")			return ValidDialogueKey::REMOTE;
+	if (dialogue_key_str == "quit")				return ValidDialogueKey::QUIT;
+	if (dialogue_key_str == "shop_greeting")	return ValidDialogueKey::SHOP_GREETING;
 
 	// --- Fight keys ---
-	if (dialogue_key_str == "encounter") return ValidDialogueKey::ENCOUNTER;
-	if (dialogue_key_str == "check_default") return ValidDialogueKey::CHECK_DEFAULT;
-	if (dialogue_key_str == "low_hp") return ValidDialogueKey::LOW_HP;
-	if (dialogue_key_str == "spare") return ValidDialogueKey::SPARE;
-	if (dialogue_key_str == "killed") return ValidDialogueKey::KILLED;
-	if (dialogue_key_str == "can_spare") return ValidDialogueKey::CAN_SPARE;
+	if (dialogue_key_str == "encounter")		return ValidDialogueKey::ENCOUNTER;
+	if (dialogue_key_str == "check_default")	return ValidDialogueKey::CHECK_DEFAULT;
+	if (dialogue_key_str == "low_hp")			return ValidDialogueKey::LOW_HP;
+	if (dialogue_key_str == "spare")			return ValidDialogueKey::SPARE;
+	if (dialogue_key_str == "killed")			return ValidDialogueKey::KILLED;
+	if (dialogue_key_str == "can_spare")		return ValidDialogueKey::CAN_SPARE;
 
 	return ValidDialogueKey::UNKNOWN;
 }

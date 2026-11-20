@@ -92,6 +92,8 @@ const std::string	Player::getItemStats(ItemID id) {
 
 int	Player::getMoney() const { return _money; }
 
+const std::string	Player::getCurrentShop() const { return _current_shop_id; }
+
 // ============================================================================
 // ====================          SETTER      ==================================
 // ============================================================================
@@ -111,6 +113,8 @@ void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
 void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
 
 void	Player::setMoney(int new_value) { _money = std::max(0, new_value); }
+
+void	Player::setCurrentShop(const std::string &entity_id) { _current_shop_id = entity_id; }
 
 // ============================================================================
 // ====================      INVENTORY SYSTEM      ============================

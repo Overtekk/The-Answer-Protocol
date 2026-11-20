@@ -9,7 +9,7 @@ world:
       exits:
         west: "road_traffic"
         east: "carnival"
-      spawns: ["dummy", "swatch"]
+      spawns: ["dummy", "swatch", "spamton"]
       items: []
 
   # CITY ROAD TRAFFIC
@@ -430,8 +430,7 @@ entities:
       talk_3: "COME TO MY [Shopping Mall]."
       talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
       talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
-      shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
-      shop_2: "LET'S MAKE A DEAL."
+      shop_greeting: "WELCOME TO MY HOME [Shopping Center]!!! LET'S MAKE A DEAL."
       no_money: "MONEY NO [Not enought D$]"
       buy: "DEALS SO GOOD I'LL [$!$$] MYSELF!"
       remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
@@ -451,7 +450,7 @@ entities:
     description: "He like juice."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      shop_1: "..."
+      shop_greeting: "... ;-)"
       no_money: ":["
       buy: ":}"
       quit: ";)"

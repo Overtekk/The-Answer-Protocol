@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:44:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:59:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ GasterManager::GasterManager(WorldConfig& world_data):
 	_world_data(world_data),
 	_quest_manager(_world_data.quests),
 	_dialogue_manager(_world_data.entities),
-	_combat_manager(_dialogue_manager) {
+	_combat_manager(_dialogue_manager),
+	_shop_manager() {
 
 		// Create all the objects
 		createRoom();
@@ -158,6 +159,37 @@ bool	GasterManager::deletePlayer(const std::string &player_name) {
 	_world_state.old_players.erase(player_name);
 	print_log(logErasePlayer(player_name));
 	return true;
+}
+
+// --- CREATE ITEM ---
+// * Create the item and add it to the world state. *
+void			GasterManager::createItems() {
+	for (const auto& [item_id, item] : _world_data.items) {
+		std::unique_ptr<Item> new_item;
+
+		switch (item.type) {
+			case ItemType::CONSUMABLE:
+				new_item = std::make_unique<ItemConsumable>(
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+				break;
+
+			case ItemType::KEY:
+				new_item = std::make_unique<ItemKey>(
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+				break;
+
+			case ItemType::WEAPON:
+				new_item = std::make_unique<ItemWeapon>(
+					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+				break;
+
+			default:
+					continue;
+		}
+
+		if (new_item)
+			_world_state.items[new_item->getID()] = std::move(new_item);
+	}
 }
 
 
@@ -277,9 +309,18 @@ TalkResult			GasterManager::getDialogue(const std::string& player_name, const st
 		return result;
 	}
 
+	result.entity_name = entity->getName();
+	result.entity_id = entity->getID();
 	const auto& stages = _dialogue_manager.getStages(entity_id);
 	if (stages.empty()) {
-		result.status = TalkStatus::NO_DIALOGUE;
+
+		// if shop
+		if (entity->getType() == EnemyType::SHOP)
+			result.status = TalkStatus::OPEN_SHOP;
+
+		else
+			result.status = TalkStatus::NO_DIALOGUE;
+
 		return result;
 	}
 
@@ -292,6 +333,11 @@ TalkResult			GasterManager::getDialogue(const std::string& player_name, const st
 	if (index < limit) {
 		line_number = index + 1;
 		advance = true;
+	}
+	// Check if dialogue is finished AND if entity is a shop to open it
+	if (index >= limit && entity->getType() == EnemyType::SHOP) {
+		result.status = TalkStatus::OPEN_SHOP;
+		return result;
 	}
 	// Get the line
 	auto line = _dialogue_manager.getLine(entity_id, "talk_" + std::to_string(line_number));
@@ -307,7 +353,6 @@ TalkResult			GasterManager::getDialogue(const std::string& player_name, const st
 	}
 	// Write the data
 	result.status = TalkStatus::OK;
-	result.entity_name = entity->getName();
 	result.text = *line;
 	result.has_more = new_index < limit;
 
@@ -705,6 +750,29 @@ const std::string			GasterManager::changeCombatWhoTurn(const std::string &player
 }
 
 // ============================================================================
+// ===================      COMMANDS - SHOP       =============================
+// ============================================================================
+const std::string	GasterManager::enterShop(const std::string &player_name, const std::string& entity_id) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	player->setCurrentShop(entity_id);
+	return _dialogue_manager.getGreetingsShopDialogue(entity_id);
+}
+
+const std::string	GasterManager::leaveShop(const std::string &player_name) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	const std::string current_shop = player->getCurrentShop();
+	player->setCurrentShop("");
+	return _dialogue_manager.getLeaveShopDialogue(current_shop);
+
+}
+
+// ============================================================================
 // ===================      COMMANDS - QUESTS        ==========================
 // ============================================================================
 // * Get the quests of a player. *
@@ -907,36 +975,6 @@ void			GasterManager::createEntities() {
 			new_entity->setBehavior(entity.behavior);
 			_world_state.entities[entity_id] = std::move(new_entity);
 		}
-	}
-}
-
-// * Create the items and add them to the world state. *
-void			GasterManager::createItems() {
-	for (const auto& [item_id, item] : _world_data.items) {
-		std::unique_ptr<Item> new_item;
-
-		switch (item.type) {
-			case ItemType::CONSUMABLE:
-				new_item = std::make_unique<ItemConsumable>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			case ItemType::KEY:
-				new_item = std::make_unique<ItemKey>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			case ItemType::WEAPON:
-				new_item = std::make_unique<ItemWeapon>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			default:
-					continue;
-		}
-
-		if (new_item)
-			_world_state.items[new_item->getID()] = std::move(new_item);
 	}
 }
 

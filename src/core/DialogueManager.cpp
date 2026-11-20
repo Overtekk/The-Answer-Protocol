@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 13:34:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 11:46:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& 
 	return it->second;
 }
 
-// --- GETTER ---
+// combat
 const std::string	DialogueManager::getEncounterDialogue(const std::string& entity_id) const {
 	std::optional<std::string> result = getLine(entity_id, "encounter");
 	if (result)
@@ -111,6 +111,21 @@ const std::string	DialogueManager::getNeutralDialogue(const std::string &entity_
 	if (!result_line)
 		return entity_id + " is watching at you.";
 	return *result_line;
+}
+
+// shop
+const std::string	DialogueManager::getGreetingsShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "shop_greeting");
+	if (!result_line)
+		return entity_id + ": welcome!";
+	return entity_id + ": " + *result_line;
+}
+
+const std::string	DialogueManager::getLeaveShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "quit");
+	if (!result_line)
+		return entity_id + ": bye!";
+	return entity_id + ": " + *result_line;
 }
 
 // ============================================================================
