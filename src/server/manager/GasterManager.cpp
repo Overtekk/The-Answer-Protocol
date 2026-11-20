@@ -6,13 +6,14 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:44:08 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 08:54:52 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <chrono>
 # include <memory>
 # include <optional>
+# include <stdexcept>
 # include <utility>
 # include <string>
 # include <unordered_map>
@@ -53,7 +54,6 @@ GasterManager::GasterManager(WorldConfig& world_data):
 		// Create all the objects
 		createRoom();
 		createEntities();
-		createItems();
 		// Fill the rooms data
 		fillRoomsData();
 	}
@@ -90,10 +90,10 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 
 	// Create and equip the starting weapon on the player
 	std::string name_player = player_name;
-	std::string item_id = createStartingWeapon(name_player);
-	player->setEquippedWeapon(_world_state.items[item_id].get());
+	Item* weapon = createStartingWeapon(name_player);
+	player->setEquippedWeapon(weapon);
 
-	print_log(SuccessAddDefaultWeapon(player_name, item_id));
+	print_log(SuccessAddDefaultWeapon(player_name, weapon->getID()));
 }
 
 bool	GasterManager::reconnectPlayer(const std::string &player_name) {
@@ -334,18 +334,14 @@ ReturnState			GasterManager::takeItem(const std::string& player_name, const std:
 	}
 
 	// Get the item requested
-	Item* item = getItem(item_name);
+	Item* item = player_room->findItemByName(item_name);
 	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
+		print_log(errItemNotInRoom(item_name));
+		return ReturnState::ITEM_NOT_IN_PLAYER_ROOM;
 	}
 
 	// Pop item from the room
 	Item* item_room = player_room->popItem(item->getUniqueID());
-	if (!item_room) {
-		print_log(errItemNotInRoom(item_name));
-		return ReturnState::ITEM_NOT_IN_PLAYER_ROOM;
-	}
 
 	// Add to inventory
 	player->addItemToInventory(item_room);
@@ -369,14 +365,14 @@ ReturnState			GasterManager::dropItem(const std::string& player_name, const std:
 	}
 
 	// Get the item requested
-	Item* item = getItem(item_name);
-	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (!item_id) {
+		print_log(errItemNotInInventory(item_name));
+		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
 	}
 
 	// Pop item from player inventory
-	Item *item_player = player->popItemFromInventory(item->getUniqueID());
+	Item *item_player = player->popItemFromInventory(*item_id);
 	if (!item_player) {
 		print_log(errItemNotInInventory(item_name));
 		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
@@ -404,16 +400,12 @@ ReturnState			GasterManager::equipNewWeapon(const std::string &player_name, cons
 		return ReturnState::PLAYER_NOT_FOUND;
 	}
 
-	Item* item = getItem(item_name);
-	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
-	}
-
-	if (!player->checkItemInInventory(item->getUniqueID())) {
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
 		print_log(errItemNotInInventory(item_name));
 		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
 	}
+	Item* item = player->getItem(*item_id);
 
 	if (item->getType() != ItemType::WEAPON) {
 		print_log(errItemNotWeapon(item_name));
@@ -434,13 +426,13 @@ const std::string	GasterManager::getItemStat(const std::string &player_name, con
 		return "";
 
 	// Get the item requested
-	Item* item = getItem(item_name);
-	if (!item) {
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
 		print_log(errCantFindItem(item_name));
 		return "";
 	}
 
-	return player->getItemStats(item->getUniqueID());
+	return player->getItemStats(*item_id);
 }
 
 // ============================================================================
@@ -779,21 +771,6 @@ Player* 		GasterManager::getPlayer(const std::string& player_name) {
     return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
 }
 
-// * Get an item (const). *
-const Item*		GasterManager::getItem(const std::string& item_name) const {
-	auto it = _world_state.items.find(item_name);
-	if (it == _world_state.items.end()) {
-		print_log(errCantFindItem(item_name));
-		return nullptr;
-	}
-	return it->second.get();
-}
-
-// * Get an item. *
-Item* 			GasterManager::getItem(const std::string& item_name) {
-	return const_cast<Item*>(std::as_const(*this).getItem(item_name));
-}
-
 // * Get a room (const). *
 const Room*		GasterManager::getRoom(const std::string& room_id) const {
 	auto it = _world_state.rooms.find(room_id);
@@ -910,34 +887,37 @@ void			GasterManager::createEntities() {
 	}
 }
 
-// * Create the items and add them to the world state. *
-void			GasterManager::createItems() {
-	for (const auto& [item_id, item] : _world_data.items) {
-		std::unique_ptr<Item> new_item;
+Item*			GasterManager::createItem(const std::string &config_id) {
+	const auto it = _world_data.items.find(config_id);
+	if (it == _world_data.items.end())
+		return nullptr;
 
-		switch (item.type) {
-			case ItemType::CONSUMABLE:
-				new_item = std::make_unique<ItemConsumable>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
+	std::unique_ptr<Item> new_item;
+	const ItemConfig& item = it->second;
 
-			case ItemType::KEY:
-				new_item = std::make_unique<ItemKey>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
+	switch (item.type) {
+		case ItemType::CONSUMABLE:
+			new_item = std::make_unique<ItemConsumable>(
+				config_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
 
-			case ItemType::WEAPON:
-				new_item = std::make_unique<ItemWeapon>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
+		case ItemType::KEY:
+			new_item = std::make_unique<ItemKey>(
+				config_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
 
-			default:
-					continue;
-		}
+		case ItemType::WEAPON:
+			new_item = std::make_unique<ItemWeapon>(
+				config_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
 
-		if (new_item)
-			_world_state.items[new_item->getID()] = std::move(new_item);
+		default:
+				return nullptr;
 	}
+
+	Item* raw = new_item.get();
+	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
+	return raw;
 }
 
 // FILL OBJECTS
@@ -966,7 +946,10 @@ void			GasterManager::fillRoomsData() {
 		}
 		// Fill the items
 		for (const auto& item : config.items) {
-			data->placeItem(_world_state.items[item].get());
+			Item* new_item = createItem(item);
+			if (!new_item)
+				throw std::runtime_error("Error when trying to create: \"" + item + "\".");
+			data->placeItem(new_item);
 		}
 		// Fill entities
 		for (const auto& entity : config.spawns) {
@@ -977,7 +960,7 @@ void			GasterManager::fillRoomsData() {
 	}
 }
 
-std::string		GasterManager::createStartingWeapon(std::string& player_name) {
+Item*		GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_id = player_name + "_spoon";
 	std::string item_name = player_name + "_spoon";
 
@@ -986,9 +969,9 @@ std::string		GasterManager::createStartingWeapon(std::string& player_name) {
 		ItemType::WEAPON, 2, 0, 0, 1
 	);
 
-	std::string id = new_item->getID();
-	_world_state.items[new_item->getID()] = std::move(new_item);
-	return id;
+	Item* raw = new_item.get();
+	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
+	return raw;
 }
 
 void			GasterManager::deleteEntity(Entity* entity) {

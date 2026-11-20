@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:13 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/10 15:18:41 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 08:54:41 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,14 @@ Item*	Room::getItem(ItemID item_id) {
 		return (this->_items[item_id]);
 	this->sendObjectError("Invalide item name key (item not in room)");
 	return (nullptr);
+}
+
+Item*	Room::findItemByName(const std::string &item_id) {
+	for (const auto& [id, item] : _items) {
+		if (item && item->getID() == item_id)
+			return item;
+	}
+	return nullptr;
 }
 
 // ============================================================================
