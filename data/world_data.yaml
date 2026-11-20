@@ -9,7 +9,7 @@ world:
       exits:
         west: "road_traffic"
         east: "carnival"
-      spawns: ["dummy"]
+      spawns: ["dummy", "swatch"]
       items: []
 
   # CITY ROAD TRAFFIC

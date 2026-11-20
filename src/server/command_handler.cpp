@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:52:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 10:36:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,23 @@ bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 	return true;
 }
 
+bool	parseShopCommand(const std::string& cmd_str, ShopCommand& cmd) {
+	static const std::unordered_map<std::string, ShopCommand> shop_map = {
+		{"ITEMS",	ShopCommand::ITEMS},
+		{"BUY",		ShopCommand::BUY},
+		{"QUIT",	ShopCommand::QUIT},
+		{"HELP",	ShopCommand::HELP},
+	};
+
+	auto it = shop_map.find(cmd_str);
+	if (it == shop_map.end()) {
+		return false;
+	}
+
+	cmd = it->second;
+	return true;
+}
+
 bool	parseUsernameLoggingCommand(const std::string& cmd_str, UsernameLoggingCommand& cmd) {
     static const std::unordered_map<std::string, UsernameLoggingCommand> command_map = {
         {"CHANGE",	UsernameLoggingCommand::CHANGE},
@@ -193,6 +210,9 @@ void	CommandHandler::processCommand(TCPSession& session, const std::string& raw_
 		// Client is in a combat
 		if (session.getSubSessionState() == SubSessionState::IN_COMBAT)
 			handleCombatCommand(session, raw_line);
+
+		else if (session.getSubSessionState() == SubSessionState::IN_SHOP)
+			handleShopCommand(session, raw_line);
 
 		else
 			handleGameCommand(session, raw_line);
@@ -361,6 +381,42 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 		case CombatCommand::ITEM:			commandCombatItem(session, argument);	break;
 		case CombatCommand::HELP:			commandHelpCombat(session, argument);	break;
 		default:							commandUnknown(session, command);
+	}
+
+	return;
+}
+
+// * Handling commands when the client is in a shop. *
+void	CommandHandler::handleShopCommand(TCPSession &session, const std::string &raw_line) {
+	// Clear the line received
+	std::string raw_command = clean_line(raw_line);
+	print_log_message(session, logCommandEntered(raw_command));
+
+	// Get the command and the arguments
+	std::tuple<std::string, std::string> packed_cmd = extract_command_and_args(raw_command);
+	std::string command = std::get<0>(packed_cmd);
+	std::string& argument = std::get<1>(packed_cmd);
+
+	// Check if command exist (two-words command first, ex: "ITEM [MOUSE]")
+	ShopCommand cmd;
+	std::tuple<std::string, std::string> packed_sub_cmd = extract_command_and_args(argument);
+	std::string compound_command = command + " " + std::get<0>(packed_sub_cmd);
+	if (!argument.empty() && parseShopCommand(compound_command, cmd)) {
+		command = compound_command;
+		argument = std::get<1>(packed_sub_cmd);
+	}
+	else if (!parseShopCommand(command, cmd)) {
+		commandUnknown(session, command);
+		return;
+	}
+
+	// Call the good command
+	switch (cmd) {
+		case ShopCommand::ITEMS:	commandShopItems(session, argument);	break;
+		case ShopCommand::BUY:		commandShopBuy(session, argument);		break;
+		case ShopCommand::QUIT:		commandShopQuit(session, argument);		break;
+		case ShopCommand::HELP:		commandShopHelp(session, argument);		break;
+		default:					commandUnknown(session, command);
 	}
 
 	return;
@@ -809,6 +865,31 @@ void	CommandHandler::commandHelpCombat(TCPSession &session, std::string &argumen
 		case CombatCommand::STATUS:	session.add_msg_to_buffer(getTCP_OK_operation(helpStatusCommand));	break;
 		case CombatCommand::HELP:	session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));	break;
 	}
+	return;
+}
+
+// === HANDSHAKE COMMANDS ===
+void	CommandHandler::commandShopItems(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandShopBuy(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandShopQuit(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
+	return;
+}
+
+void	CommandHandler::commandShopHelp(TCPSession &session, std::string &argument) {
+	std::ignore = argument;
+	session.add_msg_to_buffer("Not implemented yet.");
 	return;
 }
 

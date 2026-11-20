@@ -90,6 +90,8 @@ const std::string	Player::getItemStats(ItemID id) {
 	return result;
 }
 
+int	Player::getMoney() const { return _money; }
+
 // ============================================================================
 // ====================          SETTER      ==================================
 // ============================================================================
@@ -107,6 +109,8 @@ void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
 
 // * Set the new luck value. *
 void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
+
+void	Player::setMoney(int new_value) { _money = std::max(0, new_value); }
 
 // ============================================================================
 // ====================      INVENTORY SYSTEM      ============================
