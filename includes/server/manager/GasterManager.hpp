@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 08:38:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:00:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ class GasterManager {
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
 		const std::string	getCombatStatus(const std::string& player_name);
+		const std::string	getConsumableItemsList(const std::string& player_name);
+		const std::string	useConsumableItem(const std::string& player_name, const std::string& item_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
 		const std::string	combatEnemyAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);
