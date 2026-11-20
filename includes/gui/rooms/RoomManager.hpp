@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:44:56 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 09:11:19 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/20 16:57:17 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 # include <nlohmann/json.hpp>
 # include <string>
-# include <unordered_map>
 
 # include "config/Enums.hpp"
 # include "gui/rooms/VisualRoom.hpp"
@@ -37,7 +36,6 @@ class RoomManager
 
 		bool									_changing_room = false;
 		Direction								_last_wrong_direction;
-		std::unordered_map<Direction, Vector2>	_opposit_position;
     public:
         RoomManager(
             VisualWorldState &data,
@@ -47,6 +45,9 @@ class RoomManager
 
         ~RoomManager() = default;
 
+		// return opposit coordinate for the new room based on the new room size
+		Vector2		getOppositCoordinates(Direction direction);
+		
 		// add all item returned by the look command to the current room
         void    	addItemsToRoom(const json &data);
 		

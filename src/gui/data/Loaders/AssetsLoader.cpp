@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 13:21:45 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 08:53:32 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/20 15:21:15 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include "config/LoadedAssets.hpp"
 # include "config/WorldConfig.hpp"
 # include "gui.h"
-#include "utils.h"
 
 
 TmxMap  *LoadTile(LoadedAssets& assets, const std::string &path) {

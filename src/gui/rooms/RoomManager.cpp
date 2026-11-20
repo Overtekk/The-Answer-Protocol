@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 09:09:06 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/20 16:54:40 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,32 @@ RoomManager::RoomManager(
     _user(user),
 	_current_room(data.getRoom("spawn"))
 {
-	this->_opposit_position.emplace(Direction::EAST, Vector2{10, 225});
-	this->_opposit_position.emplace(Direction::WEST, Vector2{790, 225});
-	this->_opposit_position.emplace(Direction::NORTH, Vector2{400, 440});
-	this->_opposit_position.emplace(Direction::SOUTH, Vector2{400, 10});
-
 	this->_last_wrong_direction = Direction::UNKNOWN;
 }
 
-void    RoomManager::addItemsToRoom(const json &data) {
+Vector2			RoomManager::getOppositCoordinates(Direction direction) {
+	Vector2 opposit_dir;
+
+	if (direction == Direction::EAST) {
+		opposit_dir.x = 10;
+		opposit_dir.y = (this->_current_room->getHeight() - 10) / 2.0;
+	}
+	else if (direction == Direction::WEST) {
+		opposit_dir.x = (this->_current_room->getWidth() - 10);;
+		opposit_dir.y = (this->_current_room->getHeight() - 10) / 2.0;
+	}
+	else if (direction == Direction::NORTH) {
+		opposit_dir.x = (this->_current_room->getWidth() - 10) / 2.0;;
+		opposit_dir.y = (this->_current_room->getHeight() - 10);
+	}
+	else { // South
+		opposit_dir.x = (this->_current_room->getWidth() - 10) / 2.0;;
+		opposit_dir.y = 10;
+	}
+	return (opposit_dir);
+}
+
+void    		RoomManager::addItemsToRoom(const json &data) {
 	Vector2	creation_position;
 	this->_current_room->RemoveAllItems(); // remove all items
 
@@ -77,7 +94,7 @@ void    RoomManager::addItemsToRoom(const json &data) {
 	}
 }
 
-bool    RoomManager::updateRoomState() {
+bool    		RoomManager::updateRoomState() {
 	std::string line = "";
 
 	line = _link.getLookReply();
@@ -90,16 +107,17 @@ bool    RoomManager::updateRoomState() {
 	return (true);
 }
 
-void	RoomManager::changeRoom(const std::string &room_id, Direction direction) {
+void			RoomManager::changeRoom(const std::string &room_id, Direction direction) {
 	this->_current_room = this->_data.getRoom(room_id);
 
 	std::cout << "Current location = [" << room_id << "]\n";
-	this->_user->setPos(this->_opposit_position.at(direction));
+
+	this->_user->setPos(this->getOppositCoordinates(direction));
 
 	this->_link.send_commande("LOOK --details", Commande::LOOK);
 }
 
-void    RoomManager::checkItemsPickedUp() {
+void    		RoomManager::checkItemsPickedUp() {
 	for (auto item_pair : this->_current_room->getItems()) {
 		VisualItem	*item = item_pair.second;
 
@@ -114,7 +132,7 @@ void    RoomManager::checkItemsPickedUp() {
 	}
 }
 
-void	RoomManager::updateRoom() {
+void			RoomManager::updateRoom() {
 	this->isPlayerOut();
 
 	if (_changing_room == true) {
@@ -125,21 +143,22 @@ void	RoomManager::updateRoom() {
 }
 
 
-void	RoomManager::isPlayerOut() {
+void			RoomManager::isPlayerOut() {
 	Direction direction = Direction::UNKNOWN;
 	std::string response = "";
 	Vector2		user_pos = this->_user->getPos();
 
-	if (user_pos.x <= 400.0 - (float)this->_current_room->getWidth() / 2) {
+	// reminder that tile map origine is at 0,0
+	if (user_pos.x <= 0) {
 		direction = Direction::WEST;
 	}
-	else if (user_pos.x >= 400.0 + (float)this->_current_room->getWidth() / 2) {
+	else if (user_pos.x >= (float)this->_current_room->getWidth()) {
 		direction = Direction::EAST;
 	}
-	else if (user_pos.y <= 225.0 - (float)this->_current_room->getHeight() / 2) {
+	else if (user_pos.y <= 0) {
 		direction = Direction::NORTH;
 	}
-	else if (user_pos.y >= 225.0 + (float)this->_current_room->getHeight() / 2) {
+	else if (user_pos.y >= (float)this->_current_room->getHeight()) {
 		direction = Direction::SOUTH;
 	}
 
@@ -164,11 +183,11 @@ void	RoomManager::isPlayerOut() {
 	_last_wrong_direction = Direction::UNKNOWN;
 }
 
-VisualRoom	*RoomManager::getCurrentRoom() {
+VisualRoom		*RoomManager::getCurrentRoom() {
 	return (this->_current_room);
 }
 
-void	RoomManager::drawRoom() {
+void			RoomManager::drawRoom() {
 	if (this->_changing_room == false){
 		this->_current_room->drawItems();
 	}

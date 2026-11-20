@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:00:27 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 09:10:49 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/20 16:18:24 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ VisualRoom::VisualRoom(
     const std::string name
 ):
     tile_map(tile_map),
-	size(std::make_tuple(800, 450)),
+	size(std::make_tuple(tile_map->width * tile_map->tileWidth, tile_map->height * tile_map->tileHeight)),
 	name(name)
 {}
 

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/19 09:33:12 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/20 17:29:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 {
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
-	const float panSpeed = 150.0f;
+	// const float panSpeed = 150.0f;
 
 	ServerLink			connection(argc, argv);
 
 	LoadedAssets		assets;
 	LoadAssets(world_config, assets);
-	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 2.0f, assets);
+	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 1.0f, assets);
 	RoomManager			room(data, connection, data.user.get());
 
 	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
@@ -95,7 +95,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 	camera.target = Vector2{data.user->getPos().x, data.user->getPos().y};
 	camera.offset = Vector2{GetRenderWidth()/2.0f, GetRenderHeight()/2.0f};
 	camera.rotation = 0.0f;
-	camera.zoom = 1.0f;
+	camera.zoom = 2.0f;
 
 	// Connect the player
 	while (connection.connect("Nomi") == false) {
@@ -111,24 +111,28 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
     while (!WindowShouldClose())
     {
 		connection.recive();
-		if (IsKeyDown(KEY_D)) camera.target.x += panSpeed*GetFrameTime();
-        if (IsKeyDown(KEY_A)) camera.target.x -= panSpeed*GetFrameTime();
-        if (IsKeyDown(KEY_S)) camera.target.y += panSpeed*GetFrameTime();
-        if (IsKeyDown(KEY_W)) camera.target.y -= panSpeed*GetFrameTime();
+		camera.target = clamp(data.user->getPos(),
+			900 - 200,
+			200,
+			500 - 112.5,
+			112.5
+		);
 
 		room.updateRoom();
 		data.user->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
+			
 			BeginMode2D(camera);
 			{
+				// DrawTexture(assets.sprites.at("test_background"), 0, 0, WHITE);
 				DrawTMX(room.getCurrentRoom()->getTileMap(), &camera, NULL, 0, 0, WHITE);
 				room.drawRoom();
+				data.user->onDraw();
 			}
 			EndMode2D();
-			
-			data.user->onDraw();
+
 
 			// if (IsKeyReleased(KEY_E))
 			// {
