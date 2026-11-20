@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:52:13 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 10:42:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ inline std::string	logReconnectPlayer(const std::string& player_name) { return p
 								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"INFO_ITEM {id}\" | "\
 								"\"CHAT {message}\" | \"GROUP_CREATE {name}\" | \"GROUP_INVITE {username}\" | \"GROUP_JOIN\" | \"GROUP_LEAVE\" | \"HELP {command}\" | \"QUIT\""
 # define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"CHECK\" | \"STATUS\" | \"HELP {command}\""
+# define okHelpShopCommmand		"Available commands: \"ITEMS\" | \"BUY {item}\" | \"QUIT\" | \"HELP {command}\""
 # define okHelpLoggingCommand	"Available commands: \"KEEP\" | \"DELETE\" | \"change {username}\" | \"HELP {command}\" | \"QUIT\""
 
 # define helpConnectCommand		"CONNECT: Connect you to the game with the provided username."
@@ -132,6 +133,10 @@ inline std::string	logReconnectPlayer(const std::string& player_name) { return p
 # define helpCombatSpareCommand		"SPARE: spare an enemy if possible."
 # define helpCombatFleeCommand		"FLEE: try to flee based on your luck, your hp and the enemy HP."
 # define helpCombatCheckCommand		"CHECK: check the enemy information"
+
+# define helpShopItemsCommand	"ITEMS: show the list of available items to buy and their price."
+# define helpShopBuyCommand		"BUY: buy the requested item if you have the funds."
+# define helpShopQuitCommand	"QUIT: leave the shop."
 
 # define helpKeepCommand		"KEEP: keep the current username and progression saved."
 # define helpDeleteCommand		"DELETE: delete the progression of the current username and start fresh."

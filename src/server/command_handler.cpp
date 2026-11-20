@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 10:36:55 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 10:43:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -888,8 +888,27 @@ void	CommandHandler::commandShopQuit(TCPSession &session, std::string &argument)
 }
 
 void	CommandHandler::commandShopHelp(TCPSession &session, std::string &argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+	// No argument: show the general list
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpShopCommmand));
+		return;
+	}
+
+	captalize_the_string(argument);
+
+	// Unknown command: show the general list
+	ShopCommand	help_cmd;
+	if (!parseShopCommand(argument, help_cmd)) {
+		session.add_msg_to_buffer(getTCP_OK_operation(okHelpShopCommmand));
+		return;
+	}
+
+	switch (help_cmd) {
+		case ShopCommand::ITEMS:	session.add_msg_to_buffer(getTCP_OK_operation(helpShopItemsCommand));	break;
+		case ShopCommand::BUY:		session.add_msg_to_buffer(getTCP_OK_operation(helpShopBuyCommand));		break;
+		case ShopCommand::QUIT:		session.add_msg_to_buffer(getTCP_OK_operation(helpShopQuitCommand));	break;
+		case ShopCommand::HELP:		session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));		break;
+	}
 	return;
 }
 
