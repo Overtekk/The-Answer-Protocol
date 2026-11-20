@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:38:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 15:00:27 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -945,8 +945,8 @@ void	CommandHandler::sendErrorToUser(TCPSession& session, ReturnState return_err
 		case ReturnState::ITEM_NOT_IN_PLAYER_ROOM:		error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_ROOM); 		break;
 		case ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY:	error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY);	break;
 		case ReturnState::ITEM_NOT_WEAPON:				error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_WEAPON);			break;
+		case ReturnState::ENTITY_ALREADY_IN_BATTLE:		error_msg = getTCP_error(TCPErrorCode::ALREADY_IN_COMBAT);		break;
 		case ReturnState::VALID:						error_msg = "That shoud'nt be an error.";							break;
-		default:										error_msg = "Unknown error";										break;
 	}
 
 	session.add_msg_to_buffer(error_msg);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:32:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 15:02:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ inline std::string	errCantCheckNoCombat(const std::string& player_name) { return
 inline std::string	errCantGetPlayerRoom(const std::string& player_name) { return NAME_GASTER_MANAGER "can't get the room of \"" + player_name + "\"."; }
 inline std::string	errEntityNotInRoom(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not in player room."; }
 inline std::string	errEntityNotEnemy(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not an enemy."; }
+inline std::string	errEntityAlreadyInCombat(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" is already in a combat. Combat launch aborted."; }
 inline std::string	errItemNotInRoom(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in room."; }
 inline std::string	errItemNotInInventory(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in player inventory."; }
 inline std::string	errCantKillPlayer(const std::string& player_name) { return "can't kill '" + player_name + "': player not found."; }

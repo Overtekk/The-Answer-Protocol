@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:30:28 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 11:09:14 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:58:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ enum class CombatStatus {PLAYER_LOSE, ENTITY_LOSE, NOTHING};
 enum class ReturnState {
 	VALID,
 	PLAYER_NOT_FOUND, ENTITY_NOT_FOUND, ROOM_NOT_FOUND, ITEM_NOT_FOUND, QUEST_NOT_FOUND,
-	ENTITY_NOT_IN_PLAYER_ROOM, ENTITY_NOT_ENEMY,
+	ENTITY_NOT_IN_PLAYER_ROOM, ENTITY_NOT_ENEMY, ENTITY_ALREADY_IN_BATTLE,
 	ITEM_NOT_IN_PLAYER_ROOM, ITEM_NOT_IN_PLAYER_INVENTORY, ITEM_NOT_WEAPON
 };
 
