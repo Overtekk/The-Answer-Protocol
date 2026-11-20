@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:47:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:33:51 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ class CommandHandler {
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
 		void	processAdminCommand(const std::string& cmd);
+		void	clearDisconnectedPlayer(TCPSession& session);
 		void	updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions);
 };
