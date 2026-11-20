@@ -6,20 +6,22 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 11:36:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 14:13:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <string>
-#include "config/config.hpp"
+# include <string>
+
+# include "config/config.hpp"
 
 // ==============
 // ==== NAME ====
 // ==============
 # define NAME_SERVER				"[Server] "
 # define NAME_GASTER_MANAGER		"[GasterManager]: "
+# define NAME_SHOP_MANAGER			"[ShopManager]: "
 
 // ==============
 // == ACTIONS ===
@@ -217,8 +219,12 @@ inline std::string	errInvalidIp(const std::string& ip) { return "Invalid IP addr
 inline std::string	errConnectionFailed(const std::string& ip, int port) { return "Connection to server failed (" + ip + ":" + std::to_string(port) + ")."; }
 
 // === ERRORS - MANAGERS ===
+// -- GasterManager --
 inline std::string	errDialogueNotFound(const std::string& entity_id, const std::string& key) { return "DialogueManager: can't find dialogue \"" + key + "\" for entity \"" + entity_id + "\"."; }
 inline std::string	errQuestNotExist(const std::string& quest_id) { return "\"" + quest_id + "\" doesn't exist."; }
+
+// --- ShopManager --
+inline std::string	errShopItemRemove(const std::string& entity_id, const std::string& item_id) { return "Can't delete \"" + item_id + "\" from \"" + entity_id + "\"."; }
 
 // === ERRORS - PARSER (server) ===
 # define STAGE_REASON_NOT_MAP			"not a map"
@@ -244,3 +250,6 @@ inline std::string	errMissingResource(const std::string& id, const std::string& 
 inline std::string	errBadResourceExt(const std::string& id, const std::string& kind, const std::string& allowed) { return "'" + id + "' " + kind + " must be in " + allowed + "."; }
 inline std::string	errCantFindPlayerZone(const std::string& player_name) { return NAME_GASTER_MANAGER "can't find the zone of player '" + player_name + "'."; }
 inline std::string	errBadMovement(const std::string& player_zone, const std::string& direction) { return NAME_GASTER_MANAGER "bad direction '" + direction + "' for zone '" + player_zone + "'.";}
+
+// === ERRORS - OTHER ===
+inline std::string	errRandomGenerationBounds(int min, int max) { return "RandomGeneration: error " + std::to_string(min) + " superior to " + std::to_string(max); }

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 11:59:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 14:32:49 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ GasterManager::GasterManager(WorldConfig& world_data):
 		createItems();
 		// Fill the rooms data
 		fillRoomsData();
+		// Fill the NPC
+		fillShopNPC();
 	}
 
 // ============================================================================
@@ -1014,6 +1016,30 @@ void			GasterManager::fillRoomsData() {
 		}
 	}
 }
+
+// void			GasterManager::fillShopNPC() {
+// 	for (auto& [entity_id, entity] : _world_state.entities) {
+// 		if (entity->getType() == EnemyType::SHOP) {
+// 			NPCShop* npc_shop = dynamic_cast<NPCShop*>(entity.get());
+
+// 			if (entity->getID() == "swatch") {
+// 				if (_world_state.items.find("ultimate_sword") != _world_state.items.end())
+// 					npc_shop->addItemToShop(_world_state.items["ultimate_sword"]->getID(), 50);
+// 				else
+// 					npc_shop->addItemToShop(_world_state.items., int price)
+// 			}
+
+// 			else if (entity->getID() == "spamton") {
+
+// 			}
+
+// 			// default
+// 			else {
+// 				_shop_manager.
+// 			}
+// 		}
+// 	}
+// }
 
 std::string		GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_id = player_name + "_spoon";
