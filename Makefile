@@ -75,23 +75,23 @@ $(BUILD_DIR)/build.ninja	$(BUILD_DIR)/Makefile:
 
 $(SERVER_NAME):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(SERVER_NAME)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(SERVER_NAME) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(SERVER_NAME)
 				@echo "$(BGREEN)$(SERVER_NAME) Done!$(RESET)"
 
 $(CLI_CLIENT):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(CLI_CLIENT)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT)
 				@echo "$(BGREEN)$(CLI_CLIENT) Done!$(RESET)"
 
 $(GUI_CLIENT):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(GUI_CLIENT)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT)
 				@echo "$(BGREEN)$(GUI_CLIENT) Done!$(RESET)"
 
 clean:
 			@if [ -d "$(BUILD_DIR)" ]; then \
 				echo "$(MAGENTA)Cleaning build artifacts...$(RESET)"; \
-				cmake --build $(BUILD_DIR) --target clean 2>/dev/null -- --no-print-directory || true; \
+				cmake --build $(BUILD_DIR) --target clean 2>/dev/null || true; \
 			fi
 
 fclean:	clean

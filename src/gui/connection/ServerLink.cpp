@@ -49,7 +49,7 @@ void	ServerLink::recive() {
 	while (this->_connected and poll(&fdp, 1, 0) > 0)
 	{
 		if (fdp.revents & (POLLIN | POLLHUP)) {
-			char	tmp[this->RECIVE_SIZE];
+			char	tmp[RECIVE_SIZE];
 			ssize_t	bytes_readed;
 			bytes_readed = this->_sock.receiveData(tmp, sizeof(tmp));
 

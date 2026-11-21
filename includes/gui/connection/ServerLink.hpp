@@ -35,7 +35,7 @@ class ServerLink
 		TCPSocket				_sock;
 		bool					_connected;
 		std::string				_buffer;
-		int						RECIVE_SIZE = 1024;
+		static constexpr int	RECIVE_SIZE = 1024;
 
 		std::vector<Commande>	_commande_log;
 	public:
