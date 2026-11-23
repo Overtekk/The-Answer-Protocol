@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:43:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:09:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ class GasterManager {
 		const std::string	leaveShop(const std::string& player_name);
 		const std::string	getBuyOKmessage(const std::string& player_name) const;
 		const std::string	getBuyNOmessage(const std::string& player_name) const;
+		const std::string	getPlayerMoney(const std::string& player_name) const;
 
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);

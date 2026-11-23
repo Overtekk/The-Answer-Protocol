@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:49:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:10:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -839,6 +839,15 @@ const std::string	GasterManager::getBuyNOmessage(const std::string &player_name)
 		return "";
 
 	return _dialogue_manager.getNoMoneyShopDialogue(player->getCurrentShop());
+}
+
+
+const std::string	GasterManager::getPlayerMoney(const std::string &player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	return std::to_string(player->getMoney()) + "$";
 }
 
 

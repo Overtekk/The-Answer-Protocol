@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:03:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:11:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -927,7 +927,7 @@ void	CommandHandler::commandShopItems(TCPSession &session, std::string &argument
 	std::ignore = argument;
 
 	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getShopItemsList(session.getUsername())));
-
+	session.add_msg_to_buffer(getTCP_OK_operation("Your $: " + _manager.getPlayerMoney(session.getUsername())));
 	return;
 }
 

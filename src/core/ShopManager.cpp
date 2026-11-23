@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 09:12:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:48:18 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:08:05 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ const std::string	ShopManager::formatNpcShopMap(NPCShop* entity, const std::unor
 }
 
 
-bool	ShopManager::doesHaveItem(NPCShop *entity, const std::string item_id) {
-	return entity->getShopList().find(item_id) != entity->getShopList().end();
-}
+bool	ShopManager::doesHaveItem(NPCShop *entity, const std::string item_id) { return entity->getShopList().find(item_id) != entity->getShopList().end(); }
 
 
 bool	ShopManager::doesPlayerHaveMoney(NPCShop *entity, Player *player, const std::string item_id) {
