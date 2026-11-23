@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   config_messages.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 15:02:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:53:27 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 // ==============
 # define NAME_SERVER				"[Server] "
 # define NAME_GASTER_MANAGER		"[GasterManager]: "
+# define NAME_EVENT					"[EVT]: "
 
 // ==============
 // == ACTIONS ===
@@ -55,6 +56,12 @@ inline std::string	userAlreadyExist(const std::string& player_name) {
 		"\"" + player_name + "\" already exist. You can delete it with the \"delete\" command or keep the current progression with the \"keep\". "
 		"You can change the username with the command \"change [NEW_USERNAME]\".");
 }
+
+// ==============
+// === EVENTS ===
+// ==============
+inline std::string	EnterRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "player " + player_name + " has entered " + zone_name ;}
+inline std::string	LeaveRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "player " + player_name + " has left " + zone_name ;}
 
 // ==============
 // ==== MAIN ====

@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 10:14:30 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/23 15:50:04 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,6 +512,8 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 			return;
 		}
 
+	const std::string prev_room = _manager.getPlayerRoom(session.getUsername());
+
 	// Check if player can move
 	ReturnState command_state = _manager.movePlayer(session.getUsername(), direction_str_to_enum(argument));
 	if (command_state != ReturnState::VALID) {
@@ -521,6 +523,10 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 
 	// Move player
 	session.add_msg_to_buffer(getTCP_OK_operation(okRoom(_manager.getPlayerRoom(session.getUsername()))));
+
+	// Event Message
+	session.add_msg_to_buffer(LeaveRoomEvent(session.getUsername(), prev_room));
+	session.add_msg_to_buffer(EnterRoomEvent(session.getUsername(), _manager.getPlayerRoom(session.getUsername())));
 	return;
 }
 
