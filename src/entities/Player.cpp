@@ -6,7 +6,7 @@
 /* By: roandrie <roandrie@student.42lehavre.fr   +#+  +:+       +#+        */
 /*                                             +#+#+#+#+#+   +#+           */
 /* Created: 2026/09/21 14:06:43 by roandrie        #+#    #+#              */
-/* Updated: 2026/10/07 09:36:13 by roandrie        ###   ########.fr       */
+/* Updated: 2026/11/23 15:07:08 by roandrie        ###   ########.fr       */
 /*                                                                         */
 /* *********************************************************************** */
 
@@ -27,9 +27,11 @@ Player::Player(const std::string& name):
 	Entity(std::to_string(_id++), name, "", EnemyType::UNKNOWN, 100)
 	{}
 
+
 // ============================================================================
 // ====================       PUBLIC METHODS      =============================
 // ============================================================================
+
 
 // ============================================================================
 // ====================          GETTER      ==================================
@@ -44,6 +46,7 @@ std::vector<std::string>	Player::getCurrentQuests() const {
 	return quests_list;
 }
 
+
 std::vector<std::string>	Player::getCompletedQuests() const {
 	std::vector<std::string>	quests_list;
 
@@ -54,6 +57,7 @@ std::vector<std::string>	Player::getCompletedQuests() const {
 	return quests_list;
 }
 
+
 QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	const auto it = _quests.find(quest_id);
 	if (it == _quests.end())
@@ -61,9 +65,12 @@ QuestState	Player::getQuestStatut(const std::string& quest_id) const {
 	return it->second;
 }
 
+
 int	Player::getDefense() const { return _defense; }
 
+
 int	Player::getLuck() const { return _luck; }
+
 
 const std::string	Player::getItemStats(ItemID id) {
 	Item* item = getItem(id);
@@ -90,9 +97,12 @@ const std::string	Player::getItemStats(ItemID id) {
 	return result;
 }
 
+
 int	Player::getMoney() const { return _money; }
 
+
 const std::string	Player::getCurrentShop() const { return _current_shop_id; }
+
 
 // ============================================================================
 // ====================          SETTER      ==================================
@@ -100,21 +110,28 @@ const std::string	Player::getCurrentShop() const { return _current_shop_id; }
 // * Add a quest to the player. *
 void	Player::addQuest(const std::string& quest_id) { _quests[quest_id] = QuestState::IN_PROGRESS; }
 
+
 // * Remove a quest from the player. *
 void	Player::removeQuest(const std::string& quest_id) { _quests.erase(quest_id); }
+
 
 // * Set a quest as completed. *
 void	Player::setQuestCompleted(const std::string& quest_id) { _quests[quest_id] = QuestState::COMPLETED; }
 
+
 // * Set the new defense value. *
 void	Player::setDefense(int new_value) { _defense = std::max(0, new_value); }
+
 
 // * Set the new luck value. *
 void	Player::setLuck(int new_value) { _luck = std::max(0, new_value); }
 
+
 void	Player::setMoney(int new_value) { _money = std::max(0, new_value); }
 
+
 void	Player::setCurrentShop(const std::string &entity_id) { _current_shop_id = entity_id; }
+
 
 // ============================================================================
 // ====================      INVENTORY SYSTEM      ============================
@@ -131,6 +148,7 @@ Item* Player::addItemToInventory(Item* item) {
 	return item;
 }
 
+
 // * Pop item from inventory. *
 Item* Player::popItemFromInventory(ItemID id) {
 	auto it = _inventory.find(id);
@@ -143,15 +161,18 @@ Item* Player::popItemFromInventory(ItemID id) {
 	return nullptr;
 }
 
+
 // * Remove an item from the player inventory. *
 bool Player::removeItemFromInventory(ItemID id) {
 	return _inventory.erase(id) > 0;
 }
 
+
 // * Check for an item in the player inventory. *
 bool Player::checkItemInInventory(ItemID id) const {
 	return _inventory.find(id) != _inventory.end();
 }
+
 
 // * Get the item by ID from the player inventory. *
 const Item* Player::getItem(ItemID id) const {
@@ -162,10 +183,12 @@ const Item* Player::getItem(ItemID id) const {
 	return nullptr;
 }
 
-	// * Get the item by ID from the player inventory. *
+
+// * Get the item by ID from the player inventory. *
 Item* Player::getItem(ItemID id) {
 	return const_cast<Item*>(std::as_const(*this).getItem(id));
 }
+
 
 // * Get the ID of an item by its name. *
 std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
@@ -177,10 +200,11 @@ std::optional<ItemID> Player::getItemIdByName(const std::string& name) const {
 	return std::nullopt;
 }
 
+
 // * Get the inventory of the player. *
 std::string Player::getItemInInventory(bool add_details) const {
 	if (_inventory.empty() && _equipped_weapon == nullptr) {
-		return "No item in inventory.";
+		return "No item in inventory. | " + std::to_string(getMoney()) + "$";
 	}
 
 	std::string inventory = "Item in " + this->getName() + "'s inventory: [";
@@ -204,17 +228,20 @@ std::string Player::getItemInInventory(bool add_details) const {
 
 	inventory.pop_back();
 	inventory.pop_back();
-	inventory += "]";
+	inventory += "] | " + std::to_string(getMoney()) + "$";
 
 	return inventory;
 }
 
+
 Item*	Player::getEquippedWeapon() const { return _equipped_weapon; }
+
 
 void	Player::setEquippedWeapon(Item* new_weapon) {
 	_equipped_weapon = new_weapon;
 	Entity::setAttackValue(new_weapon ? new_weapon->getDamage() : 1);
 }
+
 
 // ============================================================================
 // ====================       DIALOGUE SYSTEM      ============================
@@ -223,6 +250,7 @@ void	Player::setEquippedWeapon(Item* new_weapon) {
 void	Player::setDialogueIndex(const std::string& entity_id, int new_index) {
 	_dialogue_state[entity_id] = new_index;
 }
+
 
 // * Get the current index of an entity. *
 int 	Player::getDialogueIndex(const std::string& entity_id) const {
