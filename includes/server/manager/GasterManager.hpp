@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 13:12:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:43:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,19 @@ class GasterManager {
 
 		std::unordered_map<std::string, CombatProgress>	_combat_lists;
 
-		// --- CREATE OBJECTS ---
+		// --- CREATE ALL OBJECTS ---
 		void	createRoom();
 		void	createEntities();
 		void	createItems();
+
+
 		void	fillRoomsData();
 		void	fillShopNPC(Entity* entity);
 
-		std::string	createStartingWeapon(std::string& player_name);
+		// -- CREATE INDIVIDUAL --
+		std::unique_ptr<Item>	buildItem(const std::string& item_id, const ItemConfig& item);
+		Item*					createItem(const std::string& item_id);
+		std::string				createStartingWeapon(std::string& player_name);
 
 		// --- DELETE OBJECTS ---
 		void	deleteEntity(Entity* entity);
@@ -137,8 +142,10 @@ class GasterManager {
 		// --- SHOP MANAGEMENT ---
 		const std::string	enterShop(const std::string& player_name, const std::string& entity_id);
 		const std::string	getShopItemsList(const std::string& player_name) const;
-		const std::string	buyItem(const std::string& player_name);
+		ReturnState			buyItem(const std::string& player_name, const std::string& item_id);
 		const std::string	leaveShop(const std::string& player_name);
+		const std::string	getBuyOKmessage(const std::string& player_name) const;
+		const std::string	getBuyNOmessage(const std::string& player_name) const;
 
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);

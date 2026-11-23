@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 11:45:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:45:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,6 @@ class DialogueManager {
 		// shop
 		const std::string	getGreetingsShopDialogue(const std::string& entity_id) const;
 		const std::string	getLeaveShopDialogue(const std::string& entity_id) const;
+		const std::string	getBuyShopDialogue(const std::string& entity_id) const;
+		const std::string	getNoMoneyShopDialogue(const std::string& entity_id) const;
 };

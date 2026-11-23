@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 13:36:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:49:12 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,38 +163,6 @@ bool	GasterManager::deletePlayer(const std::string &player_name) {
 	_world_state.old_players.erase(player_name);
 	print_log(logErasePlayer(player_name));
 	return true;
-}
-
-
-// --- CREATE ITEM ---
-// * Create the item and add it to the world state. *
-void			GasterManager::createItems() {
-	for (const auto& [item_id, item] : _world_data.items) {
-		std::unique_ptr<Item> new_item;
-
-		switch (item.type) {
-			case ItemType::CONSUMABLE:
-				new_item = std::make_unique<ItemConsumable>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			case ItemType::KEY:
-				new_item = std::make_unique<ItemKey>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			case ItemType::WEAPON:
-				new_item = std::make_unique<ItemWeapon>(
-					item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
-				break;
-
-			default:
-					continue;
-		}
-
-		if (new_item)
-			_world_state.items[new_item->getID()] = std::move(new_item);
-	}
 }
 
 
@@ -806,7 +774,41 @@ const std::string	GasterManager::getShopItemsList(const std::string& player_name
 		return "";
 	}
 
-	return _shop_manager.formatNpcShopMap(npc_shop);
+	return _shop_manager.formatNpcShopMap(npc_shop, _world_data.items);
+}
+
+
+ReturnState			GasterManager::buyItem(const std::string &player_name, const std::string& item_id) {
+	Player* player = getPlayer(player_name);
+	if (!player)
+		return ReturnState::PLAYER_NOT_FOUND;
+
+	std::string shop_id = player->getCurrentShop();
+	const auto& it = _world_state.entities.find(shop_id);
+	if (it == _world_state.entities.end()) {
+		print_log(errCantFindEntity(shop_id));
+		return ReturnState::ENTITY_NOT_FOUND;
+	}
+
+	NPCShop* npc_shop = dynamic_cast<NPCShop*>(it->second.get());
+	if (!npc_shop) {
+		print_log(errEntityNotShop(shop_id));
+		return ReturnState::ENTITY_NOT_SHOP;
+	}
+
+	if (!_shop_manager.doesHaveItem(npc_shop, item_id))
+		return ReturnState::ITEM_NOT_FOUND;
+
+	if (!_shop_manager.doesPlayerHaveMoney(npc_shop, player, item_id))
+		return ReturnState::NO_MONEY;
+
+
+	Item* new_item = createItem(item_id);
+	player->addItemToInventory(new_item);
+	print_log(addItemInInventory(item_id));
+	_shop_manager.buyObject(npc_shop, player, item_id);
+
+	return ReturnState::VALID;
 }
 
 
@@ -819,6 +821,24 @@ const std::string	GasterManager::leaveShop(const std::string &player_name) {
 	player->setCurrentShop("");
 	return _dialogue_manager.getLeaveShopDialogue(current_shop);
 
+}
+
+
+const std::string	GasterManager::getBuyOKmessage(const std::string &player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	return _dialogue_manager.getBuyShopDialogue(player->getCurrentShop());
+}
+
+
+const std::string	GasterManager::getBuyNOmessage(const std::string &player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	return _dialogue_manager.getNoMoneyShopDialogue(player->getCurrentShop());
 }
 
 
@@ -1093,6 +1113,62 @@ void			GasterManager::fillShopNPC(Entity* entity) {
 
 	for (const auto& [item_id, price] : stock_shop)
 		npc_shop->addItemToShop(item_id, price);
+}
+
+
+std::unique_ptr<Item>	GasterManager::buildItem(const std::string &item_id, const ItemConfig &item) {
+	std::unique_ptr<Item> new_item;
+
+	switch (item.type) {
+		case ItemType::CONSUMABLE:
+			new_item = std::make_unique<ItemConsumable>(
+				item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
+
+		case ItemType::KEY:
+			new_item = std::make_unique<ItemKey>(
+				item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
+
+		case ItemType::WEAPON:
+			new_item = std::make_unique<ItemWeapon>(
+				item_id, item.name, item.description, item.type, item.damage, item.hp, item.bonus_min, item.bonus_max);
+			break;
+
+		default:
+				return nullptr;
+	}
+
+	return new_item;
+}
+
+
+// * Create all the items and add them to the world state. *
+void			GasterManager::createItems() {
+	for (const auto& [item_id, item] : _world_data.items) {
+		std::unique_ptr<Item> new_item = buildItem(item_id, item);
+
+		if (new_item)
+			_world_state.items[new_item->getID()] = std::move(new_item);
+	}
+}
+
+
+Item*			GasterManager::createItem(const std::string& item_id) {
+	const auto& it = _world_data.items.find(item_id);
+	if (it == _world_data.items.end()) {
+		print_log(errCantFindItem(item_id));
+		return nullptr;
+	}
+
+	std::unique_ptr<Item> new_item = buildItem(item_id, it->second);
+
+	if (!new_item)
+		return nullptr;
+
+	Item* raw = new_item.get();
+	_world_state.items[new_item->getID()] = std::move(new_item);
+	return raw;
 }
 
 

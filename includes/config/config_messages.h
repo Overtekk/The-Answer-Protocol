@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 13:18:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 15:00:32 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,13 @@ inline std::string	SuccessPlayerRespawned(const std::string& player_name) { retu
 inline std::string	SuccessEntityDeleted(const std::string& entity_id) { return NAME_GASTER_MANAGER "entity \"" + entity_id + "\" have been deleted."; }
 inline std::string	SuccessPlayerFled(const std::string& player_name) { return NAME_GASTER_MANAGER "player \"" + player_name + "\" have flee the combat."; }
 inline std::string	SuccessPlayerKilledByAdmin(const std::string& player_name) { return NAME_GASTER_MANAGER "player \"" + player_name + "\" has been killed by the admin."; }
-inline std::string	SuccessAdminKill(const std::string& player_name) { return "player '" + player_name + "' has been killed with success."; }
-inline std::string	SuccessNewPlayerCreated(const std::string& player_name) { return "new player created: '" + player_name + "'"; }
-inline std::string	SuccessPlayerEnteredShop(const std::string& player_name, const std::string& entity_name) {
-	return "player '" + player_name + "' have entered in the shop of " + entity_name; }
-inline std::string	SuccessPlayerLeavedShop(const std::string& player_name) {
-	return "player '" + player_name + "' have leaved the shop"; }
+inline std::string	SuccessAdminKill(const std::string& player_name) { return "player \"" + player_name + "\" has been killed with success."; }
+inline std::string	SuccessNewPlayerCreated(const std::string& player_name) { return "new player created: \"" + player_name + "\""; }
+inline std::string	SuccessPlayerEnteredShop(const std::string& player_name, const std::string& entity_name) { return "player \"" + player_name + "\" have entered in the shop of " + entity_name; }
+inline std::string	SuccessPlayerBuy(const std::string& item_id) { return "have buy \"" + item_id + "\"";}
+inline std::string	SuccessPlayerLeavedShop(const std::string& player_name) { return "player \"" + player_name + "\" have leaved the shop"; }
+
+inline std::string	addItemInInventory(const std::string item_id) { return item_id + "added in inventory."; }
 
 
 // ==============
