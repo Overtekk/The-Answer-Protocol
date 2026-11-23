@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 14:13:12 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 11:46:06 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,8 +239,10 @@ inline std::string	errDescEmpty(const std::string& id) { return id + " descripti
 inline std::string	errNotPositive(const std::string& id) { return id + " invalid integer. Need to be positive."; }
 inline std::string	warnDialogueIgnored(const std::string& entity_id) { return "Dialogues will be ignored for \"" + entity_id + "\" because it as custom behavior."; }
 inline std::string	warnDialogueNotScalar(const std::string& entity_id, const std::string& key) { return "Dialogue not scalar for \"" + entity_id + " \" and key:\"" + key + "\""; }
+inline std::string	warningStockMapButNotShopType(const std::string& entity_id) { return "\"" + entity_id + "\" have a stock_shop but is not of type shop. It will not be registered."; }
 inline std::string	errInvalidDialogueKey(const std::string& entity_id, const std::string& key) { return "invalid dialogue key \"" + key + "\" for entity \"" + entity_id + "\"."; }
 inline std::string	errInvalidStage(const std::string& entity_id, const std::string& reason) { return "invalid dialogue stage for entity \"" + entity_id + "\" : invalid = " + reason; }
+inline std::string	errInvalidItemStock(const std::string& entity_id, const std::string& item_id) { return "\"" + entity_id + "\" have an unkown item is in stock shop (\"" + item_id + "\")";}
 inline std::string	stageReasonNotPositive(int last_stage) { return std::to_string(last_stage) + "."; }
 inline std::string	stageReasonNotIncreasing(int last_stage, int previous) { return std::to_string(last_stage) + " must be greater than previous stage " + std::to_string(previous) + "."; }
 inline std::string	stageReasonMissingKey(int last_stage) { return "missing dialogue key: " + std::to_string(last_stage); }

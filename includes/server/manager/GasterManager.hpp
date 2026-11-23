@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 14:01:07 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 11:06:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,33 +72,33 @@ class GasterManager {
 
 		std::unordered_map<std::string, CombatProgress>	_combat_lists;
 
-	// --- CREATE OBJECTS ---
-	void	createRoom();
-	void	createEntities();
-	void	createItems();
-	void	fillRoomsData();
-	void	fillShopNPC();
+		// --- CREATE OBJECTS ---
+		void	createRoom();
+		void	createEntities();
+		void	createItems();
+		void	fillRoomsData();
+		void	fillShopNPC(Entity* entity);
 
-	std::string	createStartingWeapon(std::string& player_name);
+		std::string	createStartingWeapon(std::string& player_name);
 
-	// --- DELETE OBJECTS ---
-	void	deleteEntity(Entity* entity);
+		// --- DELETE OBJECTS ---
+		void	deleteEntity(Entity* entity);
 
-	void	respawnPlayer(Player* player);
+		void	respawnPlayer(Player* player);
 
-	// --- GETTER ---
-	const Player*	getPlayer(const std::string& player_name) const;
-	Player*			getPlayer(const std::string& player_name);
-	const Item*		getItem(const std::string& item_name) const;
-	Item*			getItem(const std::string& item_name);
-	const Room*		getRoom(const std::string& room_id) const;
-	Room*			getRoom(const std::string& room_id);
-	const Entity*	getEntity(const std::string& entity_id) const;
-	Entity*			getEntity(const std::string& entity_id);
+		// --- GETTER ---
+		const Player*	getPlayer(const std::string& player_name) const;
+		Player*			getPlayer(const std::string& player_name);
+		const Item*		getItem(const std::string& item_name) const;
+		Item*			getItem(const std::string& item_name);
+		const Room*		getRoom(const std::string& room_id) const;
+		Room*			getRoom(const std::string& room_id);
+		const Entity*	getEntity(const std::string& entity_id) const;
+		Entity*			getEntity(const std::string& entity_id);
 
-	// --- DIALOGUES ---
-	bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
-	int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
+		// --- DIALOGUES ---
+		bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
+		int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
 
 	public :
 		// --- CONSTRUCTOR ---

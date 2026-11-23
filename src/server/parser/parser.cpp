@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 09:22:55 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 11:46:42 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void check_int(int value, const std::string& id);
 bool is_numbered_key(const std::string& key, const std::string& prefix);
 void check_locations_data(const WorldConfig& world, std::unordered_set<std::string>& knows_locations, std::unordered_set<std::string>& knows_items, std::unordered_set<std::string>& knows_entities);
 std::string direction_to_string(Direction dir);
+
 
 // --- PARSER (public) ---
 // Validate each data and construct the global world structure.
@@ -107,7 +108,16 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 					}
 				}
 			}
+
+			// check if items exist in shop stock
+			if (entity.type == EnemyType::SHOP) {
+				for (const auto& entry : entity.stock_shop) {
+					if (world.items.find(entry.first) == world.items.end())
+						throw std::runtime_error(errInvalidItemStock(entity_id, entry.first));
+				}
+			}
 		}
+
 	}
 	catch (const std::exception& e) {
 		print_error(std::string(ERR_PARSING_FAILED) + e.what());
@@ -118,6 +128,7 @@ bool parse_file(const YAML::Node& root, WorldConfig& world) {
 
 	return true;
 }
+
 
 // Parsing for the locations part.
 LocationConfig parse_locationConfig(
@@ -148,6 +159,7 @@ LocationConfig parse_locationConfig(
 
 	return config;
 }
+
 
 // Parsing for the items part.
 ItemConfig parse_itemConfig(
@@ -183,6 +195,7 @@ ItemConfig parse_itemConfig(
 
 	return config;
 }
+
 
 // Parsing for the entities part.
 EntityConfig parse_entityConfig(
@@ -268,15 +281,24 @@ EntityConfig parse_entityConfig(
 	}
 
 	// Shop
+	bool flag_ok = true;
 	if (node["stock_shop"] && node["stock_shop"].IsMap()) {
-		for (const auto& entry : node["stock_shop"]) {
-			int price = getValue<int>(node, "price", 1);
-			check_int(price, "price");
-			config.stock_shop[entry.first] = price;
+		if (config.type != EnemyType::SHOP) {
+			print_warning(warningStockMapButNotShopType(entity_id));
+			flag_ok = false;
+		}
+
+		if (flag_ok)
+			for (const auto& entry : node["stock_shop"]) {
+				int price = entry.second.as<int>();
+				check_int(price, "price");
+				config.stock_shop[entry.first.as<std::string>()] = price;
+			}
 	}
 
 	return config;
 }
+
 
 QuestConfig parse_questConfig(
 	const std::string& quest_id, const YAML::Node& node) {
@@ -291,6 +313,7 @@ QuestConfig parse_questConfig(
 	return config;
 }
 
+
 // --- CONVERTER ---
 // Convert the direction in string to an enum.
 Direction convert_direction(const std::string& direction_str) {
@@ -302,6 +325,7 @@ Direction convert_direction(const std::string& direction_str) {
 	return Direction::UNKNOWN;
 }
 
+
 // Convert the item type in string to an enum.
 ItemType convert_itemType(const std::string& itemtype_str) {
 	if (itemtype_str == "weapon") return ItemType::WEAPON;
@@ -310,6 +334,7 @@ ItemType convert_itemType(const std::string& itemtype_str) {
 
 	return ItemType::UNKNOWN;
 }
+
 
 // Convert the enemy type in string to an enum.
 EnemyType convert_enemyType(const std::string& enemytype_str) {
@@ -321,6 +346,7 @@ EnemyType convert_enemyType(const std::string& enemytype_str) {
 	return EnemyType::UNKNOWN;
 }
 
+
 // Convert the quest stage in string to an enum.
 QuestStage convert_questStage(const std::string& quest_stage_str) {
 	if (quest_stage_str == "completed") return QuestStage::COMPLETED;
@@ -328,6 +354,7 @@ QuestStage convert_questStage(const std::string& quest_stage_str) {
 
 	return QuestStage::UNKNOWN;
 }
+
 
 // Convert the dialogue key in string to an enum.
 // Keys ending with "_" are numbered (talk_1, talk_2, ...). The other keys are written exactly as is.
@@ -356,6 +383,7 @@ ValidDialogueKey convert_DialogueKey(const std::string& dialogue_key_str) {
 	return ValidDialogueKey::UNKNOWN;
 }
 
+
 // --- CHECKER ---
 // Checker for the name and description.
 void check_global_data_validation(const std::string& name, const std::string& desc, const std::string& id) {
@@ -366,6 +394,7 @@ void check_global_data_validation(const std::string& name, const std::string& de
 		throw std::runtime_error(errDescEmpty(id));
 
 }
+
 
 // Check if the key is the prefix followed by a number only (ex: "talk_" + "12").
 // Because of the number, "act_pet_1" is not seen as an "act_" key.
@@ -382,11 +411,13 @@ bool is_numbered_key(const std::string& key, const std::string& prefix) {
 	return true;
 }
 
+
 // Check if int is positive.
 void check_int(int value, const std::string& id) {
 	if (0 > value)
 		throw std::runtime_error(errNotPositive(id));
 }
+
 
 void check_locations_data(
 	const WorldConfig& world,
