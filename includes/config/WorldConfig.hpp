@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:17:02 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 09:39:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 09:16:40 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ struct EntityConfig {
 	int												attack;
 	std::vector<DialogueStage>						dialogue_stage;
 	EnemyBehavior									behavior;
+	std::unordered_map<std::string, int>			stock_shop;
 };
 
 // Contains the data of a quest.

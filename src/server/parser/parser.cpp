@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/30 23:35:41 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 11:54:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 09:22:55 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,6 +265,14 @@ EntityConfig parse_entityConfig(
 			}
 			config.dialogue_stage.push_back(config_dialogue);
 		}
+	}
+
+	// Shop
+	if (node["stock_shop"] && node["stock_shop"].IsMap()) {
+		for (const auto& entry : node["stock_shop"]) {
+			int price = getValue<int>(node, "price", 1);
+			check_int(price, "price");
+			config.stock_shop[entry.first] = price;
 	}
 
 	return config;
