@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GasterManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 15:01:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 10:10:31 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -597,11 +597,13 @@ const std::string			GasterManager::useConsumableItem(const std::string &player_n
 		return "";
 	}
 
-	Item* item = getItem(item_name);
-	if (!item) {
+	std::optional<ItemID> item_id = it->second.player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
 		print_log(errCantFindItem(item_name));
 		return "";
 	}
+
+	Item* item = it->second.player->getItem(*item_id);
 
 	if (!it->second.player->checkItemInInventory(item->getUniqueID())) {
 		print_log(errItemNotInInventory(item_name));
