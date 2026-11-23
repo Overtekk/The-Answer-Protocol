@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 12:00:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 13:39:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -875,10 +875,12 @@ void	CommandHandler::commandHelpCombat(TCPSession &session, std::string &argumen
 	return;
 }
 
-// === HANDSHAKE COMMANDS ===
+// === SHOP COMMANDS ===
 void	CommandHandler::commandShopItems(TCPSession &session, std::string &argument) {
 	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.getShopItemsList(session.getUsername())));
+
 	return;
 }
 

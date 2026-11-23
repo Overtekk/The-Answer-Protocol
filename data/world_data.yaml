@@ -448,6 +448,7 @@ entities:
       "revive_mint": 30
       "bandage": 7
       "bandage_max": 14
+      "remote": 1
     hp: 999
 
   swatch:

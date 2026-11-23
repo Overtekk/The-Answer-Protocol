@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 11:06:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 13:12:15 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ class GasterManager {
 
 		// --- SHOP MANAGEMENT ---
 		const std::string	enterShop(const std::string& player_name, const std::string& entity_id);
-		const std::string	getShopItemsList(const std::string& player_name);
+		const std::string	getShopItemsList(const std::string& player_name) const;
 		const std::string	buyItem(const std::string& player_name);
 		const std::string	leaveShop(const std::string& player_name);
 

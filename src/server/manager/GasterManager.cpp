@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 11:51:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 13:36:44 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -788,6 +788,28 @@ const std::string	GasterManager::enterShop(const std::string &player_name, const
 }
 
 
+const std::string	GasterManager::getShopItemsList(const std::string& player_name) const {
+	const Player* player = getPlayer(player_name);
+	if (!player)
+		return "";
+
+	std::string shop_id = player->getCurrentShop();
+	const auto& it = _world_state.entities.find(shop_id);
+	if (it == _world_state.entities.end()) {
+		print_log(errCantFindEntity(shop_id));
+		return "";
+	}
+
+	NPCShop* npc_shop = dynamic_cast<NPCShop*>(it->second.get());
+	if (!npc_shop) {
+		print_log(errEntityNotShop(shop_id));
+		return "";
+	}
+
+	return _shop_manager.formatNpcShopMap(npc_shop);
+}
+
+
 const std::string	GasterManager::leaveShop(const std::string &player_name) {
 	Player* player = getPlayer(player_name);
 	if (!player)
@@ -798,6 +820,7 @@ const std::string	GasterManager::leaveShop(const std::string &player_name) {
 	return _dialogue_manager.getLeaveShopDialogue(current_shop);
 
 }
+
 
 // ============================================================================
 // ===================      COMMANDS - QUESTS        ==========================
@@ -844,6 +867,7 @@ const std::string	GasterManager::getQuestDescription(const std::string& player_n
 
 	return "quest name: \"" + quest_info["name"] + "\", quest description: \"" + quest_info["description"] + "\"";
 }
+
 
 // ============================================================================
 // ===================           CHECKER      =================================
