@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/09 12:43:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:45:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,14 @@ class DialogueManager {
 		std::optional<std::string>			getLine(const std::string& entity_id, const std::string& dialogue_key) const;
 		const std::vector<DialogueStage>&	getStages(const std::string& entity_id) const;
 
+		// combat
 		const std::string	getEncounterDialogue(const std::string& entity_id) const;
 		const std::string	getCheckDialogue(const std::string& entity_id) const;
 		const std::string	getNeutralDialogue(const std::string& entity_id) const;
+
+		// shop
+		const std::string	getGreetingsShopDialogue(const std::string& entity_id) const;
+		const std::string	getLeaveShopDialogue(const std::string& entity_id) const;
+		const std::string	getBuyShopDialogue(const std::string& entity_id) const;
+		const std::string	getNoMoneyShopDialogue(const std::string& entity_id) const;
 };

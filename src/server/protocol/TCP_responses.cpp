@@ -6,11 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 15:00:17 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:54:22 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "protocol/TCP_error.hpp"
+
 
 namespace {
 	struct ErrorInfo { int code; const char* name; const char* description; };
@@ -33,6 +34,7 @@ namespace {
 			case TCPErrorCode::ROOM_NOT_FOUND:			return {404, "ROOM_NOT_FOUND",			"The room can't be found."};
 			case TCPErrorCode::QUEST_NOT_FOUND:			return {404, "QUEST_NOT_FOUND",			"The requested quest can't be found."};
 			case TCPErrorCode::NPC_NOT_HOSTILE:			return {405, "NPC_NOT_HOSTILE",			"NPC cannot be attacked (not an enemy)."};
+			case TCPErrorCode::NPC_NOT_SHOP:			return {405, "NPC_NOT_SHOP",			"NPC is not a shop."};
 			case TCPErrorCode::NO_QUEST_AVAILABLE:		return {406, "NO_QUEST_AVAILABLE",		"NPC has no quests or quest already completed."};
 			case TCPErrorCode::NPC_NO_DIALOGUE:			return {407, "NPC_NO_DIALOGUE",			"It doesn't want to speak."};
 			case TCPErrorCode::NPC_NOT_IN_ROOM:			return {408, "NPC_NOT_IN_ROOM",			"The requested NPC is not in the same room as you."};
@@ -40,7 +42,7 @@ namespace {
 			case TCPErrorCode::ITEM_NOT_WEAPON:			return {409, "ITEM_NOT_WEAPON",			"Item requested is not a weapon."};
 			case TCPErrorCode::NOT_IN_COMBAT:			return {500, "NOT_IN_COMBAT",			"You are not in a combat currently."};
 			case TCPErrorCode::NOT_YOUR_TURN:			return {501, "NOT_YOURN_TURN",			"It's not your turn. Be patient."};
-			case TCPErrorCode::ALREADY_IN_COMBAT:		return {502, "ALREADY_IN_COMBAT",		"This entity is already in a combat."};
+			case TCPErrorCode::NO_MONEY:				return {600, "NO_MONEY",				"You don't have enought money."};
 			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
 			case TCPErrorCode::SEND_FAILED:				return {901, "SEND_FAILED",				"Message transmission failed."};
@@ -50,12 +52,14 @@ namespace {
 	}
 }
 
+
 // ===== PUBLIC =====
 // * Return the error and the description to the client. *
 std::string getTCP_error(TCPErrorCode e) {
 	ErrorInfo i = getErrorInfo(e);
 	return "ERR " + std::to_string(i.code) + " " + i.name + " : " + i.description + "\n\n";
 }
+
 
 // * Return a string with an 'ok' at the start for successfully operation. *
 std::string	getTCP_OK_operation(const std::string& msg) {

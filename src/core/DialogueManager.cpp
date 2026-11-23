@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 13:34:31 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 14:47:30 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "config/config_messages.h"
 # include "core/DialogueManager.hpp"
 # include "utils.h"
+
 
 // ============================================================================
 // =====================       CONSTRUCTOR      ===============================
@@ -55,6 +56,7 @@ DialogueManager::DialogueManager(const std::unordered_map<std::string, EntityCon
 	}
 }
 
+
 // ============================================================================
 // =====================          PUBLIC      =================================
 // ============================================================================
@@ -63,6 +65,7 @@ DialogueManager::DialogueManager(const std::unordered_map<std::string, EntityCon
 bool								DialogueManager::hasKey(const std::string& entity_id, const std::string& dialogue_key) const {
 	return findLine(entity_id, dialogue_key) != nullptr;
 }
+
 
 // * Return the dialogue string of the entity if exist. *
 std::optional<std::string>			DialogueManager::getLine(const std::string& entity_id, const std::string& dialogue_key) const {
@@ -75,6 +78,7 @@ std::optional<std::string>			DialogueManager::getLine(const std::string& entity_
 	return *line;
 }
 
+
 // Get a dialogue stage from an entity. *
 const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& entity_id) const {
 	const auto& it = _stages_map.find((entity_id));
@@ -83,7 +87,8 @@ const std::vector<DialogueStage>&	DialogueManager::getStages(const std::string& 
 	return it->second;
 }
 
-// --- GETTER ---
+
+// combat
 const std::string	DialogueManager::getEncounterDialogue(const std::string& entity_id) const {
 	std::optional<std::string> result = getLine(entity_id, "encounter");
 	if (result)
@@ -91,12 +96,14 @@ const std::string	DialogueManager::getEncounterDialogue(const std::string& entit
 	return entity_id + " is here!";
 }
 
+
 const std::string	DialogueManager::getCheckDialogue(const std::string &entity_id) const {
 	std::optional<std::string> result = getLine(entity_id, "check_default");
 	if (result)
 		return *result;
 	return entity_id;
 }
+
 
 const std::string	DialogueManager::getNeutralDialogue(const std::string &entity_id) const {
 	const auto result = _neutral_count_map.find(entity_id);
@@ -112,6 +119,40 @@ const std::string	DialogueManager::getNeutralDialogue(const std::string &entity_
 		return entity_id + " is watching at you.";
 	return *result_line;
 }
+
+
+// shop
+const std::string	DialogueManager::getGreetingsShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "shop_greeting");
+	if (!result_line)
+		return entity_id + ": welcome!";
+	return entity_id + ": " + *result_line;
+}
+
+
+const std::string	DialogueManager::getLeaveShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "quit");
+	if (!result_line)
+		return entity_id + ": bye!";
+	return entity_id + ": " + *result_line;
+}
+
+
+const std::string	DialogueManager::getBuyShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "buy");
+	if (!result_line)
+		return entity_id + ": thank you!";
+	return entity_id + ": " + *result_line;
+}
+
+
+const std::string	DialogueManager::getNoMoneyShopDialogue(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "no_money");
+	if (!result_line)
+		return entity_id + ": you don't have enought $!";
+	return entity_id + ": " + *result_line;
+}
+
 
 // ============================================================================
 // =====================          PRIVATE      ================================

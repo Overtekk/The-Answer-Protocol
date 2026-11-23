@@ -436,8 +436,7 @@ entities:
       talk_3: "COME TO MY [Shopping Mall]."
       talk_4: "YOU HAVE [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]] [[pipis]]"
       talk_5: "I GIVE YOU A [Big Deal]. HERE [[hyperlink blocked]]."
-      shop_1: "WELCOME TO MY HOME [Shopping Center]!!!"
-      shop_2: "LET'S MAKE A DEAL."
+      shop_greeting: "WELCOME TO MY HOME [Shopping Center]!!! LET'S MAKE A DEAL."
       no_money: "MONEY NO [Not enought D$]"
       buy: "DEALS SO GOOD I'LL [$!$$] MYSELF!"
       remote: "CAN'T [buy] THIS. PRECIOUS. BUT [[pipis]] NOT FOUND. BRING BACK [[pipis]]. [7]"
@@ -450,6 +449,12 @@ entities:
         wait_quest: "bring_pipis"
         wait_for: "completed"
     type: "shop"
+    stock_shop:
+      "ultimate_sword": 100
+      "revive_mint": 30
+      "bandage": 7
+      "bandage_max": 14
+      "remote": 1
     hp: 999
 
   swatch:
@@ -457,11 +462,16 @@ entities:
     description: "He like juice."
     sprite: "assets/sprites/player/kris_walk.png"
     dialogue:
-      shop_1: "..."
+      shop_greeting: "... ;-)"
       no_money: ":["
       buy: ":}"
       quit: ";)"
     type: "shop"
+    stock_shop:
+      "saber10": 45
+      "revive_mint": 29
+      "giga_salad": 10
+      "cd_bagel": 15
     hp: 999
 
 # --- QUESTS ---

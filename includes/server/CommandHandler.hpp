@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:33:51 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 10:35:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class CommandHandler {
 		void	handleHandshake(TCPSession& session, const std::string& raw_line);
 		void	handleGameCommand(TCPSession& session, const std::string& raw_line);
 		void	handleCombatCommand(TCPSession& session, const std::string& raw_line);
+		void	handleShopCommand(TCPSession& session, const std::string& raw_line);
 		void	handleUsernameLoggingCommand(TCPSession& session, const std::string& raw_line);
 
 		// COMMANDS
@@ -69,6 +70,11 @@ class CommandHandler {
 		void	commandCombatFlee(TCPSession& session, std::string& argument);
 		void	commandCombatStatus(TCPSession& session, std::string& argument);
 		void	commandHelpCombat(TCPSession& session, std::string& argument);
+		// shop
+		void	commandShopItems(TCPSession& session, std::string& argument);
+		void	commandShopBuy(TCPSession& session, std::string& argument);
+		void	commandShopQuit(TCPSession& session, std::string& argument);
+		void	commandShopHelp(TCPSession& session, std::string& argument);
 		// username logging
 		void	commandLoggingUsernameChange(TCPSession& session, std::string& argument);
 		void	commandLoggingUsernameKeep(TCPSession& session, std::string& argument);
