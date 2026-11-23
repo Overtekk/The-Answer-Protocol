@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 15:00:27 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/23 10:14:30 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <atomic>
 # include <string>
 # include <unordered_map>
 # include <cctype>
@@ -909,12 +910,12 @@ bool	CommandHandler::manageCombatTurn(TCPSession& session) {
 
 void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& result, std::string& argument) {
 	if (result == CombatStatus::PLAYER_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}
