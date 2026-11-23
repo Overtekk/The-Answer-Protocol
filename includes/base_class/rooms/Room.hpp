@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 11:59:17 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/22 18:17:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 08:39:23 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ class Room {
 		bool			placeItem(Item* item);
 		Item*			popItem(ItemID item_id);
 		Item*			getItem(ItemID item_id);
+		Item*			findItemByName(const std::string& item_id);
 
 		// Directions
 		void			setExitNorth(Room* room);

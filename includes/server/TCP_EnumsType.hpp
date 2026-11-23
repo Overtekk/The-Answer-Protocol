@@ -53,8 +53,8 @@ enum class GameCommand {
 enum class CombatCommand {
 	ATTACK,
 	ACT, //todo
-	ITEM, //todo
-	SPARE, //todo
+	ITEM,
+	SPARE,
 	FLEE,
 	CHECK,
 	STATUS,

@@ -9,8 +9,8 @@ world:
       exits:
         west: "road_traffic"
         east: "carnival"
-      spawns: ["dummy", "swatch", "spamton"]
-      items: []
+      spawns: ["dummy"]
+      items: ["sugar"]
 
   # CITY ROAD TRAFFIC
     road_traffic:
@@ -21,7 +21,7 @@ world:
         north: "city_too"
         east: "spawn"
       spawns: []
-      items: []
+      items: ["sugar"]
 
   # CITY TOO
     city_too:
@@ -32,7 +32,7 @@ world:
         north: "manor_entrance"
         south: "road_traffic"
       spawns: ["virovirokun"]
-      items: ["bandage_max"]
+      items: ["bandage_max", "sugar"]
 
   # MANOR ENTRANCE
     manor_entrance:
@@ -44,7 +44,7 @@ world:
         east: "back_street"
         south: "city_too"
       spawns: ["guard_dog", "k_round"]
-      items: []
+      items: ["sugar"]
 
   # BACK STREET
     back_street:
@@ -55,7 +55,7 @@ world:
         west: "manor_entrance"
         east: "cyber_field"
       spawns: ["maus", "susie"]
-      items: []
+      items: ["sugar"]
 
   # CYBER FIELD
     cyber_field:
@@ -77,7 +77,7 @@ world:
         north: "cyber_field"
         south: "carnival"
       spawns: ["spamton"]
-      items: []
+      items: ["sugar", "giga_salad"]
 
   # CARNIVAL
     carnival:
@@ -88,7 +88,7 @@ world:
         north: "trash_area"
         west: "spawn"
       spawns: ["ralsei"]
-      items: ["bandage"]
+      items: ["bandage", "sugar"]
 
   # MANOR HALL
     hall_shop:
@@ -99,7 +99,7 @@ world:
         north: "queen_castle"
         east: "manor_entrance"
       spawns: ["swatch"]
-      items: []
+      items: ["sugar"]
 
   # QUEEN CASTLE
     queen_castle:
@@ -110,7 +110,7 @@ world:
         east: "throne"
         south: "hall_shop"
       spawns: ["swatchlings"]
-      items: []
+      items: ["sugar"]
 
   # QUEEN THRONE
     throne:
@@ -120,7 +120,7 @@ world:
       exits:
         west: "queen_castle"
       spawns: ["queen"]
-      items: []
+      items: ["sugar"]
 
 # SPECIAL ROOMS
   # EGG ROOM
@@ -230,6 +230,12 @@ items:
     bonus_max: 50
 
   # CONSUMABLES
+  sugar:
+    name: "Sugar"
+    description: "Little piece of sugar found on the ground and a bit smelted..."
+    type: "consumable"
+    hp: 2
+
   bandage:
     name: "Bandage"
     description: "It has cartoon characters on it."

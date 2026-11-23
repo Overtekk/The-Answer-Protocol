@@ -97,5 +97,6 @@ class CommandHandler {
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
 		void	processAdminCommand(const std::string& cmd);
+		void	clearDisconnectedPlayer(TCPSession& session);
 		void	updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions);
 };

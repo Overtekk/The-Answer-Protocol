@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   GasterManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
 /*   Updated: 2026/11/23 15:10:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <algorithm>
 # include <chrono>
 # include <memory>
 # include <optional>
+# include <stdexcept>
 # include <utility>
 # include <string>
 # include <unordered_map>
@@ -54,7 +56,6 @@ GasterManager::GasterManager(WorldConfig& world_data):
 		// Create all the objects
 		createRoom();
 		createEntities();
-		createItems();
 		// Fill the rooms data
 		fillRoomsData();
 	}
@@ -92,10 +93,10 @@ void	GasterManager::createPlayer(const std::string& player_name) {
 
 	// Create and equip the starting weapon on the player
 	std::string name_player = player_name;
-	std::string item_id = createStartingWeapon(name_player);
-	player->setEquippedWeapon(_world_state.items[item_id].get());
+	Item* weapon = createStartingWeapon(name_player);
+	player->setEquippedWeapon(weapon);
 
-	print_log(SuccessAddDefaultWeapon(player_name, item_id));
+	print_log(SuccessAddDefaultWeapon(player_name, weapon->getID()));
 }
 
 
@@ -357,18 +358,14 @@ ReturnState			GasterManager::takeItem(const std::string& player_name, const std:
 	}
 
 	// Get the item requested
-	Item* item = getItem(item_name);
+	Item* item = player_room->findItemByName(item_name);
 	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
+		print_log(errItemNotInRoom(item_name));
+		return ReturnState::ITEM_NOT_IN_PLAYER_ROOM;
 	}
 
 	// Pop item from the room
 	Item* item_room = player_room->popItem(item->getUniqueID());
-	if (!item_room) {
-		print_log(errItemNotInRoom(item_name));
-		return ReturnState::ITEM_NOT_IN_PLAYER_ROOM;
-	}
 
 	// Add to inventory
 	player->addItemToInventory(item_room);
@@ -393,14 +390,14 @@ ReturnState			GasterManager::dropItem(const std::string& player_name, const std:
 	}
 
 	// Get the item requested
-	Item* item = getItem(item_name);
-	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (!item_id) {
+		print_log(errItemNotInInventory(item_name));
+		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
 	}
 
 	// Pop item from player inventory
-	Item *item_player = player->popItemFromInventory(item->getUniqueID());
+	Item *item_player = player->popItemFromInventory(*item_id);
 	if (!item_player) {
 		print_log(errItemNotInInventory(item_name));
 		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
@@ -430,16 +427,12 @@ ReturnState			GasterManager::equipNewWeapon(const std::string &player_name, cons
 		return ReturnState::PLAYER_NOT_FOUND;
 	}
 
-	Item* item = getItem(item_name);
-	if (!item) {
-		print_log(errCantFindItem(item_name));
-		return ReturnState::ITEM_NOT_FOUND;
-	}
-
-	if (!player->checkItemInInventory(item->getUniqueID())) {
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
 		print_log(errItemNotInInventory(item_name));
 		return ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY;
 	}
+	Item* item = player->getItem(*item_id);
 
 	if (item->getType() != ItemType::WEAPON) {
 		print_log(errItemNotWeapon(item_name));
@@ -461,13 +454,13 @@ const std::string	GasterManager::getItemStat(const std::string &player_name, con
 		return "";
 
 	// Get the item requested
-	Item* item = getItem(item_name);
-	if (!item) {
+	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
 		print_log(errCantFindItem(item_name));
 		return "";
 	}
 
-	return player->getItemStats(item->getUniqueID());
+	return player->getItemStats(*item_id);
 }
 
 // ============================================================================
@@ -568,9 +561,15 @@ ReturnState					GasterManager::isEnemyType(const std::string& player_name, const
 		return ReturnState::ENTITY_NOT_IN_PLAYER_ROOM;
 	}
 
+	// check if the entity is enemy type
 	if (entity_in_room->getType() != EnemyType::ENEMY) {
 		print_log(errEntityNotEnemy(entity->getName()));
 		return ReturnState::ENTITY_NOT_ENEMY;
+	}
+
+	if (entity_in_room->inCombat()) {
+		print_log(errEntityAlreadyInCombat(entity->getName()));
+		return ReturnState::ENTITY_ALREADY_IN_BATTLE;
 	}
 
 	CombatProgress combat_progress;
@@ -579,7 +578,6 @@ ReturnState					GasterManager::isEnemyType(const std::string& player_name, const
 	combat_progress.turn = CombatTurn::PLAYER;
 	_combat_lists[player->getName()] = combat_progress;
 	print_log(SuccessCombatStarted(player_name, entity_id));
-
 
 	return ReturnState::VALID;
 }
@@ -1071,6 +1069,10 @@ void			GasterManager::createEntities() {
 				fillShopNPC(entity_ptr);
 		}
 	}
+
+	Item* raw = new_item.get();
+	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
+	return raw;
 }
 
 
@@ -1100,7 +1102,10 @@ void			GasterManager::fillRoomsData() {
 		}
 		// Fill the items
 		for (const auto& item : config.items) {
-			data->placeItem(_world_state.items[item].get());
+			Item* new_item = createItem(item);
+			if (!new_item)
+				throw std::runtime_error("Error when trying to create: \"" + item + "\".");
+			data->placeItem(new_item);
 		}
 		// Fill entities
 		for (const auto& entity : config.spawns) {
@@ -1190,9 +1195,9 @@ std::string		GasterManager::createStartingWeapon(std::string& player_name) {
 		ItemType::WEAPON, 2, 0, 0, 1
 	);
 
-	std::string id = new_item->getID();
-	_world_state.items[new_item->getID()] = std::move(new_item);
-	return id;
+	Item* raw = new_item.get();
+	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
+	return raw;
 }
 
 

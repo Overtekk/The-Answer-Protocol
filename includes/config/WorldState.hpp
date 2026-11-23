@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 09:27:15 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 10:11:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 08:21:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 struct WorldState {
 	std::unordered_map<std::string, std::unique_ptr<Room>>		rooms;
 	std::unordered_map<std::string, std::unique_ptr<Entity>>	entities;
-	std::unordered_map<std::string, std::unique_ptr<Item>>		items;
+	std::unordered_map<ItemID, std::unique_ptr<Item>>			items;
 	std::unordered_map<std::string, std::unique_ptr<Player>>	players;
 	std::unordered_map<std::string, std::unique_ptr<Player>>	old_players;
 };

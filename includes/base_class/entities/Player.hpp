@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 11:39:40 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 12:22:24 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,5 @@ class Player : public Entity {
 
 		bool 			checkItemInInventory(ItemID id) const;
 		std::string		getItemInInventory(bool add_details) const;
+		std::string		getConsumableInInventory() const;
 };

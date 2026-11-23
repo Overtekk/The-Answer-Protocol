@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
 /*   Updated: 2026/11/23 15:11:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <atomic>
 # include <string>
 # include <unordered_map>
 # include <cctype>
@@ -886,8 +887,20 @@ void	CommandHandler::commandCombatSpare(TCPSession &session, std::string &argume
 
 
 void	CommandHandler::commandCombatItem(TCPSession &session, std::string &argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+	if (argument.empty()) {
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.getConsumableItemsList(session.getUsername())));
+		return;
+	}
+
+	const std::string result = _manager.useConsumableItem(session.getUsername(), argument);
+	if (result.empty()) {
+		session.add_msg_to_buffer(getTCP_error(TCPErrorCode::ITEM_NOT_FOUND));
+		return;
+	}
+
+	session.add_msg_to_buffer(getTCP_OK_operation(result));
+	session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
+
 	return;
 }
 
@@ -1082,12 +1095,12 @@ bool	CommandHandler::manageCombatTurn(TCPSession& session) {
 
 void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& result, std::string& argument) {
 	if (result == CombatStatus::PLAYER_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
-		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
+		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}

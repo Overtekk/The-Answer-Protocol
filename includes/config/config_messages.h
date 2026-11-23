@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:00:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 15:02:28 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 // ==============
 # define QUIT_CMD					"QUIT"
 # define CONNEXION_CLOSED			"Connection closed\n"
-# define CONNEXION_CLOSED_CLIENT	"connection closed by client."
+# define CONNEXION_CLOSED_CLIENT	"connection closed by client (ctrl+c)."
 # define SERVER_BYE					"bye"
 # define DISCONNEXION_MSG			"left the game."
 # define CONNEXION_FAREWELL			"OK " SERVER_BYE

@@ -132,6 +132,7 @@ class GasterManager {
 		ReturnState			dropItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			equipNewWeapon(const std::string& player_name, const std::string& item_name);
 		const std::string	getItemStat(const std::string& player_name, const std::string& item_name);
+		Item*				createItem(const std::string& config_id);
 
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
@@ -151,6 +152,8 @@ class GasterManager {
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
 		const std::string	getCombatStatus(const std::string& player_name);
+		const std::string	getConsumableItemsList(const std::string& player_name);
+		const std::string	useConsumableItem(const std::string& player_name, const std::string& item_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
 		const std::string	combatEnemyAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 13:48:06 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:41:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,8 +247,8 @@ void	TCPServer::handleClientRead(int fd) {
 	OperationState state = it->second->readData();
 	if (state == OperationState::DECONNEXION || state == OperationState::NETWORK_ERROR) {
 		print_log_message(*(it->second), CONNEXION_CLOSED_CLIENT);
+		_cmd_handler.clearDisconnectedPlayer(*it->second);
 		disconnectedClient(fd);
-		std::cout << getTCP_error(TCPErrorCode::CONNEXION_ERROR);
 		return;
 	}
 
