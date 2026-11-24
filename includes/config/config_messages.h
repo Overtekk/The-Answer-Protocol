@@ -6,20 +6,22 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 14:16:54 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:32:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <string>
-#include "config/config.hpp"
+# include <string>
+
+# include "config/config.hpp"
 
 // ==============
 // ==== NAME ====
 // ==============
 # define NAME_SERVER				"[Server] "
 # define NAME_GASTER_MANAGER		"[GasterManager]: "
+# define NAME_SHOP_MANAGER			"[ShopManager]: "
 
 // ==============
 // == ACTIONS ===
@@ -28,6 +30,8 @@
 # define ACT_FAILED_FLEE		"You slipped on a rock. You didn't succeed!"
 # define ACT_COMBAT_WON			"You won the combat."
 # define ACT_COMBAT_LOSE		"You lose the combat."
+# define ACT_SUCCESS_SPARE		"You spared the entity successfully!"
+# define ACT_FAILED_SPARE		"The spared act have failed. Entity can't be spared."
 
 # define ADMIN_KILL_CMD			"You have been killed by a god of an other world."
 
@@ -36,7 +40,7 @@
 // ==============
 # define QUIT_CMD					"QUIT"
 # define CONNEXION_CLOSED			"Connection closed\n"
-# define CONNEXION_CLOSED_CLIENT	"connection closed by client."
+# define CONNEXION_CLOSED_CLIENT	"connection closed by client (ctrl+c)."
 # define SERVER_BYE					"bye"
 # define DISCONNEXION_MSG			"left the game."
 # define CONNEXION_FAREWELL			"OK " SERVER_BYE
@@ -75,8 +79,13 @@ inline std::string	SuccessPlayerRespawned(const std::string& player_name) { retu
 inline std::string	SuccessEntityDeleted(const std::string& entity_id) { return NAME_GASTER_MANAGER "entity \"" + entity_id + "\" have been deleted."; }
 inline std::string	SuccessPlayerFled(const std::string& player_name) { return NAME_GASTER_MANAGER "player \"" + player_name + "\" have flee the combat."; }
 inline std::string	SuccessPlayerKilledByAdmin(const std::string& player_name) { return NAME_GASTER_MANAGER "player \"" + player_name + "\" has been killed by the admin."; }
-inline std::string	SuccessAdminKill(const std::string& player_name) { return "player '" + player_name + "' has been killed with success."; }
-inline std::string	SuccessNewPlayerCreated(const std::string& player_name) { return "new player created: '" + player_name + "'"; }
+inline std::string	SuccessAdminKill(const std::string& player_name) { return "player \"" + player_name + "\" has been killed with success."; }
+inline std::string	SuccessNewPlayerCreated(const std::string& player_name) { return "new player created: \"" + player_name + "\""; }
+inline std::string	SuccessPlayerEnteredShop(const std::string& player_name, const std::string& entity_name) { return "player \"" + player_name + "\" have entered in the shop of " + entity_name; }
+inline std::string	SuccessPlayerBuy(const std::string& item_id) { return "have buy \"" + item_id + "\"";}
+inline std::string	SuccessPlayerLeavedShop(const std::string& player_name) { return "player \"" + player_name + "\" have leaved the shop"; }
+
+inline std::string	addItemInInventory(const std::string item_id) { return item_id + "added in inventory."; }
 
 
 // ==============
@@ -94,6 +103,52 @@ inline std::string	logErasePlayer(const std::string& player_name) { return playe
 inline std::string	logReconnectPlayer(const std::string& player_name) { return player_name + " have reconneted."; }
 
 // === OK REPLIES (sent to the clients) ===
+# define okHelpHandshakeCommand	"Available commands: \"CONNECT {username}\" | \"HELP {command}\" | \"QUIT\""
+# define okHelpGameCommand		"Available commands: \"LOOK\" | \"MOVE {direction}\" | \"WHO\" | \"TAKE {id}\" | \"DROP {id}\" | \"INVENTORY\" | "\
+								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"ITEM_INFO {id}\" | "\
+								"\"CHAT {message}\" | \"GROUP_CREATE {name}\" | \"GROUP_INVITE {username}\" | \"GROUP_JOIN\" | \"GROUP_LEAVE\" | \"HELP {command}\" | \"QUIT\""
+# define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"CHECK\" | \"STATUS\" | \"HELP {command}\""
+# define okHelpShopCommmand		"Available commands: \"ITEMS\" | \"BUY {item}\" | \"ITEM_INFO {id}\" | \"INVENTORY\" | \"QUIT\" | \"HELP {command}\""
+# define okHelpLoggingCommand	"Available commands: \"KEEP\" | \"DELETE\" | \"change {username}\" | \"HELP {command}\" | \"QUIT\""
+
+# define helpConnectCommand		"CONNECT: Connect you to the game with the provided username."
+# define helpHelpCommand		"HELP: give information about a command."
+# define helpQuitCommand		"QUIT: leave the game."
+
+# define helpLookCommand		"LOOK: give informations about the current room (name, rooms connexion, players, items, entities...)"
+# define helpMoveCommand		"MOVE: move to the next room using \"NORTH\", \"EAST\", \"WEST\", \"SOUTH\" if possible."
+# define helpWhoCommand			"WHO: show the list of players connected."
+# define helpTakeCommand		"TAKE: take the requested item from the room to your inventory."
+# define helpDropCommand		"DROP: drop an item from your inventory into the current room."
+# define helpInventoryCommand	"INVENTORY: show your current inventory and equipped weapon."
+# define helpTalkCommand		"TALK: talk to the requested NPC in the current room."
+# define helpAttackCommand		"ATTACK: attack the request NPC if it's an enemy and launch a combat."
+# define helpStatusCommand		"STATUS: show your stats (HP, armor, luck...)"
+# define helpQuestCommand		"QUEST: show information about the requested quest."
+# define helpQuestsCommand		"QUESTS: show your current quests."
+# define helpEquipCommand		"EQUIP: equip the requested item if it's a weapon."
+# define helpInfoItemCommand	"INFO_ITEM: give information about the requested item."
+# define helpChatCommand		"CHAT: send a message to the other players."
+# define helpGroupCreateCommand	"GROUP_CREATE: create a group with the provided name."
+# define helpGroupInviteCommand	"GROUP_INVITE: invite the requested player to your group."
+# define helpGroupJoinCommand	"GROUP_JOIN: join the group based of your last invitation."
+# define helpGroupLeaveCommand	"GROUP_LEAVE: leave your current group."
+
+# define helpCombatAttackCommand	"ATTACK: attack the current enemy with your weapon."
+# define helpCombatActCommand		"ACT: show the list of action OR act with the requested action."
+# define helpCombatItemCommand		"ITEM: show the list of your items OR use the requested item."
+# define helpCombatSpareCommand		"SPARE: spare an enemy if possible."
+# define helpCombatFleeCommand		"FLEE: try to flee based on your luck, your hp and the enemy HP."
+# define helpCombatCheckCommand		"CHECK: check the enemy information"
+
+# define helpShopItemsCommand	"ITEMS: show the list of available items to buy and their price."
+# define helpShopBuyCommand		"BUY: buy the requested item if you have the funds."
+# define helpShopQuitCommand	"QUIT: leave the shop."
+
+# define helpKeepCommand		"KEEP: keep the current username and progression saved."
+# define helpDeleteCommand		"DELETE: delete the progression of the current username and start fresh."
+# define helpChangeCommand		"CHANGE: change the requested username and connect with it."
+
 inline std::string	okTaken(const std::string& item) { return "taken=" + item; }
 inline std::string	okDropped(const std::string& item) { return "dropped=" + item; }
 inline std::string	okRoom(const std::string& room) { return "room=" + room; }
@@ -110,6 +165,12 @@ inline std::string	actPlayerAttack(const std::string& entity_name, int damage, i
 inline std::string	actEnemyNoDamage(const std::string& entity_name) { return entity_name + " dealt no damage to you."; }
 inline std::string	actEnemyAttack(const std::string& entity_name, int damage) { return entity_name + " attacked you with a strength of " + std::to_string(damage); }
 inline std::string	actPlayerBlocked(const std::string& entity_name) { return "You blocked " + entity_name + " damage."; }
+
+// === SHOP MESSAGES (sent to the clients) ===
+# define logLeaveShop	"You've leaved the shop."
+
+inline std::string	logEnterShop(const std::string& entity_name) { return "You've entered - " + entity_name + "'s shop -"; }
+
 
 // ==============
 // === ERRORS ===
@@ -138,6 +199,8 @@ inline std::string	errCantCheckNoCombat(const std::string& player_name) { return
 inline std::string	errCantGetPlayerRoom(const std::string& player_name) { return NAME_GASTER_MANAGER "can't get the room of \"" + player_name + "\"."; }
 inline std::string	errEntityNotInRoom(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not in player room."; }
 inline std::string	errEntityNotEnemy(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not an enemy."; }
+inline std::string	errEntityAlreadyInCombat(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" is already in a combat. Combat launch aborted."; }
+inline std::string	errEntityNotShop(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not a shop."; }
 inline std::string	errItemNotInRoom(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in room."; }
 inline std::string	errItemNotInInventory(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in player inventory."; }
 inline std::string	errCantKillPlayer(const std::string& player_name) { return "can't kill '" + player_name + "': player not found."; }
@@ -159,8 +222,12 @@ inline std::string	errInvalidIp(const std::string& ip) { return "Invalid IP addr
 inline std::string	errConnectionFailed(const std::string& ip, int port) { return "Connection to server failed (" + ip + ":" + std::to_string(port) + ")."; }
 
 // === ERRORS - MANAGERS ===
+// -- GasterManager --
 inline std::string	errDialogueNotFound(const std::string& entity_id, const std::string& key) { return "DialogueManager: can't find dialogue \"" + key + "\" for entity \"" + entity_id + "\"."; }
 inline std::string	errQuestNotExist(const std::string& quest_id) { return "\"" + quest_id + "\" doesn't exist."; }
+
+// --- ShopManager --
+inline std::string	errShopItemRemove(const std::string& entity_id, const std::string& item_id) { return "Can't delete \"" + item_id + "\" from \"" + entity_id + "\"."; }
 
 // === ERRORS - PARSER (server) ===
 # define STAGE_REASON_NOT_MAP			"not a map"
@@ -175,8 +242,10 @@ inline std::string	errDescEmpty(const std::string& id) { return id + " descripti
 inline std::string	errNotPositive(const std::string& id) { return id + " invalid integer. Need to be positive."; }
 inline std::string	warnDialogueIgnored(const std::string& entity_id) { return "Dialogues will be ignored for \"" + entity_id + "\" because it as custom behavior."; }
 inline std::string	warnDialogueNotScalar(const std::string& entity_id, const std::string& key) { return "Dialogue not scalar for \"" + entity_id + " \" and key:\"" + key + "\""; }
+inline std::string	warningStockMapButNotShopType(const std::string& entity_id) { return "\"" + entity_id + "\" have a stock_shop but is not of type shop. It will not be registered."; }
 inline std::string	errInvalidDialogueKey(const std::string& entity_id, const std::string& key) { return "invalid dialogue key \"" + key + "\" for entity \"" + entity_id + "\"."; }
 inline std::string	errInvalidStage(const std::string& entity_id, const std::string& reason) { return "invalid dialogue stage for entity \"" + entity_id + "\" : invalid = " + reason; }
+inline std::string	errInvalidItemStock(const std::string& entity_id, const std::string& item_id) { return "\"" + entity_id + "\" have an unkown item is in stock shop (\"" + item_id + "\")";}
 inline std::string	stageReasonNotPositive(int last_stage) { return std::to_string(last_stage) + "."; }
 inline std::string	stageReasonNotIncreasing(int last_stage, int previous) { return std::to_string(last_stage) + " must be greater than previous stage " + std::to_string(previous) + "."; }
 inline std::string	stageReasonMissingKey(int last_stage) { return "missing dialogue key: " + std::to_string(last_stage); }
@@ -186,3 +255,6 @@ inline std::string	errMissingResource(const std::string& id, const std::string& 
 inline std::string	errBadResourceExt(const std::string& id, const std::string& kind, const std::string& allowed) { return "'" + id + "' " + kind + " must be in " + allowed + "."; }
 inline std::string	errCantFindPlayerZone(const std::string& player_name) { return NAME_GASTER_MANAGER "can't find the zone of player '" + player_name + "'."; }
 inline std::string	errBadMovement(const std::string& player_zone, const std::string& direction) { return NAME_GASTER_MANAGER "bad direction '" + direction + "' for zone '" + player_zone + "'.";}
+
+// === ERRORS - OTHER ===
+inline std::string	errRandomGenerationBounds(int min, int max) { return "RandomGeneration: error " + std::to_string(min) + " superior to " + std::to_string(max); }

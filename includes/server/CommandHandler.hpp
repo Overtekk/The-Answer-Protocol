@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 13:15:21 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 10:35:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class CommandHandler {
 		void	handleHandshake(TCPSession& session, const std::string& raw_line);
 		void	handleGameCommand(TCPSession& session, const std::string& raw_line);
 		void	handleCombatCommand(TCPSession& session, const std::string& raw_line);
+		void	handleShopCommand(TCPSession& session, const std::string& raw_line);
 		void	handleUsernameLoggingCommand(TCPSession& session, const std::string& raw_line);
 
 		// COMMANDS
@@ -38,6 +39,7 @@ class CommandHandler {
 		// handshake
 		void	commandConnect(TCPSession& session, std::string& argument);
 		void	commandQuit(TCPSession& session, std::string& argument);
+		void	commandHelpHandShake(TCPSession& session, std::string& argument);
 		// games
 		void	commandWho(TCPSession& session, std::string& argument);
 		void	commandLook(TCPSession& session, std::string& argument);
@@ -58,6 +60,7 @@ class CommandHandler {
 		void	commandQuestInfo(TCPSession& session, std::string& argument);
 		void	commandEquip(TCPSession& session, std::string& argument);
 		void	commandItemStat(TCPSession& session, std::string& argument);
+		void	commandHelpGame(TCPSession& session, std::string& argument);
 		// combats
 		void	commandCombatAttack(TCPSession& session, std::string& argument);
 		void	commandCombatCheck(TCPSession& session, std::string& argument);
@@ -66,14 +69,22 @@ class CommandHandler {
 		void	commandCombatSpare(TCPSession& session, std::string& argument);
 		void	commandCombatFlee(TCPSession& session, std::string& argument);
 		void	commandCombatStatus(TCPSession& session, std::string& argument);
+		void	commandHelpCombat(TCPSession& session, std::string& argument);
+		// shop
+		void	commandShopItems(TCPSession& session, std::string& argument);
+		void	commandShopBuy(TCPSession& session, std::string& argument);
+		void	commandShopQuit(TCPSession& session, std::string& argument);
+		void	commandShopHelp(TCPSession& session, std::string& argument);
 		// username logging
 		void	commandLoggingUsernameChange(TCPSession& session, std::string& argument);
 		void	commandLoggingUsernameKeep(TCPSession& session, std::string& argument);
 		void	commandLoggingUsernameErase(TCPSession& session, std::string& argument);
+		void	commandHelpLogging(TCPSession& session, std::string& argument);
 
 		// MANAGEMENTS
 		bool	manageCombatTurn(TCPSession& session);
 		void	manageCombatResult(TCPSession& session, CombatStatus& result, std::string& argument);
+		void	manageCombatFinish(TCPSession& session);
 
 		// SEND ERROR
 		void	sendErrorToUser(TCPSession& session, ReturnState return_error);
@@ -86,5 +97,6 @@ class CommandHandler {
 
 		void	processCommand(TCPSession& session, const std::string& raw_line);
 		void	processAdminCommand(const std::string& cmd);
+		void	clearDisconnectedPlayer(TCPSession& session);
 		void	updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions);
 };

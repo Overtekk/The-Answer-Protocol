@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 12:14:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/21 14:18:25 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/20 14:20:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ std::string quest_state_to_string(QuestState state);
 // - String to enum convert -
 Direction direction_str_to_enum(const std::string& direction_str);
 
+// - Random -
+int	generate_value_random_between(int min, int max);
+
 // Extract a element from a queue, pop it and return the value
 template <typename T>
 T pop_front(std::queue<T>& q) {
@@ -41,3 +44,4 @@ T pop_front(std::queue<T>& q) {
     q.pop();
     return val;
 }
+

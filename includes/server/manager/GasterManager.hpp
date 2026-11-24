@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/16 13:52:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:33:37 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,15 @@
 # include "core/QuestManager.hpp"
 # include "core/DialogueManager.hpp"
 # include "core/CombatManager.hpp"
+# include "core/ShopManager.hpp"
+
 
 // Dialogue
-enum class TalkStatus {OK, NOT_FOUND, NO_DIALOGUE};
+enum class TalkStatus {OK, NOT_FOUND, NO_DIALOGUE, OPEN_SHOP};
 struct TalkResult {
 	TalkStatus	status = TalkStatus::NOT_FOUND;
 	std::string	entity_name;
+	std::string entity_id;
 	std::string	text;
 	bool		has_more = false;
 };
@@ -65,35 +68,39 @@ class GasterManager {
 		QuestManager	_quest_manager;
 		DialogueManager	_dialogue_manager;
 		CombatManager	_combat_manager;
+		ShopManager		_shop_manager;
 
 		std::unordered_map<std::string, CombatProgress>	_combat_lists;
 
-	// --- CREATE OBJECTS ---
-	void	createRoom();
-	void	createEntities();
-	void	createItems();
-	void	fillRoomsData();
+		// --- CREATE ALL OBJECTS ---
+		void	createRoom();
+		void	createEntities();
 
-	std::string	createStartingWeapon(std::string& player_name);
 
-	// --- DELETE OBJECTS ---
-	void	deleteEntity(Entity* entity);
+		void	fillRoomsData();
+		void	fillShopNPC(Entity* entity);
 
-	void	respawnPlayer(Player* player);
+		// -- CREATE INDIVIDUAL --
+		std::unique_ptr<Item>	buildItem(const std::string& item_id, const ItemConfig& item);
+		Item*					createItem(const std::string& item_id);
+		Item*					createStartingWeapon(std::string& player_name);
 
-	// --- GETTER ---
-	const Player*	getPlayer(const std::string& player_name) const;
-	Player*			getPlayer(const std::string& player_name);
-	const Item*		getItem(const std::string& item_name) const;
-	Item*			getItem(const std::string& item_name);
-	const Room*		getRoom(const std::string& room_id) const;
-	Room*			getRoom(const std::string& room_id);
-	const Entity*	getEntity(const std::string& entity_id) const;
-	Entity*			getEntity(const std::string& entity_id);
+		// --- DELETE OBJECTS ---
+		void	deleteEntity(Entity* entity);
 
-	// --- DIALOGUES ---
-	bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
-	int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
+		void	respawnPlayer(Player* player);
+
+		// --- GETTER ---
+		const Player*	getPlayer(const std::string& player_name) const;
+		Player*			getPlayer(const std::string& player_name);
+		const Room*		getRoom(const std::string& room_id) const;
+		Room*			getRoom(const std::string& room_id);
+		const Entity*	getEntity(const std::string& entity_id) const;
+		Entity*			getEntity(const std::string& entity_id);
+
+		// --- DIALOGUES ---
+		bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
+		int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -121,7 +128,7 @@ class GasterManager {
 		ReturnState			takeItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			dropItem(const std::string& player_name, const std::string& item_name);
 		ReturnState			equipNewWeapon(const std::string& player_name, const std::string& item_name);
-		const std::string	getItemStat(const std::string& player_name, const std::string& item_name);
+		const std::string	getItemStat(const std::string& player_name, const std::string& item_name, bool in_shop);
 
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
@@ -129,13 +136,25 @@ class GasterManager {
 		// --- COMBAT MANAGEMENT ---
 		std::vector<CombatMessage>	updateCombats();
 
+		// --- SHOP MANAGEMENT ---
+		const std::string	enterShop(const std::string& player_name, const std::string& entity_id);
+		const std::string	getShopItemsList(const std::string& player_name) const;
+		ReturnState			buyItem(const std::string& player_name, const std::string& item_id);
+		const std::string	leaveShop(const std::string& player_name);
+		const std::string	getBuyOKmessage(const std::string& player_name) const;
+		const std::string	getBuyNOmessage(const std::string& player_name) const;
+		const std::string	getPlayerMoney(const std::string& player_name) const;
+
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
 		const std::string	getCombatStatus(const std::string& player_name);
+		const std::string	getConsumableItemsList(const std::string& player_name);
+		const std::string	useConsumableItem(const std::string& player_name, const std::string& item_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
 		const std::string	combatEnemyAttack(const std::string& player_name);
 		CombatStatus		checkCombatStatus(const std::string& player_name);
 		bool				tryFlee(const std::string& player_name);
+		bool				trySpare(const std::string& player_name);
 		void				finishCombat(const std::string& player_name);
 		const std::string	combatCheck(const std::string& player_name);
 		CombatTurn			getCombatWhoTurn(const std::string& player_name);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 16:05:44 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/03 11:16:47 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/18 12:22:24 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,12 @@ class Player : public Entity {
 
 		// Information
 		std::unordered_map<std::string, int>	_dialogue_state;
+		std::string								_current_shop_id;
 
 		// Stats
 		int	_defense = 5;
 		int	_luck = 10;
+		int	_money = 20;
 
 		inline static	PlayerID _id = 1;
 
@@ -55,6 +57,8 @@ class Player : public Entity {
 		int							getDefense() const;
 		int							getLuck() const;
 		const std::string			getItemStats(ItemID id);
+		int							getMoney() const;
+		const std::string			getCurrentShop() const;
 
 		// --- SETTER ---
 		void	addQuest(const std::string& quest_id);
@@ -62,6 +66,8 @@ class Player : public Entity {
 		void	setQuestCompleted(const std::string& quest_id);
 		void	setDefense(int new_value);
 		void	setLuck(int new_value);
+		void	setMoney(int new_value);
+		void	setCurrentShop(const std::string& entity_id);
 
 		// --- INVENTORY SYSTEM ---
 		Item* 			addItemToInventory(Item* item);
@@ -80,4 +86,5 @@ class Player : public Entity {
 
 		bool 			checkItemInInventory(ItemID id) const;
 		std::string		getItemInInventory(bool add_details) const;
+		std::string		getConsumableInInventory() const;
 };
