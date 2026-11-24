@@ -6,13 +6,16 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 11:07:51 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/16 11:17:11 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 17:00:50 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <bits/stdc++.h>
 # include <vector>
 # include "gui/entities/User.hpp"
+# include "gui/rooms/RoomManager.hpp"
+# include "raylib.h"
+#include "raytmx.h"
 
 User::User(
 			const std::string id,
@@ -66,5 +69,37 @@ void User::updateMovement()
         }
     }
 
-    setDirection(x, y);
+    if (this->checkMapCollison(this->getPos().x + x, this->getPos().y + y) == true) {
+        setDirection(0, 0);
+    }
+    else {
+        setDirection(x, y);
+    }
+}
+
+bool		User::checkMapCollison(float x, float y) {
+    TmxLayer 	*object_layers = _room->getCurrentRoom()->getTileMap()->layers[3].layers; // we collect all the sub layer from the 3rd level
+	int32_t		nb_layers = _room->getCurrentRoom()->getTileMap()->layers[3].layersLength; // how many sub layer we have
+	int 		i = 0;
+
+    // rectangle used for checking collison
+    Rectangle   user_foot = Rectangle{
+        x - float(this->getWidth()) / 2,
+        y + float(this->getHeight()) / 2 - 3,
+        float(this->getWidth()),
+        3.0f
+    };
+
+	while (i < nb_layers) {
+        // exact allows you to select the layer type, here it's objectGroup used by Tiled for collisons
+        if (CheckCollisionTMXObjectGroupRec((object_layers + i)->exact.objectGroup, user_foot, nullptr) == 1) {
+            return (true);
+        }
+		i++;
+	}
+    return (false);
+}
+
+void    User::giveRoomManager(RoomManager *room) {
+    this->_room = room;
 }
