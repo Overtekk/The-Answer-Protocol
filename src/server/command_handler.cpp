@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 08:49:43 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:34:35 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ bool	parseGameCommand(const std::string& cmd_str, GameCommand& cmd) {
 		{"QUEST",			GameCommand::QUEST},
 		{"QUESTS",			GameCommand::QUESTS},
 		{"EQUIP",			GameCommand::EQUIP},
-		{"INFO_ITEM",		GameCommand::INFO_ITEM},
+		{"ITEM_INFO",		GameCommand::ITEM_INFO},
 		{"HELP",			GameCommand::HELP}
 	};
 
@@ -149,10 +149,12 @@ bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 
 bool	parseShopCommand(const std::string& cmd_str, ShopCommand& cmd) {
 	static const std::unordered_map<std::string, ShopCommand> shop_map = {
-		{"ITEMS",	ShopCommand::ITEMS},
-		{"BUY",		ShopCommand::BUY},
-		{"QUIT",	ShopCommand::QUIT},
-		{"HELP",	ShopCommand::HELP},
+		{"ITEMS",		ShopCommand::ITEMS},
+		{"ITEM_INFO",	ShopCommand::ITEM_INFO},
+		{"INVENTORY",	ShopCommand::INVENTORY},
+		{"BUY",			ShopCommand::BUY},
+		{"QUIT",		ShopCommand::QUIT},
+		{"HELP",		ShopCommand::HELP},
 	};
 
 	auto it = shop_map.find(cmd_str);
@@ -255,9 +257,8 @@ void	CommandHandler::processAdminCommand(const std::string& raw_line) {
 
 
 // If a player is disconnected other than with the "QUIT" command, the player need to be properly disconnected (finish the combat, clear the ptr...)
-void	CommandHandler::clearDisconnectedPlayer(TCPSession &session) {
-	_manager.disconnectPlayer(session.getUsername());
-}
+void	CommandHandler::clearDisconnectedPlayer(TCPSession &session) { _manager.disconnectPlayer(session.getUsername()); }
+
 
 // * Make the enemies play and send their messages to the right players. Called by the server loop. *
 void	CommandHandler::updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions) {
@@ -349,7 +350,7 @@ void	CommandHandler::handleGameCommand(TCPSession& session, const std::string& r
 		case GameCommand::QUEST:		commandQuestInfo(session, argument);	break;
 		case GameCommand::TALK:			commandTalk(session, argument);			break;
 		case GameCommand::ATTACK:		commandAttack(session, argument);		break;
-		case GameCommand::INFO_ITEM:	commandItemStat(session, argument);		break;
+		case GameCommand::ITEM_INFO:	commandItemStat(session, argument);		break;
 		case GameCommand::EQUIP:		commandEquip(session, argument);		break;
 		case GameCommand::HELP:			commandHelpGame(session, argument);		break;
 		case GameCommand::CHAT:			commandChat(session, argument);			break;
@@ -433,11 +434,13 @@ void	CommandHandler::handleShopCommand(TCPSession &session, const std::string &r
 
 	// Call the good command
 	switch (cmd) {
-		case ShopCommand::ITEMS:	commandShopItems(session, argument);	break;
-		case ShopCommand::BUY:		commandShopBuy(session, argument);		break;
-		case ShopCommand::QUIT:		commandShopQuit(session, argument);		break;
-		case ShopCommand::HELP:		commandShopHelp(session, argument);		break;
-		default:					commandUnknown(session, command);
+		case ShopCommand::ITEMS:		commandShopItems(session, argument);	break;
+		case ShopCommand::ITEM_INFO:	commandItemStat(session, argument);		break;
+		case ShopCommand::INVENTORY:	commandInventory(session, argument);	break;
+		case ShopCommand::BUY:			commandShopBuy(session, argument);		break;
+		case ShopCommand::QUIT:			commandShopQuit(session, argument);		break;
+		case ShopCommand::HELP:			commandShopHelp(session, argument);		break;
+		default:						commandUnknown(session, command);
 	}
 
 	return;
@@ -664,7 +667,9 @@ void	CommandHandler::commandItemStat(TCPSession &session, std::string& argument)
 		return;
 	}
 
-	std::string result = _manager.getItemStat(session.getUsername(), argument);
+	bool in_shop = session.getSubSessionState() == SubSessionState::IN_SHOP;
+
+	std::string result = _manager.getItemStat(session.getUsername(), argument, in_shop);
 	if (result.empty()) {
 		sendErrorToUser(session, ReturnState::ITEM_NOT_FOUND);
 		return;
@@ -819,7 +824,7 @@ void	CommandHandler::commandHelpGame(TCPSession &session, std::string &argument)
 		case GameCommand::QUEST:		session.add_msg_to_buffer(getTCP_OK_operation(helpQuestCommand));		break;
 		case GameCommand::QUESTS:		session.add_msg_to_buffer(getTCP_OK_operation(helpQuestsCommand));		break;
 		case GameCommand::EQUIP:		session.add_msg_to_buffer(getTCP_OK_operation(helpEquipCommand));		break;
-		case GameCommand::INFO_ITEM:	session.add_msg_to_buffer(getTCP_OK_operation(helpInfoItemCommand));	break;
+		case GameCommand::ITEM_INFO:	session.add_msg_to_buffer(getTCP_OK_operation(helpInfoItemCommand));	break;
 		case GameCommand::HELP:			session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));		break;
 		case GameCommand::QUIT:			session.add_msg_to_buffer(getTCP_OK_operation(helpQuitCommand));		break;
 	}
@@ -1005,10 +1010,12 @@ void	CommandHandler::commandShopHelp(TCPSession &session, std::string &argument)
 	}
 
 	switch (help_cmd) {
-		case ShopCommand::ITEMS:	session.add_msg_to_buffer(getTCP_OK_operation(helpShopItemsCommand));	break;
-		case ShopCommand::BUY:		session.add_msg_to_buffer(getTCP_OK_operation(helpShopBuyCommand));		break;
-		case ShopCommand::QUIT:		session.add_msg_to_buffer(getTCP_OK_operation(helpShopQuitCommand));	break;
-		case ShopCommand::HELP:		session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));		break;
+		case ShopCommand::ITEMS:		session.add_msg_to_buffer(getTCP_OK_operation(helpShopItemsCommand));	break;
+		case ShopCommand::ITEM_INFO:	session.add_msg_to_buffer(getTCP_OK_operation(helpInfoItemCommand));	break;
+		case ShopCommand::INVENTORY:	session.add_msg_to_buffer(getTCP_OK_operation(helpInventoryCommand));	break;
+		case ShopCommand::BUY:			session.add_msg_to_buffer(getTCP_OK_operation(helpShopBuyCommand));		break;
+		case ShopCommand::QUIT:			session.add_msg_to_buffer(getTCP_OK_operation(helpShopQuitCommand));	break;
+		case ShopCommand::HELP:			session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));		break;
 	}
 	return;
 }

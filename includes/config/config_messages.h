@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 15:02:28 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:32:16 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,10 @@ inline std::string	logReconnectPlayer(const std::string& player_name) { return p
 // === OK REPLIES (sent to the clients) ===
 # define okHelpHandshakeCommand	"Available commands: \"CONNECT {username}\" | \"HELP {command}\" | \"QUIT\""
 # define okHelpGameCommand		"Available commands: \"LOOK\" | \"MOVE {direction}\" | \"WHO\" | \"TAKE {id}\" | \"DROP {id}\" | \"INVENTORY\" | "\
-								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"INFO_ITEM {id}\" | "\
+								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"ITEM_INFO {id}\" | "\
 								"\"CHAT {message}\" | \"GROUP_CREATE {name}\" | \"GROUP_INVITE {username}\" | \"GROUP_JOIN\" | \"GROUP_LEAVE\" | \"HELP {command}\" | \"QUIT\""
 # define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"CHECK\" | \"STATUS\" | \"HELP {command}\""
-# define okHelpShopCommmand		"Available commands: \"ITEMS\" | \"BUY {item}\" | \"QUIT\" | \"HELP {command}\""
+# define okHelpShopCommmand		"Available commands: \"ITEMS\" | \"BUY {item}\" | \"ITEM_INFO {id}\" | \"INVENTORY\" | \"QUIT\" | \"HELP {command}\""
 # define okHelpLoggingCommand	"Available commands: \"KEEP\" | \"DELETE\" | \"change {username}\" | \"HELP {command}\" | \"QUIT\""
 
 # define helpConnectCommand		"CONNECT: Connect you to the game with the provided username."

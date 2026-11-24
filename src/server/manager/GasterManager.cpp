@@ -6,11 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 08:54:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 10:07:33 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <chrono>
+#include <cstddef>
 # include <memory>
 # include <optional>
 # include <stdexcept>
@@ -447,19 +448,67 @@ ReturnState			GasterManager::equipNewWeapon(const std::string &player_name, cons
 }
 
 
-const std::string	GasterManager::getItemStat(const std::string &player_name, const std::string &item_name) {
+const std::string	GasterManager::getItemStat(const std::string &player_name, const std::string &item_name, bool in_shop) {
 	Player* player = getPlayer(player_name);
 	if (!player)
 		return "";
 
-	// Get the item requested
-	std::optional<ItemID> item_id = player->getItemIdByName(item_name);
-	if (item_id == std::nullopt) {
-		print_log(errCantFindItem(item_name));
-		return "";
+	std::string result = "";
+
+	// In a shop: look in the shop stock first (the item is not an instance yet, so read the config).
+	// If it is not found there, result stays empty and we look in the inventory below.
+	if (in_shop) {
+		NPCShop* npc_shop = nullptr;
+		const auto it_shop = _world_state.entities.find(player->getCurrentShop());
+		if (it_shop != _world_state.entities.end())
+			npc_shop = dynamic_cast<NPCShop*>(it_shop->second.get());
+
+		if (!npc_shop)
+			print_log(errEntityNotShop(player->getCurrentShop()));
+		else {
+			// The shop stock is indexed by config id
+			const auto& stock_list = npc_shop->getShopList();
+			const auto it_stock = stock_list.find(item_name);
+			const auto it_config = _world_data.items.find(item_name);
+
+			if (it_stock != stock_list.end() && it_config != _world_data.items.end()) {
+				const ItemConfig& item = it_config->second;
+
+				result = "name: \"" + item.name + "\" | ";
+				result += "description: | \"" + item.description + "\" | ";
+				result += "type: " + item_type_to_string(item.type) + " | ";
+
+				if (item.type == ItemType::WEAPON) {
+					if (item.name == "Ultimate Sword")
+						result += "damage: ? | ";
+					else
+						result += "damage: " + std::to_string(item.damage) + " | ";
+
+					if (item.bonus_min > 0) {
+						result += "(bonus_min: " + std::to_string(item.bonus_min) + " | ";
+						result += "bonus_max: " + std::to_string(item.bonus_max) + ") | ";
+					}
+				}
+				else if (item.type == ItemType::CONSUMABLE)
+					result += "+ " + std::to_string(item.hp) + " HP | ";
+
+				result += "price: " + std::to_string(it_stock->second) + "$";
+			}
+		}
 	}
 
-	return player->getItemStats(*item_id);
+	// Not found in the shop (or not in a shop): look in the player inventory
+	if (result.empty()) {
+		std::optional<ItemID> item_id = player->getItemIdByName(item_name);
+		if (item_id == std::nullopt) {
+			print_log(errCantFindItem(item_name));
+			return "";
+		}
+
+		result = player->getItemStats(*item_id);
+	}
+
+	return result;
 }
 
 // ============================================================================
@@ -962,8 +1011,6 @@ const Player*	GasterManager::getPlayer(const std::string& player_name) const {
 Player* 		GasterManager::getPlayer(const std::string& player_name) {
     return const_cast<Player*>(std::as_const(*this).getPlayer(player_name));
 }
-
-
 
 
 // * Get a room (const). *
