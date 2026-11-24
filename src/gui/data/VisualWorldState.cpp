@@ -6,21 +6,17 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 09:34:47 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/20 15:57:22 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 10:13:00 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <unordered_map>
 # include <memory>
+# include <iostream>
 
 # include "gui/data/VisualWorldState.hpp"
-
 # include "gui/rooms/VisualRoom.hpp"
-
-# include "gui/entities/VisualEntity.hpp"
-# include "gui/entities/VisualPlayer.hpp"
 # include "gui/entities/User.hpp"
-
 # include "gui/Items/VisualItem.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemKey.hpp"

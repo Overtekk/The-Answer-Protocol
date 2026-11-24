@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:44:56 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/20 16:57:17 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 10:11:18 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "gui/entities/User.hpp"
-#include "raylib.h"
+# include "gui/GameCamera.hpp"
+# include "raylib.h"
 
 using json = nlohmann::json;
 
@@ -66,12 +67,13 @@ class RoomManager
 		// Update current room state
 		void		updateRoom();
 		// Draw current room
-		void		drawRoom();
+		void		drawRoom(GameCamera *camera);
 
 		// Check if the player reached the limit of the current room and
 		// init a room change if the server validate the move
 		void		isPlayerOut();
 
+		// Return a pointer to the current room
 		VisualRoom	*getCurrentRoom();
 
         void		shutUp() { std::ignore = this->_user; std::ignore = this->_data; }

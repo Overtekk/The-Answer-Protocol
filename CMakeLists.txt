@@ -94,6 +94,7 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/rooms/RoomManager.cpp
 	src/gui/rooms/VisualRoom.cpp
     src/gui/Animation.cpp
+	src/gui/GameCamera.cpp
 	src/gui/utils/VisualUtils.cpp
 	src/utils/files.cpp
 )

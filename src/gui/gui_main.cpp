@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 17:29:12 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 09:55:36 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 # include "raylib.h"
 # include "gui/rooms/RoomManager.hpp"
+# include "gui/GameCamera.hpp"
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/entities/User.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
@@ -91,11 +92,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 
 	data.user->setPos(Vector2 {400, 225});
 
-	Camera2D			camera;
-	camera.target = Vector2{data.user->getPos().x, data.user->getPos().y};
-	camera.offset = Vector2{GetRenderWidth()/2.0f, GetRenderHeight()/2.0f};
-	camera.rotation = 0.0f;
-	camera.zoom = 2.0f;
+	GameCamera			camera(data.user.get(), data.user->getPos(), 2.0);
 
 	// Connect the player
 	while (connection.connect("Nomi") == false) {
@@ -111,12 +108,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
     while (!WindowShouldClose())
     {
 		connection.recive();
-		camera.target = clamp(data.user->getPos(),
-			900 - 200,
-			200,
-			500 - 112.5,
-			112.5
-		);
+		camera.update(room.getCurrentRoom());
 
 		room.updateRoom();
 		data.user->update();
@@ -124,25 +116,13 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
         BeginDrawing();
             ClearBackground(BLACK);
 			
-			BeginMode2D(camera);
+			BeginMode2D(*camera.getCamera());
 			{
-				// DrawTexture(assets.sprites.at("test_background"), 0, 0, WHITE);
-				DrawTMX(room.getCurrentRoom()->getTileMap(), &camera, NULL, 0, 0, WHITE);
-				room.drawRoom();
+				// DrawTMX(room.getCurrentRoom()->getTileMap(), camera.getCamera(), NULL, 0, 0, WHITE);
+				room.drawRoom(&camera);
 				data.user->onDraw();
 			}
 			EndMode2D();
-
-
-			// if (IsKeyReleased(KEY_E))
-			// {
-			// 	if (checkCollison(data.user->getPos().x, data.user->getPos().y, data.user->getWidth(), data.user->getHeight(), sword->getPos().x, sword->getPos().y, sword->getChestWidth(), sword->getChestHeight()))
-			// 	{
-			// 		sword->ItemPicked();
-			// 		Icon = true;
-			// 		connection.send_commande("LOOK", Commande::LOOK);
-			// 	}
-			// }
 
         EndDrawing();
     }

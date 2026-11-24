@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/20 16:54:40 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 10:03:16 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <nlohmann/json.hpp>
 
 # include "gui.h"
+# include "gui/GameCamera.hpp"
 # include "gui/rooms/RoomManager.hpp"
 # include "gui/Items/VisualItem.hpp"
 # include "gui/rooms/VisualRoom.hpp"
@@ -71,6 +72,7 @@ void    		RoomManager::addItemsToRoom(const json &data) {
 
 	for (auto item_data : data.at("items")) {
 		VisualItem	*item;
+		// Set a position for any new item created
 		creation_position = Vector2 {(float)(rand() % 800), (float)(rand() % 450)};
 
 		if (item_data[1] == "weapon") {
@@ -162,12 +164,13 @@ void			RoomManager::isPlayerOut() {
 		direction = Direction::SOUTH;
 	}
 
+	// if the player doesn't change room or tries to pass
+	// twice through the same wrong direction
 	if (direction == Direction::UNKNOWN or direction == this->_last_wrong_direction) {return ;}
 
 	// get the respone
 	response = this->_link.move(direction_to_string(direction));
 	if (response.empty()) {
-		// std::cout << "Waiting response\n";
 		return ;
 	}
 	if (response.find("ERR") == 0) {
@@ -187,8 +190,11 @@ VisualRoom		*RoomManager::getCurrentRoom() {
 	return (this->_current_room);
 }
 
-void			RoomManager::drawRoom() {
+void			RoomManager::drawRoom(GameCamera *camera) {
 	if (this->_changing_room == false){
 		this->_current_room->drawItems();
+
+		// Draw tile map
+		DrawTMX(_current_room->getTileMap(), camera->getCamera(), NULL, 0, 0, WHITE);
 	}
 }

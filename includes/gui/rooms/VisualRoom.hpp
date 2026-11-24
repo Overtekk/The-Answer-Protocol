@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 10:45:11 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 09:10:12 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 10:03:59 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,10 @@ class VisualRoom
         // Return room height
         int                                             getHeight();
         
-        // draw the room and its items
+        // Draw the room and its items
 		void											drawItems();
 
+        // Drwe room .... I think ?
 		void											drawRoom();
 
 		TmxMap                                          *getTileMap();

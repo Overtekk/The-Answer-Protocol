@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/18 11:36:11 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/24 10:13:16 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,12 @@
 # include <csignal>
 # include <string.h>
 # include <queue>
-#include <string>
-#include <type_traits>
-#include <utility>
+# include <string>
+# include <utility>
 
 # include "server/TCPSocket.hpp"
 # include "gui/connection/ServerLink.hpp"
 # include "common.h"
-#include "utils.h"
 
 
 ServerLink::ServerLink(
