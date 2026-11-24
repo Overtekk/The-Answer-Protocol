@@ -42,6 +42,7 @@ namespace {
 			case TCPErrorCode::ITEM_NOT_WEAPON:			return {409, "ITEM_NOT_WEAPON",			"Item requested is not a weapon."};
 			case TCPErrorCode::NOT_IN_COMBAT:			return {500, "NOT_IN_COMBAT",			"You are not in a combat currently."};
 			case TCPErrorCode::NOT_YOUR_TURN:			return {501, "NOT_YOURN_TURN",			"It's not your turn. Be patient."};
+			case TCPErrorCode::ALREADY_IN_COMBAT:		return {502, "ALREADY_IN_COMBAT",		"This entity is already in a combat."};
 			case TCPErrorCode::NO_MONEY:				return {600, "NO_MONEY",				"You don't have enought money."};
 			case TCPErrorCode::CONNECTION_FAILED:		return {900, "CONNECTION_FAILED",		"Connection establishment failed."};
 			case TCPErrorCode::CONNEXION_ERROR:			return {900, "CONNEXION ERROR",			"You have been disconnected."};
