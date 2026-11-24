@@ -3,21 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   gui_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 13:55:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:55:36 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# define HOXML_IMPLEMENTATION
+# define RAYTMX_IMPLEMENTATION
+
+# include <poll.h>
+# include <csignal>
 # include <iostream>
-# include <string>
-# include <yaml-cpp/yaml.h>
+# include <string.h>
 
 # include "raylib.h"
-# include "gui/entities/VisualPlayer.hpp"
+# include "gui/rooms/RoomManager.hpp"
+# include "gui/GameCamera.hpp"
+# include "gui/data/VisualWorldState.hpp"
+# include "gui/entities/User.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
+# include "base_class/entities/NPC.hpp"
 # include "base_class/items/ItemWeapon.hpp"
 # include "base_class/items/ItemConsumable.hpp"
 # include "config/LoadedAssets.hpp"
@@ -27,14 +35,20 @@
 # include "parser.h"
 # include "gui.h"
 
-int gui_parser(WorldConfig& world_data);
-void graphic(WorldConfig& world_data);
+# include "gui/connection/ServerLink.hpp"
+# include "common.h"
 
 
-int main() {
-	WorldConfig world_data;
-	if (gui_parser(world_data) == 0) {
-		graphic(world_data);
+int 	gui_parser(WorldConfig& world_config);
+void 	graphic(WorldConfig& world_config, int argc, char** argv);
+void 	print_server_sends(ServerLink &lines);
+
+
+int main(int argc, char** argv) {
+	WorldConfig world_config;
+	if (gui_parser(world_config) == 0)
+	{
+		graphic(world_config, argc, argv);
 		return (0);
 	}
 	return (1);
@@ -60,64 +74,67 @@ int gui_parser(WorldConfig& world_data) {
 	 return 0;
 }
 
-bool checkCollison(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
-{
-	if ((x1 + w1 / 2 > x2 - w2 / 2 and x1 - w1 / 2 < x2 + w2 / 2)
-	and (y1 + h1 / 2 > y2 - h2 / 2 and y1 - h1 / 2 < y2 + h2 / 2))
-		return (true);
-	return (false);
-}
 
-void graphic(WorldConfig& world_data)
+void graphic(WorldConfig& world_config, int argc, char** argv)
 {
-    SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(800, 450, "raylib example - basic window");
     SetTargetFPS(60);
+	// const float panSpeed = 150.0f;
 
-	LoadedAssets	assets;
-	LoadAssets(world_data, assets);
+	ServerLink			connection(argc, argv);
 
-	// Animation		test_animation(assets.sprits["player"], {19, 38}, 4, 12, 0, 0.18f, false); // loop is disabled
-	ItemWeapon			sword("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10, 0, 2);
-	ItemConsumable		cookie("001", "basic sword", "The most basic sword ever", ItemType::WEAPON, 10, 10, 0, 2);
-	VisualItemWeapon	v_sword(sword, assets, 2.0f);
-	VisualItemConsumable	v_cookie(cookie, assets, 2.0f);
-	bool				Icon = false;
-	Player				kris("Kris");
-    VisualPlayer 		v_kris(kris, "assets/sprites/player/kris_walk.png", {19, 38}, 2.0f);
+	LoadedAssets		assets;
+	LoadAssets(world_config, assets);
+	VisualWorldState	data("Kris", assets.sprites.at("player"), std::make_tuple(19, 38), 1.0f, assets);
+	RoomManager			room(data, connection, data.user.get());
 
-	v_kris.setPos(Vector2 {400, 225});
-	v_sword.setPos(Vector2 {500, 225});
-	v_cookie.setPos(Vector2 {150, 150});
+	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
+
+	data.user->setPos(Vector2 {400, 225});
+
+	GameCamera			camera(data.user.get(), data.user->getPos(), 2.0);
+
+	// Connect the player
+	while (connection.connect("Nomi") == false) {
+		connection.recive();
+	}
+
+	// Setup the first room
+	connection.send_commande("LOOK --details", Commande::LOOK);
+	while (room.updateRoomState() == false) {
+		connection.recive();
+	}
 
     while (!WindowShouldClose())
     {
+		connection.recive();
+		camera.update(room.getCurrentRoom());
+
+		room.updateRoom();
+		data.user->update();
+
         BeginDrawing();
             ClearBackground(BLACK);
-
-			v_sword.DrawInRoom();
-			v_cookie.DrawInRoom();
-			if (Icon == true)
+			
+			BeginMode2D(*camera.getCamera());
 			{
-				v_sword.DrawWeaponIcon(495, 180);
+				// DrawTMX(room.getCurrentRoom()->getTileMap(), camera.getCamera(), NULL, 0, 0, WHITE);
+				room.drawRoom(&camera);
+				data.user->onDraw();
 			}
+			EndMode2D();
 
-			v_kris.update();
-			v_kris.onDraw();
-
-			if (IsKeyReleased(KEY_E))
-			{
-				if (checkCollison(v_kris.getPos().x, v_kris.getPos().y, v_kris.getWidth(), v_kris.getHeight(), v_sword.getPos().x, v_sword.getPos().y, v_sword.getChestWidth(), v_sword.getChestHeight()))
-				{
-					v_sword.ItemPicked();
-					Icon = true;
-				}
-			}
-
-			// test_animation.playAnimation(50, 50, 2, false, 90.0);
         EndDrawing();
     }
 
 	UnloadAssets(assets);
     CloseWindow();
+}
+
+void print_server_sends(ServerLink &connection)
+{
+	while(connection.lines.empty() == false) {
+		std::cout << "--> " << connection.lines.front() << "\n";
+		connection.lines.pop();
+	}
 }

@@ -13,3 +13,6 @@
 [submodule "libraries/raytmx"]
 	path = libraries/raytmx
 	url = https://github.com/luphi/raytmx
+[submodule "libraries/hoxml"]
+	path = libraries/hoxml
+	url = git@github.com:luphi/hoxml.git

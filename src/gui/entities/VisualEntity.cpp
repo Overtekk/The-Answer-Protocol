@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VisualEntity.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 15:18:15 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/17 09:55:27 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 # define FRAME_DURATION 0.18f
 
 VisualEntity::VisualEntity(
-	const Entity& entity, const std::string &texture, std::tuple<int, int> sprite_dim, float scale
+	const std::string &id, const Texture2D &texture, std::tuple<int, int> sprite_dim, float scale
 ):
-	_entity(entity),
-	_img(LoadTexture(texture.c_str())),
+	_id(id),
+	_img(texture),
 	_sprite_dim(sprite_dim),
 	_sprite_scale(scale),
 	_idle(Animation(this->_img, sprite_dim, 1, 1, 0, FRAME_DURATION)),
@@ -34,10 +34,10 @@ VisualEntity::VisualEntity(
 	{
 		if (this->_img.id == 0)
 			this->sendObjectError("Error while loading texture");
-		std::cout << this->_entity.getName() << " Created\n";
+		std::cout << this->_id << " Created\n";
 	}
 
-VisualEntity::~VisualEntity() { UnloadTexture(this->_img); }
+VisualEntity::~VisualEntity() {}
 
 // Update
 void VisualEntity::update() {

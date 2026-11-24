@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+         #
+#    By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/14 10:15:36 by roandrie          #+#    #+#              #
-#    Updated: 2026/10/22 18:02:30 by roandrie         ###   ########.fr        #
+#    Updated: 2026/11/17 16:25:32 by nbuchy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ GUI_CLIENT	=	tap_gui_client
 
 BUILD_DIR = build
 
-SUBMODULE_DIRS	= libraries/raylib libraries/raytmx libraries/yaml-cpp libraries/json
+SUBMODULE_DIRS	= libraries/raylib libraries/raytmx libraries/hoxml libraries/yaml-cpp libraries/json
 
 # --------------- #
 #      RULES      #
@@ -75,23 +75,23 @@ $(BUILD_DIR)/build.ninja	$(BUILD_DIR)/Makefile:
 
 $(SERVER_NAME):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(SERVER_NAME)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(SERVER_NAME) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(SERVER_NAME)
 				@echo "$(BGREEN)$(SERVER_NAME) Done!$(RESET)"
 
 $(CLI_CLIENT):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(CLI_CLIENT)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(CLI_CLIENT)
 				@echo "$(BGREEN)$(CLI_CLIENT) Done!$(RESET)"
 
 $(GUI_CLIENT):	$(BUILD_DIR)/Makefile
 				@echo "$(CYAN)Building $(GUI_CLIENT)...$(RESET)"
-				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT) -- --no-print-directory
+				cmake --build $(BUILD_DIR) --target $(GUI_CLIENT)
 				@echo "$(BGREEN)$(GUI_CLIENT) Done!$(RESET)"
 
 clean:
 			@if [ -d "$(BUILD_DIR)" ]; then \
 				echo "$(MAGENTA)Cleaning build artifacts...$(RESET)"; \
-				cmake --build $(BUILD_DIR) --target clean 2>/dev/null -- --no-print-directory || true; \
+				cmake --build $(BUILD_DIR) --target clean 2>/dev/null || true; \
 			fi
 
 fclean:	clean

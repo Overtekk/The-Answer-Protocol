@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/13 14:30:17 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/10/15 16:13:55 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # include <tuple>
 # include "raylib.h"
-# include "base_class/entities/Entity.hpp"
+# include <string>
 # include "gui/Animation.hpp"
 
 # define MAX_FRAME_SPEED 15
@@ -31,11 +31,10 @@ enum class EntityDirection
 
 class VisualEntity {
 	private :
-		// Reference to the entity
-		const Entity& _entity;
+		std::string				_id;
 
 		// Texture
-		Texture2D				_img; // Texture
+		const Texture2D 		&_img; // Texture
 		std::tuple<int, int>	_sprite_dim;
 		float					_sprite_scale;
 
@@ -61,8 +60,9 @@ class VisualEntity {
 		virtual void updateSprite();
 
 	public :
-		VisualEntity(const Entity& entity,
-			const std::string &texture,
+		VisualEntity(
+			const std::string &id,
+			const Texture2D &texture,
 			std::tuple<int, int> sprite_dim,
 			float scale = 1.0f);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui_parser.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 08:21:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 14:05:25 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/17 16:29:50 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,11 @@ void check_resource(const std::string& sprite, const std::string& id, DataType t
 	else if (type == DataType::MUSIC) {
 		if (p.extension() != ".ogg") {
 			throw std::runtime_error(errBadResourceExt(id, "music", "ogg"));
+		}
+	}
+	else if (type == DataType::LOCATION) {
+		if (p.extension() != ".tmx") {
+			throw std::runtime_error(errBadResourceExt(id, "tile", "tmx"));
 		}
 	}
 	else {
