@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/20 10:29:44 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 09:24:45 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ enum class GameCommand {
 	QUEST,
 	QUESTS,
 	EQUIP,
-	INFO_ITEM,
+	ITEM_INFO,
 	HELP,
 };
 
@@ -62,9 +62,11 @@ enum class CombatCommand {
 };
 
 enum class ShopCommand {
-	ITEMS, //todo
-	BUY, //todo
-	QUIT, //todo
+	ITEMS,
+	ITEM_INFO,
+	INVENTORY,
+	BUY,
+	QUIT,
 	HELP
 };
 
