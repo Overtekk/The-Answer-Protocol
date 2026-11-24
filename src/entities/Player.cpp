@@ -234,6 +234,23 @@ std::string Player::getItemInInventory(bool add_details) const {
 }
 
 
+std::string	Player::getConsumableInInventory() const {
+	if (_inventory.empty())
+		return "No available item";
+
+	std::string inventory = "";
+	for (const auto& [id, item] : _inventory) {
+		if (item) {
+			if (item->getType() == ItemType::CONSUMABLE)
+				inventory += "[\"" + item->getName() + "\", restore " + std::to_string(item->getHP()) + " HP], ";
+		}
+	}
+
+	inventory.pop_back();
+	inventory.pop_back();
+	return inventory;
+}
+
 Item*	Player::getEquippedWeapon() const { return _equipped_weapon; }
 
 

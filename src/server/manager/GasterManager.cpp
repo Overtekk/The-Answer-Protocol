@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   GasterManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:10:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 08:54:38 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
 # include <chrono>
 # include <memory>
 # include <optional>
@@ -611,6 +610,42 @@ const std::string			GasterManager::getCombatStatus(const std::string &player_nam
 }
 
 
+const std::string			GasterManager::getConsumableItemsList(const std::string &player_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log(errCantAttackNoCombat(player_name));
+		return "";
+	}
+
+	return it->second.player->getConsumableInInventory();
+}
+
+const std::string			GasterManager::useConsumableItem(const std::string &player_name, const std::string &item_name) {
+	const auto it = _combat_lists.find(player_name);
+	if (it == _combat_lists.end()) {
+		print_log(errCantAttackNoCombat(player_name));
+		return "";
+	}
+
+	std::optional<ItemID> item_id = it->second.player->getItemIdByName(item_name);
+	if (item_id == std::nullopt) {
+		print_log(errCantFindItem(item_name));
+		return "";
+	}
+
+	Item* item = it->second.player->getItem(*item_id);
+
+	if (!it->second.player->checkItemInInventory(item->getUniqueID())) {
+		print_log(errItemNotInInventory(item_name));
+		return "";
+	}
+
+	int hp_gained = item->getHP();
+	it->second.player->setHealth(std::clamp(it->second.player->getHealth() + hp_gained, 0, it->second.player->getMaxHealth()));
+	it->second.player->removeItemFromInventory(item->getUniqueID());
+	return "You used " + item_name + ". You gained +" + std::to_string(hp_gained) + " HP.";
+}
+
 // * Make the player attack the entity. *
 const std::string			GasterManager::combatPlayerAttack(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
@@ -929,21 +964,6 @@ Player* 		GasterManager::getPlayer(const std::string& player_name) {
 }
 
 
-// * Get an item (const). *
-const Item*		GasterManager::getItem(const std::string& item_name) const {
-	auto it = _world_state.items.find(item_name);
-	if (it == _world_state.items.end()) {
-		print_log(errCantFindItem(item_name));
-		return nullptr;
-	}
-	return it->second.get();
-}
-
-
-// * Get an item. *
-Item* 			GasterManager::getItem(const std::string& item_name) {
-	return const_cast<Item*>(std::as_const(*this).getItem(item_name));
-}
 
 
 // * Get a room (const). *
@@ -1069,10 +1089,6 @@ void			GasterManager::createEntities() {
 				fillShopNPC(entity_ptr);
 		}
 	}
-
-	Item* raw = new_item.get();
-	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
-	return raw;
 }
 
 
@@ -1157,17 +1173,6 @@ std::unique_ptr<Item>	GasterManager::buildItem(const std::string &item_id, const
 }
 
 
-// * Create all the items and add them to the world state. *
-void			GasterManager::createItems() {
-	for (const auto& [item_id, item] : _world_data.items) {
-		std::unique_ptr<Item> new_item = buildItem(item_id, item);
-
-		if (new_item)
-			_world_state.items[new_item->getID()] = std::move(new_item);
-	}
-}
-
-
 Item*			GasterManager::createItem(const std::string& item_id) {
 	const auto& it = _world_data.items.find(item_id);
 	if (it == _world_data.items.end()) {
@@ -1181,12 +1186,12 @@ Item*			GasterManager::createItem(const std::string& item_id) {
 		return nullptr;
 
 	Item* raw = new_item.get();
-	_world_state.items[new_item->getID()] = std::move(new_item);
+	_world_state.items[new_item->getUniqueID()] = std::move(new_item);
 	return raw;
 }
 
 
-std::string		GasterManager::createStartingWeapon(std::string& player_name) {
+Item*			GasterManager::createStartingWeapon(std::string& player_name) {
 	std::string item_id = player_name + "_spoon";
 	std::string item_name = player_name + "_spoon";
 

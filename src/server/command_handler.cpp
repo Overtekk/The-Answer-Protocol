@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:11:48 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/24 08:49:43 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <atomic>
 # include <string>
 # include <unordered_map>
 # include <cctype>
@@ -254,6 +253,11 @@ void	CommandHandler::processAdminCommand(const std::string& raw_line) {
 	}
 }
 
+
+// If a player is disconnected other than with the "QUIT" command, the player need to be properly disconnected (finish the combat, clear the ptr...)
+void	CommandHandler::clearDisconnectedPlayer(TCPSession &session) {
+	_manager.disconnectPlayer(session.getUsername());
+}
 
 // * Make the enemies play and send their messages to the right players. Called by the server loop. *
 void	CommandHandler::updateCombats(std::unordered_map<int, std::unique_ptr<TCPSession>>& sessions) {
@@ -1133,6 +1137,7 @@ void	CommandHandler::sendErrorToUser(TCPSession& session, ReturnState return_err
 		case ReturnState::ITEM_NOT_IN_PLAYER_ROOM:		error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_ROOM); 		break;
 		case ReturnState::ITEM_NOT_IN_PLAYER_INVENTORY:	error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_IN_INVENTORY);	break;
 		case ReturnState::ITEM_NOT_WEAPON:				error_msg = getTCP_error(TCPErrorCode::ITEM_NOT_WEAPON);			break;
+		case ReturnState::ENTITY_ALREADY_IN_BATTLE:		error_msg = getTCP_error(TCPErrorCode::ALREADY_IN_COMBAT);		break;
 		case ReturnState::ENTITY_NOT_SHOP:				error_msg = getTCP_error(TCPErrorCode::NPC_NOT_SHOP);				break;
 		case ReturnState::NO_MONEY:						error_msg = getTCP_error(TCPErrorCode::NO_MONEY);					break;
 		case ReturnState::VALID:						error_msg = "That shoud'nt be an error.";							break;
