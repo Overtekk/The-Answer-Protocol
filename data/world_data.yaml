@@ -127,7 +127,7 @@ world:
     egg_room:
       name: "???"
       description: "???"
-      tile_map: "assets/tiles/tiles/spaw_tile.tmx"
+      tile_map: "assets/tiles/tiles/MissingNo.tmx"
       special: true
       exits:
         north: "road_traffic"
@@ -141,7 +141,7 @@ world:
     secret_room:
       name: "Secret Room"
       description: "It's a secret room with a secret character that you can see."
-      tile_map: "assets/tiles/tiles/spaw_tile.tmx"
+      tile_map: "assets/tiles/tiles/MissingNo.tmx"
       special: true
       exits:
         east: "trash_area"
