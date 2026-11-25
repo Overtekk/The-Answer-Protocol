@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:50:04 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/25 11:24:22 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 # include "server/CommandHandler.hpp"
 # include "server/TCPSession.hpp"
+# include "server/TCP_event.hpp"
 # include "server/TCP_EnumsType.hpp"
 # include "server/manager/GasterManager.hpp"
 # include "server/logger.hpp"
@@ -512,6 +513,7 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 			return;
 		}
 
+	TCPEvent event = TCPEvent(_manager);
 	const std::string prev_room = _manager.getPlayerRoom(session.getUsername());
 
 	// Check if player can move
@@ -521,12 +523,14 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 		return;
 	}
 
+	// Sends message that the player leaves the room
+	event.TCP_room_event(session, prev_room, true);
+
 	// Move player
 	session.add_msg_to_buffer(getTCP_OK_operation(okRoom(_manager.getPlayerRoom(session.getUsername()))));
 
-	// Event Message
-	session.add_msg_to_buffer(LeaveRoomEvent(session.getUsername(), prev_room));
-	session.add_msg_to_buffer(EnterRoomEvent(session.getUsername(), _manager.getPlayerRoom(session.getUsername())));
+	// Sends message that the player enters the room
+	event.TCP_room_event(session, _manager.getPlayerRoom(session.getUsername()), false);
 	return;
 }
 

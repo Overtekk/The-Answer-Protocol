@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 15:53:27 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/25 12:10:49 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 #include <string>
 #include "config/config.hpp"
+#include "utils/colored_text.h"
 
 // ==============
 // ==== NAME ====
 // ==============
-# define NAME_SERVER				"[Server] "
-# define NAME_GASTER_MANAGER		"[GasterManager]: "
-# define NAME_EVENT					"[EVT]: "
+# define NAME_SERVER				"[" BBLU "Server" RESET "] "
+# define NAME_GASTER_MANAGER		"[" GRN "GasterManager" GRY "]: "
+# define NAME_EVENT					"" CYN "EVT "
 
 // ==============
 // == ACTIONS ===
@@ -43,7 +44,7 @@
 # define SERVER_BYE					"bye"
 # define DISCONNEXION_MSG			"left the game."
 # define CONNEXION_FAREWELL			"OK " SERVER_BYE
-# define SERVER_LISTENING_MSG		"[Server]: OK hello proto=1\n"
+# define SERVER_LISTENING_MSG		"[" BBLU "Server" RESET "]: OK hello proto=1\n"
 # define SERVER_OK_CONNECTED		"CONNECTED"
 # define LOG_QUIT_REQUEST			"requested graceful disconnect (QUIT)."
 # define SERVER_LISTENING_PORT		"Server listening on port "
@@ -60,8 +61,16 @@ inline std::string	userAlreadyExist(const std::string& player_name) {
 // ==============
 // === EVENTS ===
 // ==============
-inline std::string	EnterRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "player " + player_name + " has entered " + zone_name ;}
-inline std::string	LeaveRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "player " + player_name + " has left " + zone_name ;}
+inline std::string	EnterRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "(Room)" RESET ": player " + player_name + " has entered " + zone_name ;}
+inline std::string	LeaveRoomEvent(const std::string& player_name, const std::string& zone_name) { return NAME_EVENT "(Room)" RESET ": player " + player_name + " has left " + zone_name ;}
+// todo
+inline std::string	RoomChatEvent(const std::string& player_name, const std::string& message) { return NAME_EVENT "(Room)" RESET ": player " + player_name + ": \"" + message + "\"" ;}
+inline std::string	GlobalChatEvent(const std::string& player_name, const std::string& zone_name, const std::string& message) { return NAME_EVENT "(Global)" RESET ": player " + player_name + " (" + zone_name + "): \"" + message + "\"" ;}
+inline std::string	GroupInviteEvent(const std::string& player_name, const std::string& group_name) { return NAME_EVENT "(Group)" RESET ": player " + player_name + " has received an invite to join " + group_name ;}
+inline std::string	GroupJoinEvent(const std::string& player_name, const std::string& group_name) { return NAME_EVENT "(Group)" RESET ": player " + player_name + " has joined " + group_name ;}
+inline std::string	GroupLeaveEvent(const std::string& player_name, const std::string& group_name) { return NAME_EVENT "(Group)" RESET ": player " + player_name + " has left " + group_name ;}
+inline std::string	GroupChatEvent(const std::string& player_name, const std::string& group_name, const std::string& message) { return NAME_EVENT "(Group)" RESET ": player " + player_name + " (" + group_name + "): \"" + message + "\"" ;}
+inline std::string	StatsPlayersEvent() { return NAME_EVENT "Stats: " ;}
 
 // ==============
 // ==== MAIN ====
@@ -175,7 +184,7 @@ inline std::string	actPlayerBlocked(const std::string& entity_name) { return "Yo
 # define ERR_FAILED_CREATE_SOCKET	"Failed to create client socket."
 # define ERR_KILL_CMD				"usage: kill [player name]"
 
-inline std::string	errObject(const std::string& error) { return " ERROR: " + error + "\n"; }
+inline std::string	errObject(const std::string& error) { return " " BRED "ERROR" RESET ": " + error + "\n"; }
 
 inline std::string	errCantFindPlayer(const std::string& player_name) { return NAME_GASTER_MANAGER "can't find player \"" + player_name + "\""; }
 inline std::string	errCantFindItem(const std::string& item_name) { return NAME_GASTER_MANAGER "can't find item \"" + item_name + "\""; }
@@ -194,13 +203,13 @@ inline std::string	errItemNotInInventory(const std::string& item_name) { return 
 inline std::string	errCantKillPlayer(const std::string& player_name) { return "can't kill '" + player_name + "': player not found."; }
 
 // === ERRORS - TCP LOGS (same info as the TCP_responses.cpp errors) ===
-# define ERR_LOG_MISSING_USERNAME	"error: 203 MISSING_USERNAME"
-# define ERR_LOG_INVALID_USERNAME	"error: 202 INVALID_USERNAME"
-# define ERR_LOG_NAME_IN_USE		"error: 201 NAME_IN_USE"
-# define ERR_LOG_BAD_DIRECTION		"error: 301 Invalid movement direction (bad input)."
-# define ERR_LOG_NPC_NOT_FOUND		"error 404: Requested NPC not present in room."
-# define ERR_LOG_NPC_NO_DIALOGUE	"error 407: Requested NPC have no available dialogue."
-# define ERR_LOG_MISSING_NPC		"error 204: Missing argument (NPC) after command."
+# define ERR_LOG_MISSING_USERNAME	"" BRED "error 203" RESET ": MISSING_USERNAME"
+# define ERR_LOG_INVALID_USERNAME	"" BRED "error 202" RESET ": INVALID_USERNAME"
+# define ERR_LOG_NAME_IN_USE		"" BRED "error 201" RESET ": NAME_IN_USE"
+# define ERR_LOG_BAD_DIRECTION		"" BRED "error 301" RESET ": Invalid movement direction (bad input)."
+# define ERR_LOG_NPC_NOT_FOUND		"" BRED "error 404" RESET ": Requested NPC not present in room."
+# define ERR_LOG_NPC_NO_DIALOGUE	"" BRED "error 407" RESET ": Requested NPC have no available dialogue."
+# define ERR_LOG_MISSING_NPC		"" BRED "error 204" RESET ": Missing argument (NPC) after command."
 
 // === ERRORS - CLIENT CONNECTION ===
 # define ERR_CONNECTION_FAILED		"Connection have failed. Try to reconnect using the \"connect\" command."

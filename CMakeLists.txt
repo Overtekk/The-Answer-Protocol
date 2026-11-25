@@ -56,6 +56,7 @@ set(GUI_MAIN		src/gui/gui_main.cpp)
 set(SERVER_SOURCES 	${SERVER_MAIN}	${COMMON_SOURCES}
 	src/server/parser/parser.cpp
 	src/server/manager/GasterManager.cpp
+	src/server/TCP_event.cpp
 	src/server/tcp_socket.cpp
 	src/server/tcp_session.cpp
 	src/server/tcp_server.cpp
