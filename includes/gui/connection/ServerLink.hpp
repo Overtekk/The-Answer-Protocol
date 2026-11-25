@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:34 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/18 10:37:53 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 14:06:19 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ enum class Commande {
 	CONNECT,
 	LOOK,
 	MOVE,
+	TAKE,
 	QUIT
 };
 
@@ -68,6 +69,8 @@ class ServerLink
 	const std::string				getLookReply();
 	// return server MOVE reply
 	const std::string				getMoveReply();
+	// return server TAKE reply
+	const std::string				getTakeReply();
 
 	bool							connect(const std::string &user_name, bool keep = true);
 	
@@ -78,6 +81,8 @@ class ServerLink
 	// send MOVE commande on the first call and retrun the reply when it arrive.
 	// in the meantime, it returns an empty string
 	const std::string				move(const std::string &direction);
+
+	const std::string				take(const std::string &item_id);
 	
 	bool							isConnected() const;
 };

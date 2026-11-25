@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/20 13:48:05 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/24 10:13:16 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 14:20:44 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <iostream>
 # include <poll.h>
 # include <csignal>
+#include <pstl/glue_algorithm_defs.h>
 # include <string.h>
 # include <queue>
 # include <string>
@@ -182,9 +183,32 @@ const std::string	ServerLink::getMoveReply() {
 	std::string line = std::move(this->lines.front());
 	this->lines.pop();
 
-	// remove the commande LOOK from the commande_log to recall it later if needed
+	// remove the commande MOVE from the commande_log to recall it later if needed
 	_commande_log.erase(std::remove(_commande_log.begin(), _commande_log.end(), Commande::MOVE), _commande_log.end());
 
+	return (line);
+}
+
+const std::string	ServerLink::getTakeReply() {
+	if (this->lines.empty() == true) { return ("");}
+
+	// if the commande is not the take response
+	if (this->lines.front().find("OK taken=") != 0) {
+		// and if there is no movement error msg
+		if (this->lines.front().find("ERR 408") == std::string::npos) {
+			// this is not our message
+			return ("");
+		}
+	}
+
+	if (this->debug == true) {std::cout << "[DEBUG] Take responce = [" << this->lines.front() << "]\n"; }
+
+	// get the command result ad pop it
+	std::string line = move(this->lines.front());
+	this->lines.pop();
+
+	// remove the commande TAKE from the commande_log to recall it later if needed
+	_commande_log.erase(std::remove(_commande_log.begin(), _commande_log.end(), Commande::TAKE), _commande_log.end());
 	return (line);
 }
 
@@ -203,6 +227,14 @@ const std::string	ServerLink::move(const std::string &direction) {
 		this->send_commande("MOVE " + direction, Commande::MOVE);
 	}
 	return (this->getMoveReply());
+}
+
+const std::string	ServerLink::take(const std::string &item_id) {
+	// if take was already sent by someone we will wait the next call
+	if (std::count(_commande_log.begin(), _commande_log.end(), Commande::TAKE) <= 0) {
+		this->send_commande("TAKE " + item_id, Commande::TAKE);
+	}
+	return (this->getTakeReply());
 }
 
 bool				ServerLink::isConnected() const

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 11:07:51 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/25 11:52:24 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 13:41:41 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,8 @@ bool		User::checkMapCollision(Rectangle &user_foot) {
 
 bool		User::checkOutOfMap(float x, float y) {
     (void)y;
-    if (x < -1 or x > this->_room->getCurrentRoom()->getWidth() + 1 or
-        y < -1 or y > this->_room->getCurrentRoom()->getHeight() + 1) {
+    if (x < - 2 or x > this->_room->getCurrentRoom()->getWidth() + 2 or
+        y < - 2 or y > this->_room->getCurrentRoom()->getHeight() + 2) {
         return (true);
     }
     return (false);
