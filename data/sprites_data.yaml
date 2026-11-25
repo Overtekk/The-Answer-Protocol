@@ -15,6 +15,6 @@ sprites:
     name: "ItemsIcons"
     path: "assets/HUD/Item_icons.png"
 
-  test_background:
-    name: "test_background"
-    path: "assets/tiles/tiles/spaw_tile.png"
+  HUD:
+    name: "HUD"
+    path: "assets/HUD/HUD.png"

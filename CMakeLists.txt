@@ -98,6 +98,9 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
     src/gui/Animation.cpp
 	src/gui/GameCamera.cpp
 	src/gui/utils/VisualUtils.cpp
+	src/gui/HUD/TextBoxs/TextBoxManager.cpp
+	src/gui/HUD/TextBoxs/TextBoxInterface.cpp
+	src/gui/HUD/TextBoxs/WaitingTextBox.cpp
 	src/utils/files.cpp
 )
 
