@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:31:16 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 16:10:04 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 10:35:18 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ enum class EntityDirection
 };
 
 class VisualEntity {
-	private :
+	private:
 		std::string				_id;
-
+	
 		// Texture
 		const Texture2D 		&_img; // Texture
 		std::tuple<int, int>	_sprite_dim;
 		float					_sprite_scale;
 
+	protected :
 		Vector2 _position = {0.0f, 0.0f};
 
 		// Sprite frame
@@ -52,7 +53,6 @@ class VisualEntity {
 		float _dx = 0; // entity x direction dx < 0 left, dx > 0 right, 0 = None
 		float _dy = 0; // entity y direction dy < 0 up, dy > 0 down, 0 = None
 
-	protected :
 		// update direction (dx and dy) depending on your needs (key pressed...)
 		virtual void updateMovement() = 0;
 
@@ -71,9 +71,6 @@ class VisualEntity {
 		// Protection against copying texture
 		VisualEntity(const VisualEntity&) = delete;
 		VisualEntity& operator=(const VisualEntity&) = delete;
-
-		// Update entity position, orientation, and sprite
-		virtual void update();
 
 		// Utils
 
@@ -95,18 +92,24 @@ class VisualEntity {
 		// Set entity position x and y
 		void 		setPos(const Vector2 &new_pos);
 
+		// Update entity position, orientation, and sprite
+		virtual void update();
+
 		// Set entity direction (dx and dy)
 		void 		setDirection(float new_dx, float new_dy);
 
 		// return sprite width
-		int		getWidth() const;
+		int			getWidth() const;
 
 		// return sprite height
-		int		getHeight() const;
+		int			getHeight() const;
 
 		// took an item from the room, open the chest, ask if the player want to take the item then send the commende to the sever
-		void	getItem();
+		void		getItem();
 
 		// Error
-		void sendObjectError(const std::string &error);
+		void 		sendObjectError(const std::string &error);
+
+		// Change orientation (Left or right)
+		void		debug_orientation();
 };

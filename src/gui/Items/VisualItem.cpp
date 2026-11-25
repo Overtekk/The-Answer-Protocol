@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 15:27:08 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/10/19 10:44:34 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 11:41:31 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,15 @@ VisualItem::VisualItem(
     _chest_sprits(Animation(assets.sprites.at("chest"),
                             {this->_CHEST_WIDTH, this->_CHEST_HEIGHT,},
                             2, 2, 0, 0.0f, false)),
-    _sprite_scale(sprite_scale) {}
+    _sprite_scale(sprite_scale) 
+{
+    this->_item_box = Rectangle {
+        this->_position.x - this->_CHEST_WIDTH / 2.0f,
+        this->_position.y - this->_CHEST_HEIGHT / 2.0f,
+        float(_CHEST_WIDTH),
+        float(_CHEST_HEIGHT)
+    };
+}
 
     void VisualItem::DrawInRoom()
     {
@@ -40,6 +48,8 @@ const std::string& VisualItem::ItemPicked()
 void VisualItem::setPos(const Vector2 &new_pos)
 {
     this->_position = new_pos;
+    this->_item_box.x = new_pos.x - this->_CHEST_WIDTH / 2.0f;
+    this->_item_box.y = new_pos.y - this->_CHEST_HEIGHT / 2.0f;
 }
 
 const Vector2& VisualItem::getPos() const
@@ -55,4 +65,8 @@ int VisualItem::getChestWidth() const
 int VisualItem::getChestHeight() const
 {
     return (this->_CHEST_HEIGHT);
+}
+
+const Rectangle 	&VisualItem::getItemBox() {
+    return  (this->_item_box);
 }

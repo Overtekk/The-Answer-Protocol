@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 16:14:52 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 09:53:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,22 +115,8 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 		camera.update(room.getCurrentRoom());
 
 		room.updateRoom();
+		data.user->debug_orientation();
 		data.user->update();
-
-		// TmxLayer 	*object_layers = room.getCurrentRoom()->getTileMap()->layers[3].layers;
-		// int32_t		length = room.getCurrentRoom()->getTileMap()->layers[3].layersLength;
-		// int 		i = 0;
-		// while (i < length) {
-
-		// 	std::cout << (object_layers + i)->name << "\n";
-
-		// 	std::cout << CheckCollisionTMXObjectGroupPoint(
-		// 		(object_layers + i)->exact.objectGroup,
-		// 		data.user->getPos(),
-		// 		nullptr
-		// 	) << "\n";
-		// 	i++;
-		// }
 
         BeginDrawing();
             ClearBackground(BLACK);
@@ -140,6 +126,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 				// DrawTMX(room.getCurrentRoom()->getTileMap(), camera.getCamera(), NULL, 0, 0, WHITE);
 				room.drawRoom(&camera);
 				data.user->onDraw();
+				data.user->draw_foot();
 			}
 			EndMode2D();
 
