@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 09:04:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:47:30 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:50:20 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,22 @@ const std::string	DialogueManager::getNoMoneyShopDialogue(const std::string &ent
 	if (!result_line)
 		return entity_id + ": you don't have enought $!";
 	return entity_id + ": " + *result_line;
+}
+
+
+const std::string	DialogueManager::getLowHPText(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "low_hp");
+	if (!result_line)
+		return entity_id + " seems to be in bad shape.";
+	return *result_line;
+}
+
+
+const std::string	DialogueManager::getCanSpareText(const std::string &entity_id) const {
+	std::optional<std::string> result_line = getLine(entity_id, "can_spare");
+	if (!result_line)
+		return entity_id + " doesn't wants to fight anymore.";
+	return *result_line;
 }
 
 

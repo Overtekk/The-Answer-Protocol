@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/27 08:55:12 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:45:38 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:10:33 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class DialogueManager {
 		const std::string	getEncounterDialogue(const std::string& entity_id) const;
 		const std::string	getCheckDialogue(const std::string& entity_id) const;
 		const std::string	getNeutralDialogue(const std::string& entity_id) const;
+		const std::string	getLowHPText(const std::string& entity_id) const;
+		const std::string	getCanSpareText(const std::string& entity_id) const;
 
 		// shop
 		const std::string	getGreetingsShopDialogue(const std::string& entity_id) const;

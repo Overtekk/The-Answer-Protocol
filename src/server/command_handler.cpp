@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 09:34:35 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:43:00 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <cctype>
 # include <tuple>
 
+#include "core/CombatManager.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/TCPSession.hpp"
 # include "server/TCP_EnumsType.hpp"
@@ -132,7 +133,6 @@ bool	parseCombatCommand(const std::string& cmd_str, CombatCommand& cmd) {
 		{"ITEM",	CombatCommand::ITEM},
 		{"FLEE",	CombatCommand::FLEE},
 		{"SPARE",	CombatCommand::SPARE},
-		{"CHECK",	CombatCommand::CHECK},
 		{"STATUS",	CombatCommand::STATUS},
 		{"HELP",	CombatCommand::HELP}
 	};
@@ -396,7 +396,6 @@ void	CommandHandler::handleCombatCommand(TCPSession &session, const std::string 
 		case CombatCommand::ATTACK:			commandCombatAttack(session, argument);	break;
 		case CombatCommand::STATUS:			commandCombatStatus(session, argument);	break;
 		case CombatCommand::ACT:			commandCombatAct(session, argument);	break;
-		case CombatCommand::CHECK:			commandCombatCheck(session, argument);	break;
 		case CombatCommand::FLEE:			commandCombatFlee(session, argument);	break;
 		case CombatCommand::SPARE:			commandCombatSpare(session, argument);	break;
 		case CombatCommand::ITEM:			commandCombatItem(session, argument);	break;
@@ -862,20 +861,15 @@ void	CommandHandler::commandCombatFlee(TCPSession &session, std::string& argumen
 
 
 void	CommandHandler::commandCombatAct(TCPSession &session, std::string& argument) {
-	std::ignore = argument;
-	session.add_msg_to_buffer("Not implemented yet.");
+	lower_the_string(argument);
+
+	ActReturn result = _manager.combatAct(session.getUsername(), argument);
+	session.add_msg_to_buffer(getTCP_OK_operation(result.message));
+
+	if (result.next_turn)
+		session.add_msg_to_buffer(getTCP_OK_operation(_manager.changeCombatWhoTurn(session.getUsername(), CombatTurn::ENTITY)));
+
 	return;
-}
-
-
-void	CommandHandler::commandCombatCheck(TCPSession &session, std::string& argument) {
-	std::ignore = argument;
-
-	const std::string result = _manager.combatCheck(session.getUsername());
-	if (result.empty())
-		return;
-
-	session.add_msg_to_buffer(getTCP_OK_operation(result));
 }
 
 
@@ -932,13 +926,12 @@ void	CommandHandler::commandHelpCombat(TCPSession &session, std::string &argumen
 
 	switch (help_cmd) {
 		case CombatCommand::ATTACK:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatAttackCommand));	break;
-		case CombatCommand::ACT:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatActCommand));	break;
-		case CombatCommand::ITEM:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatItemCommand));	break;
-		case CombatCommand::SPARE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatSpareCommand));	break;
-		case CombatCommand::FLEE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatFleeCommand));	break;
-		case CombatCommand::CHECK:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatCheckCommand));	break;
-		case CombatCommand::STATUS:	session.add_msg_to_buffer(getTCP_OK_operation(helpStatusCommand));	break;
-		case CombatCommand::HELP:	session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));	break;
+		case CombatCommand::ACT:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatActCommand));		break;
+		case CombatCommand::ITEM:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatItemCommand));		break;
+		case CombatCommand::SPARE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatSpareCommand));		break;
+		case CombatCommand::FLEE:	session.add_msg_to_buffer(getTCP_OK_operation(helpCombatFleeCommand));		break;
+		case CombatCommand::STATUS:	session.add_msg_to_buffer(getTCP_OK_operation(helpStatusCommand));			break;
+		case CombatCommand::HELP:	session.add_msg_to_buffer(getTCP_OK_operation(helpHelpCommand));			break;
 	}
 	return;
 }
@@ -1147,6 +1140,7 @@ void	CommandHandler::sendErrorToUser(TCPSession& session, ReturnState return_err
 		case ReturnState::ENTITY_ALREADY_IN_BATTLE:		error_msg = getTCP_error(TCPErrorCode::ALREADY_IN_COMBAT);		break;
 		case ReturnState::ENTITY_NOT_SHOP:				error_msg = getTCP_error(TCPErrorCode::NPC_NOT_SHOP);				break;
 		case ReturnState::NO_MONEY:						error_msg = getTCP_error(TCPErrorCode::NO_MONEY);					break;
+		case ReturnState::ENTITY_SPARED:				error_msg = getTCP_error(TCPErrorCode::ENTITY_SPARED);			break;
 		case ReturnState::VALID:						error_msg = "That shoud'nt be an error.";							break;
 	}
 

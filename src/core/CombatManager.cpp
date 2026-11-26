@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:42:32 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:45:11 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ CombatManager::CombatManager(DialogueManager& dialogue_manager):
 	_dialogue_manager(dialogue_manager),
 	_rng(std::random_device{}()) {}
 
+
 // ============================================================================
 // =====================         PUBLIC      ==================================
 // ============================================================================
@@ -41,7 +42,9 @@ const std::string	CombatManager::initCombat(Player* player, Entity* entity) {
 	return _dialogue_manager.getEncounterDialogue(entity->getID());
 }
 
+
 void				CombatManager::finishCombat(Player *player) { player->setCombat(false); }
+
 
 // COMBAT STATUS
 const std::string	CombatManager::getCombatStats(Player *player, Entity *entity) const {
@@ -58,6 +61,7 @@ const std::string	CombatManager::getCombatStats(Player *player, Entity *entity) 
 	return result;
 }
 
+
 CombatStatus		CombatManager::getCombatStatus(Player *player, Entity *entity) const {
 	if (player->getHealth() <= 0)
 		return CombatStatus::PLAYER_LOSE;
@@ -66,8 +70,6 @@ CombatStatus		CombatManager::getCombatStatus(Player *player, Entity *entity) con
 	return CombatStatus::NOTHING;
 }
 
-// MESSAGES
-const std::string	CombatManager::getCheckMsg(Entity *entity) const { return _dialogue_manager.getCheckDialogue(entity->getID()); }
 
 // ATTACK
 const std::string	CombatManager::playerBasicAttack(Player *player, Entity *entity) {
@@ -95,10 +97,17 @@ const std::string	CombatManager::playerBasicAttack(Player *player, Entity *entit
 	int result = (entity->getHealth() - damage);
 	entity->setHealth(result);
 
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (enemy && enemy->hasBeenAttacked() == false)
+		enemy->changeAttackedState(true);
+
 	return actPlayerAttack(entity->getName(), damage, bonus);
 }
 
+
 const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity) {
+	setRandomSparedStatus(entity);
+
 	// player chance
 	float bonus_chance = std::clamp((player->getLuck() * BONUS_CHANCE_MULTIPLIER), 0.0f, 100.0f);
 
@@ -126,6 +135,26 @@ const std::string	CombatManager::enemyBasicAttack(Player *player, Entity *entity
 	return actPlayerBlocked(entity->getName());
 }
 
+
+// ACT
+ActReturn	CombatManager::enemyAct(Entity *entity, const std::string& action) {
+	ActReturn	result;
+
+	switch (entity->getBehavior()) {
+		case EnemyBehavior::BASIC:			result = actDefault(entity, action);	break;
+		case EnemyBehavior::VIROVIROKUN:	result = actDefault(entity, action);	break;
+		case EnemyBehavior::MAUS:			result = actDefault(entity, action);	break;
+		case EnemyBehavior::KAWKAW:			result = actDefault(entity, action);	break;
+		case EnemyBehavior::SWATCHLINGS:	result = actDefault(entity, action);	break;
+		case EnemyBehavior::K_ROUND:		result = actDefault(entity, action);	break;
+		case EnemyBehavior::GUARD_DOG:		result = actDefault(entity, action);	break;
+		case EnemyBehavior::QUEEN:			result = actDefault(entity, action);	break;
+	}
+
+	return result;
+}
+
+
 // TURN
 const std::string	CombatManager::enemyTurn(Player* player, Entity* entity) {
 	std::string	result;
@@ -144,14 +173,21 @@ const std::string	CombatManager::enemyTurn(Player* player, Entity* entity) {
 	return result;
 }
 
+
 // SPARE
 bool				CombatManager::trySpare(Entity *entity) {
 	Enemy* enemy = dynamic_cast<Enemy*>(entity);
 	if (!enemy)
 		return false;
 
-	return enemy->getSparedState();
+	if (enemy->getCanBeSparedState()) {
+		enemy->changeSparedState(true);
+		return true;
+	}
+
+	return false;
 }
+
 
 // RUNAWAY
 bool				CombatManager::tryFlee (Player *player, Entity *entity) {
@@ -174,4 +210,56 @@ bool				CombatManager::tryFlee (Player *player, Entity *entity) {
 	if (roll_100(_rng) < final_chance)
 		return true;
 	return false;
+}
+
+
+// ============================================================================
+// =====================         PRIVATE      =================================
+// ============================================================================
+
+bool		CombatManager::setRandomSparedStatus(Entity *entity) {
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (!enemy)
+		return false;
+
+	if (enemy->hasBeenAttacked())
+		return false;
+
+	std::uniform_int_distribution<int> roll_100(0, 99);
+	float spare_chance = 33;
+	if (roll_100(_rng) >= spare_chance)
+		return false;
+
+	enemy->setCanBeSparedState(true);
+	return true;
+
+}
+
+
+ActReturn	CombatManager::actDefault(Entity *entity, const std::string &action) {
+	ActReturn result = {};
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (!enemy)
+		return result;
+
+	if (action == "talk")
+		result.message = actDefaultActTalk(enemy->getName());
+
+	else if (action == "check") {
+		if (enemy->getCanBeSparedState())
+			result.message = _dialogue_manager.getCanSpareText(enemy->getID());
+
+		else if (enemy->getMaxHealth() / 3 > enemy->getHealth())
+			result.message = _dialogue_manager.getLowHPText(enemy->getID());
+
+		else
+			result.message = _dialogue_manager.getCheckDialogue(enemy->getID());
+	}
+
+	else {
+		result.message = "Actions: TALK, CHECK";
+		result.next_turn = false;
+	}
+
+	return result;
 }

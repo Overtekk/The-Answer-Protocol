@@ -6,12 +6,12 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 10:07:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:40:50 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <chrono>
-#include <cstddef>
+# include <cstddef>
 # include <memory>
 # include <optional>
 # include <stdexcept>
@@ -615,6 +615,12 @@ ReturnState					GasterManager::isEnemyType(const std::string& player_name, const
 		return ReturnState::ENTITY_NOT_ENEMY;
 	}
 
+	Enemy* enemy = dynamic_cast<Enemy*>(entity_in_room);
+	if (enemy && enemy->hasBeenSpared()) {
+		print_log(errEntityHasBeenSpared(entity->getName()));
+		return ReturnState::ENTITY_SPARED;
+	}
+
 	if (entity_in_room->inCombat()) {
 		print_log(errEntityAlreadyInCombat(entity->getName()));
 		return ReturnState::ENTITY_ALREADY_IN_BATTLE;
@@ -780,20 +786,31 @@ void						GasterManager::finishCombat(const std::string &player_name) {
 		return;
 	}
 
-	it->second.entity->setHealth(it->second.entity->getMaxHealth());
+	Enemy* enemy = dynamic_cast<Enemy*>(it->second.entity);
+	if (enemy) {
+		enemy->changeAttackedState(false);
+		enemy->setCanBeSparedState(false);
+	}
+
+	enemy->setHealth(enemy->getMaxHealth());
 	_combat_manager.finishCombat(it->second.player);
 	_combat_lists.erase(it);
 }
 
 
-const std::string			GasterManager::combatCheck(const std::string &player_name) {
+ActReturn					GasterManager::combatAct(const std::string &player_name, const std::string& action) {
+	ActReturn result = {};
+	result.message = "";
+
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
 		print_log(errCantAttackNoCombat(player_name));
-		return "";
+		return result;
 	}
 
-	return _combat_manager.getCheckMsg(it->second.entity);
+	result = _combat_manager.enemyAct(it->second.entity, action);
+
+	return result;
 }
 
 

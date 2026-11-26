@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:33:07 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 09:24:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:23:14 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,10 @@ enum class GameCommand {
 
 enum class CombatCommand {
 	ATTACK,
-	ACT, //todo
+	ACT,
 	ITEM,
 	SPARE,
 	FLEE,
-	CHECK,
 	STATUS,
 	HELP,
 };
