@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 15:01:39 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/23 14:54:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:42:48 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ namespace {
 			case TCPErrorCode::ROOM_NOT_FOUND:			return {404, "ROOM_NOT_FOUND",			"The room can't be found."};
 			case TCPErrorCode::QUEST_NOT_FOUND:			return {404, "QUEST_NOT_FOUND",			"The requested quest can't be found."};
 			case TCPErrorCode::NPC_NOT_HOSTILE:			return {405, "NPC_NOT_HOSTILE",			"NPC cannot be attacked (not an enemy)."};
+			case TCPErrorCode::ENTITY_SPARED:			return {405, "ENTITY_SPARED",			"Entity have been spared. Cannot attack it."};
 			case TCPErrorCode::NPC_NOT_SHOP:			return {405, "NPC_NOT_SHOP",			"NPC is not a shop."};
 			case TCPErrorCode::NO_QUEST_AVAILABLE:		return {406, "NO_QUEST_AVAILABLE",		"NPC has no quests or quest already completed."};
 			case TCPErrorCode::NPC_NO_DIALOGUE:			return {407, "NPC_NO_DIALOGUE",			"It doesn't want to speak."};

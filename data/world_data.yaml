@@ -284,6 +284,9 @@ entities:
       neutral_2: "Dummy waits."
       neutral_3: "A fly lands on Dummy."
       neutral_4: "Silent is the favorite word of Dummy."
+      low_hp: "Dummy seems very broken..."
+      can_spare: "Dummy seems innocent..."
+
     type: "enemy"
     hp: 11
     attack: 0

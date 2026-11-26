@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 09:33:37 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:58:24 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,6 @@ class GasterManager {
 		// --- DIALOGUE MANAGEMENT ---
 		TalkResult			getDialogue(const std::string& player_name, const std::string& entity_id);
 
-		// --- COMBAT MANAGEMENT ---
-		std::vector<CombatMessage>	updateCombats();
-
 		// --- SHOP MANAGEMENT ---
 		const std::string	enterShop(const std::string& player_name, const std::string& entity_id);
 		const std::string	getShopItemsList(const std::string& player_name) const;
@@ -144,6 +141,9 @@ class GasterManager {
 		const std::string	getBuyOKmessage(const std::string& player_name) const;
 		const std::string	getBuyNOmessage(const std::string& player_name) const;
 		const std::string	getPlayerMoney(const std::string& player_name) const;
+
+		// --- COMBAT MANAGEMENT ---
+		std::vector<CombatMessage>	updateCombats();
 
 		ReturnState			isEnemyType(const std::string& player_name, const std::string& entity_id);
 		const std::string	initCombat(const std::string& player_name);
@@ -156,7 +156,7 @@ class GasterManager {
 		bool				tryFlee(const std::string& player_name);
 		bool				trySpare(const std::string& player_name);
 		void				finishCombat(const std::string& player_name);
-		const std::string	combatCheck(const std::string& player_name);
+		ActReturn			combatAct(const std::string &player_name, const std::string& action);
 		CombatTurn			getCombatWhoTurn(const std::string& player_name);
 		const std::string	changeCombatWhoTurn(const std::string& player_name, CombatTurn turn);
 

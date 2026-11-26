@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:07:55 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 11:36:19 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:14:58 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 # include "config/Enums.hpp"
 
 
+struct ActReturn {
+	std::string	message;
+	bool	next_turn = true;
+};
+
+
 class CombatManager {
 	private :
 		DialogueManager&	_dialogue_manager;
@@ -32,6 +38,9 @@ class CombatManager {
 		inline static constexpr float	MIN_FLEE_CHANCE = 20.0f;
 		inline static constexpr float	MAX_FLEE_CHANCE = 90.0f;
 		std::mt19937	_rng;
+
+		bool		setRandomSparedStatus(Entity* entity);
+		ActReturn	actDefault(Entity* entity, const std::string& action);
 
 	public :
 		// --- CONSTRUCTOR ---
@@ -47,12 +56,12 @@ class CombatManager {
 		const std::string	getCombatStats(Player* player, Entity* entity) const;
 		CombatStatus		getCombatStatus(Player* player, Entity* entity) const;
 
-		// MESSAGES
-		const std::string	getCheckMsg(Entity* entity) const;
-
 		// ATTACK
 		const std::string	playerBasicAttack(Player* player, Entity* entity);
 		const std::string	enemyBasicAttack(Player* player, Entity* entity);
+
+		// ACT
+		ActReturn	enemyAct(Entity* entity, const std::string& action);
 
 		// TURN
 		const std::string	enemyTurn(Player* player, Entity* entity);

@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:52:14 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:59:33 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:41:34 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ enum class TCPErrorCode {
 	NOT_IN_COMBAT,				// CLIENT IS NOT IN A COMBAT
 	NOT_YOUR_TURN,				// NOT THE CLIENT TURN
 	ALREADY_IN_COMBAT,			// ENTITY IS ALREADY IS A COMBAT
-	NO_MONEY					// NOT ENOUGHT MONEY
+	NO_MONEY,					// NOT ENOUGHT MONEY
+	ENTITY_SPARED				// ENTITY HAVE BEEN SPARED
 };
 
 

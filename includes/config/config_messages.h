@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 09:32:16 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 11:37:26 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ inline std::string	logReconnectPlayer(const std::string& player_name) { return p
 # define okHelpGameCommand		"Available commands: \"LOOK\" | \"MOVE {direction}\" | \"WHO\" | \"TAKE {id}\" | \"DROP {id}\" | \"INVENTORY\" | "\
 								"\"TALK {id}\" | \"ATTACK {id}\" | \"STATUS\" | \"QUEST {id}\" | \"QUESTS\" | \"EQUIP {id}\" | \"ITEM_INFO {id}\" | "\
 								"\"CHAT {message}\" | \"GROUP_CREATE {name}\" | \"GROUP_INVITE {username}\" | \"GROUP_JOIN\" | \"GROUP_LEAVE\" | \"HELP {command}\" | \"QUIT\""
-# define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"CHECK\" | \"STATUS\" | \"HELP {command}\""
+# define okHelpCombatCommand	"Available commands: \"ATTACK\" | \"ACT {action}\" | \"ITEM {id}\" | \"SPARE\" | \"FLEE\" | \"STATUS\" | \"HELP {command}\""
 # define okHelpShopCommmand		"Available commands: \"ITEMS\" | \"BUY {item}\" | \"ITEM_INFO {id}\" | \"INVENTORY\" | \"QUIT\" | \"HELP {command}\""
 # define okHelpLoggingCommand	"Available commands: \"KEEP\" | \"DELETE\" | \"change {username}\" | \"HELP {command}\" | \"QUIT\""
 
@@ -139,7 +139,6 @@ inline std::string	logReconnectPlayer(const std::string& player_name) { return p
 # define helpCombatItemCommand		"ITEM: show the list of your items OR use the requested item."
 # define helpCombatSpareCommand		"SPARE: spare an enemy if possible."
 # define helpCombatFleeCommand		"FLEE: try to flee based on your luck, your hp and the enemy HP."
-# define helpCombatCheckCommand		"CHECK: check the enemy information"
 
 # define helpShopItemsCommand	"ITEMS: show the list of available items to buy and their price."
 # define helpShopBuyCommand		"BUY: buy the requested item if you have the funds."
@@ -156,6 +155,8 @@ inline std::string	okEquipped(const std::string& item) { return item + " is now 
 inline std::string	okTalk(const std::string& entity_name, const std::string& text) { return entity_name + ": \"" + text + "\""; }
 
 // === COMBAT MESSAGES (sent to the clients) ===
+# define defaultActMessage	"But nothing happened..."
+
 inline std::string	actPlayerAttack(const std::string& entity_name, int damage, int bonus) {
 	std::string msg = "You attacked " + entity_name + " with a strength of " + std::to_string(damage);
 	if (bonus > 0)
@@ -165,6 +166,7 @@ inline std::string	actPlayerAttack(const std::string& entity_name, int damage, i
 inline std::string	actEnemyNoDamage(const std::string& entity_name) { return entity_name + " dealt no damage to you."; }
 inline std::string	actEnemyAttack(const std::string& entity_name, int damage) { return entity_name + " attacked you with a strength of " + std::to_string(damage); }
 inline std::string	actPlayerBlocked(const std::string& entity_name) { return "You blocked " + entity_name + " damage."; }
+inline std::string	actDefaultActTalk(const std::string& entity_name) { return entity_name + " doesn't want to talk"; }
 
 // === SHOP MESSAGES (sent to the clients) ===
 # define logLeaveShop	"You've leaved the shop."
@@ -200,6 +202,7 @@ inline std::string	errCantGetPlayerRoom(const std::string& player_name) { return
 inline std::string	errEntityNotInRoom(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not in player room."; }
 inline std::string	errEntityNotEnemy(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not an enemy."; }
 inline std::string	errEntityAlreadyInCombat(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" is already in a combat. Combat launch aborted."; }
+inline std::string	errEntityHasBeenSpared(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" have been spared previously."; }
 inline std::string	errEntityNotShop(const std::string& entity_name) { return NAME_GASTER_MANAGER "\"" + entity_name + "\" not a shop."; }
 inline std::string	errItemNotInRoom(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in room."; }
 inline std::string	errItemNotInInventory(const std::string& item_name) { return NAME_GASTER_MANAGER "item \"" + item_name + "\" not in player inventory."; }
