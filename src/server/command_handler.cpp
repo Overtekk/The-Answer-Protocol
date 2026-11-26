@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 11:43:00 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 14:11:07 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -836,9 +836,10 @@ void	CommandHandler::commandCombatAttack(TCPSession &session, std::string& argum
 	std::ignore = argument;
 
 	session.add_msg_to_buffer(getTCP_OK_operation( _manager.combatPlayerAttack(session.getUsername())));
+	std::string rewards;
 
-	CombatStatus result = _manager.checkCombatStatus(session.getUsername());
-	manageCombatResult(session, result, argument);
+	CombatStatus result = _manager.checkCombatStatus(session.getUsername(), rewards);
+	manageCombatResult(session, result, argument, rewards);
 	return;
 }
 
@@ -876,9 +877,12 @@ void	CommandHandler::commandCombatAct(TCPSession &session, std::string& argument
 void	CommandHandler::commandCombatSpare(TCPSession &session, std::string &argument) {
 	std::ignore = argument;
 
-	bool result = _manager.trySpare(session.getUsername());
+	std::string rewards;
+	bool result = _manager.trySpare(session.getUsername(), rewards);
 	if (result) {
 		session.add_msg_to_buffer(getTCP_OK_operation(ACT_SUCCESS_SPARE));
+		if (!rewards.empty())
+			session.add_msg_to_buffer(getTCP_OK_operation(rewards));
 		manageCombatFinish(session);
 		return;
 	}
@@ -1097,7 +1101,7 @@ bool	CommandHandler::manageCombatTurn(TCPSession& session) {
 }
 
 
-void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& result, std::string& argument) {
+void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& result, std::string& argument, const std::string& rewards) {
 	if (result == CombatStatus::PLAYER_LOSE) {
 		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_LOSE));
 		session.setSubSessionState(SubSessionState::MOVING);
@@ -1105,6 +1109,10 @@ void	CommandHandler::manageCombatResult(TCPSession &session, CombatStatus& resul
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
 		session.add_msg_to_buffer(getTCP_OK_operation(ACT_COMBAT_WON));
+
+		if (!rewards.empty())
+			session.add_msg_to_buffer(getTCP_OK_operation(rewards));
+
 		session.setSubSessionState(SubSessionState::MOVING);
 		return;
 	}

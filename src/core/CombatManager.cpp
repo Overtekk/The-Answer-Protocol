@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:10:21 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 11:45:11 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 13:56:46 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,6 +210,39 @@ bool				CombatManager::tryFlee (Player *player, Entity *entity) {
 	if (roll_100(_rng) < final_chance)
 		return true;
 	return false;
+}
+
+
+// REWARDS
+const std::string	CombatManager::rewardsPlayer(Player *player, Enemy *enemy) {
+	std::uniform_int_distribution<int> roll_base_money(10, 20);
+	int money_earn = roll_base_money(_rng);
+
+	// SPARED
+	if (enemy->hasBeenSpared()) {
+		std::uniform_int_distribution<int> roll_bonus_spared(5, 10);
+		money_earn += roll_bonus_spared(_rng);
+	}
+
+	// ENEMY TYPE
+	if (enemy->getType() == EnemyType::ENEMY) {
+		std::uniform_int_distribution<int> roll_bonus_enemy_type(5, 10);
+		money_earn += roll_bonus_enemy_type(_rng);
+	}
+	else if (enemy->getType() == EnemyType::BOSS) {
+		std::uniform_int_distribution<int> roll_bonus_boss_type(11, 22);
+		money_earn += roll_bonus_boss_type(_rng);
+	}
+
+	// HEALTH BONUS
+	if (enemy->getMaxHealth() >= 200) {
+		std::uniform_int_distribution<int> roll_bonus_enemy_hp(3, 9);
+		money_earn += roll_bonus_enemy_hp(_rng);
+	}
+
+	player->setMoney(player->getMoney() + money_earn);
+
+	return "You earn " + std::to_string(money_earn) + "$";
 }
 
 

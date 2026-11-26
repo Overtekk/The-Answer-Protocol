@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 13:11:02 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 14:11:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <unordered_map>
 # include <vector>
 
-#include "base_class/entities/Enemy.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
@@ -103,9 +102,6 @@ class GasterManager {
 		bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
 		int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
 
-		// --- COMBATS REWARDS ---
-		const std::string	getCombatRewards(Player* player, Enemy* enemy);
-
 	public :
 		// --- CONSTRUCTOR ---
 		GasterManager(WorldConfig& world_data);
@@ -156,9 +152,9 @@ class GasterManager {
 		const std::string	useConsumableItem(const std::string& player_name, const std::string& item_name);
 		const std::string	combatPlayerAttack(const std::string& player_name);
 		const std::string	combatEnemyAttack(const std::string& player_name);
-		CombatStatus		checkCombatStatus(const std::string& player_name);
+		CombatStatus		checkCombatStatus(const std::string& player_name, std::string& rewards_msg);
 		bool				tryFlee(const std::string& player_name);
-		bool				trySpare(const std::string& player_name);
+		bool				trySpare(const std::string& player_name, std::string& rewards_msg);
 		void				finishCombat(const std::string& player_name);
 		ActReturn			combatAct(const std::string &player_name, const std::string& action);
 		CombatTurn			getCombatWhoTurn(const std::string& player_name);
