@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/30 16:07:55 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 11:14:58 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 13:15:39 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <string>
 # include <random>
 
+# include "base_class/entities/Enemy.hpp"
 # include "base_class/entities/Player.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "core/DialogueManager.hpp"
@@ -71,4 +72,7 @@ class CombatManager {
 
 		// RUNAWAY
 		bool	tryFlee(Player* player, Entity* entity);
+
+		// REWARDS
+		const std::string	rewardsPlayer(Player* player, Enemy* enemy);
 };

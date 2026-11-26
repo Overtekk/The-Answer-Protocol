@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 11:40:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 14:13:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -570,7 +570,8 @@ std::vector<CombatMessage>	GasterManager::updateCombats() {
 			else {
 				message.combat_over = true;
 				result.push_back(message);
-				checkCombatStatus(name);	// erase the combat: "combat" is not valid anymore!
+				std::string	unused_rewards;
+				checkCombatStatus(name, unused_rewards);	// erase the combat: "combat" is not valid anymore!
 				continue;
 			}
 		}
@@ -675,6 +676,7 @@ const std::string			GasterManager::getConsumableItemsList(const std::string &pla
 	return it->second.player->getConsumableInInventory();
 }
 
+
 const std::string			GasterManager::useConsumableItem(const std::string &player_name, const std::string &item_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
@@ -701,6 +703,7 @@ const std::string			GasterManager::useConsumableItem(const std::string &player_n
 	return "You used " + item_name + ". You gained +" + std::to_string(hp_gained) + " HP.";
 }
 
+
 // * Make the player attack the entity. *
 const std::string			GasterManager::combatPlayerAttack(const std::string &player_name) {
 	const auto it = _combat_lists.find(player_name);
@@ -725,7 +728,7 @@ const std::string			GasterManager::combatEnemyAttack(const std::string &player_n
 
 
 // * Check if a combat is finished. *
-CombatStatus				GasterManager::checkCombatStatus(const std::string &player_name) {
+CombatStatus				GasterManager::checkCombatStatus(const std::string &player_name, std::string& rewards_msg) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
 		print_log(errCantCheckNoCombat(player_name));
@@ -744,6 +747,10 @@ CombatStatus				GasterManager::checkCombatStatus(const std::string &player_name)
 		flag = true;
 	}
 	else if (result == CombatStatus::ENTITY_LOSE) {
+		Enemy* enemy = dynamic_cast<Enemy*>(it->second.entity);
+		if (enemy)
+			rewards_msg = _combat_manager.rewardsPlayer(it->second.player, enemy);
+
 		std::string entity_id = it->second.entity->getID();
 		deleteEntity(it->second.entity);
 		print_log(SuccessEntityDeleted(entity_id));
@@ -768,14 +775,21 @@ bool						GasterManager::tryFlee(const std::string &player_name) {
 }
 
 
-bool						GasterManager::trySpare(const std::string &player_name) {
+bool						GasterManager::trySpare(const std::string &player_name, std::string& rewards_msg) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
 		print_log(errCantAttackNoCombat(player_name));
 		return false;
 	}
 
-	return _combat_manager.trySpare(it->second.entity);
+	if (!_combat_manager.trySpare(it->second.entity))
+		return false;
+
+	// Spared: give the rewards now (the enemy is flagged as spared, so the bonus applies)
+	Enemy* enemy = dynamic_cast<Enemy*>(it->second.entity);
+	if (enemy)
+		rewards_msg = _combat_manager.rewardsPlayer(it->second.player, enemy);
+	return true;
 }
 
 
@@ -792,7 +806,7 @@ void						GasterManager::finishCombat(const std::string &player_name) {
 		enemy->setCanBeSparedState(false);
 	}
 
-	enemy->setHealth(enemy->getMaxHealth());
+	it->second.entity->setHealth(enemy->getMaxHealth());
 	_combat_manager.finishCombat(it->second.player);
 	_combat_lists.erase(it);
 }
@@ -1062,6 +1076,7 @@ const Entity*	GasterManager::getEntity(const std::string& entity_id) const {
 Entity*			GasterManager::getEntity(const std::string& entity_id) {
 	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
 }
+
 
 // ============================================================================
 // ==================       	DIALOGUES            ==========================
