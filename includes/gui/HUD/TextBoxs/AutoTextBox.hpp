@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/25 15:45:52 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/25 16:52:45 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/26 15:03:41 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class AutoTextBox : public TextBoxInterface {
         float skip_timer;
         float delta = 0.0f;
 
+    public:
         AutoTextBox(const std::string &msg, float skip_time = 2.0);
 
         virtual void	skipTextBox() override;

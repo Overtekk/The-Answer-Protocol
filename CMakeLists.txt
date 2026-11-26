@@ -101,6 +101,7 @@ set(GUI_SOURCES	${GUI_MAIN}	${COMMON_SOURCES}
 	src/gui/HUD/TextBoxs/TextBoxManager.cpp
 	src/gui/HUD/TextBoxs/TextBoxInterface.cpp
 	src/gui/HUD/TextBoxs/WaitingTextBox.cpp
+	src/gui/HUD/TextBoxs/AutoTextBox.cpp
 	src/utils/files.cpp
 )
 
