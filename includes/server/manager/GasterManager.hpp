@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:52:27 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 10:58:24 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 13:11:02 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <unordered_map>
 # include <vector>
 
+#include "base_class/entities/Enemy.hpp"
 # include "base_class/entities/Entity.hpp"
 # include "config/Enums.hpp"
 # include "config/WorldConfig.hpp"
@@ -101,6 +102,9 @@ class GasterManager {
 		// --- DIALOGUES ---
 		bool	isConditionMet(const Player& player, const DialogueStage& stage) const;
 		int		getTalkLimit(const Player& player, const std::vector<DialogueStage>& stages) const;
+
+		// --- COMBATS REWARDS ---
+		const std::string	getCombatRewards(Player* player, Enemy* enemy);
 
 	public :
 		// --- CONSTRUCTOR ---

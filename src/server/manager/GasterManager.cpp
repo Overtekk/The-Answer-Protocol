@@ -6,7 +6,7 @@
 /*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:39:30 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 11:40:50 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 13:13:25 by roandrie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -552,8 +552,12 @@ std::vector<CombatMessage>	GasterManager::updateCombats() {
 			}
 			else if (combat.end_status == CombatStatus::PLAYER_LOSE)
 				combat.messages.push("You lose the combat.");
-			else
+			else {
 				combat.messages.push("You won the combat.");
+				Enemy* enemy = dynamic_cast<Enemy*>(it->second.entity);
+				if (enemy)
+					combat.messages.push(getCombatRewards(it->second.player, enemy));
+			}
 		}
 
 		// Send only ONE message, then wait for the delay before the next one
@@ -675,6 +679,7 @@ const std::string			GasterManager::getConsumableItemsList(const std::string &pla
 	return it->second.player->getConsumableInInventory();
 }
 
+
 const std::string			GasterManager::useConsumableItem(const std::string &player_name, const std::string &item_name) {
 	const auto it = _combat_lists.find(player_name);
 	if (it == _combat_lists.end()) {
@@ -700,6 +705,7 @@ const std::string			GasterManager::useConsumableItem(const std::string &player_n
 	it->second.player->removeItemFromInventory(item->getUniqueID());
 	return "You used " + item_name + ". You gained +" + std::to_string(hp_gained) + " HP.";
 }
+
 
 // * Make the player attack the entity. *
 const std::string			GasterManager::combatPlayerAttack(const std::string &player_name) {
@@ -1061,6 +1067,11 @@ const Entity*	GasterManager::getEntity(const std::string& entity_id) const {
 // * Get an entity. *
 Entity*			GasterManager::getEntity(const std::string& entity_id) {
 	return const_cast<Entity*>(std::as_const(*this).getEntity(entity_id));
+}
+
+
+const std::string	GasterManager::getCombatRewards(Player* player, Enemy* enemy) {
+
 }
 
 // ============================================================================
