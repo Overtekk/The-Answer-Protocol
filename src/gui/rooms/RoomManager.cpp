@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/24 10:03:16 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 11:57:11 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <string>
 # include <nlohmann/json.hpp>
 
-# include "gui.h"
 # include "gui/GameCamera.hpp"
 # include "gui/rooms/RoomManager.hpp"
 # include "gui/Items/VisualItem.hpp"
@@ -124,10 +123,8 @@ void    		RoomManager::checkItemsPickedUp() {
 		VisualItem	*item = item_pair.second;
 
 		if (IsKeyReleased(KEY_E)) {
-			if (checkCollison(
-				_user->getPos().x, _user->getPos().y, _user->getWidth(), _user->getHeight(),
-				item->getPos().x, item->getPos().y, item->getChestWidth(), item->getChestHeight()
-			)) {
+			if (CheckCollisionPointRec(this->_user->getPos(), item->getItemBox())
+			) {
 				item->ItemPicked();
 			}
 		}
@@ -192,9 +189,9 @@ VisualRoom		*RoomManager::getCurrentRoom() {
 
 void			RoomManager::drawRoom(GameCamera *camera) {
 	if (this->_changing_room == false){
-		this->_current_room->drawItems();
-
 		// Draw tile map
 		DrawTMX(_current_room->getTileMap(), camera->getCamera(), NULL, 0, 0, WHITE);
+
+		this->_current_room->drawItems();
 	}
 }

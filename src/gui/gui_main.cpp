@@ -6,12 +6,15 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/24 09:55:36 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 09:53:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstdint>
 # define HOXML_IMPLEMENTATION
 # define RAYTMX_IMPLEMENTATION
+#include "raytmx.h"
+#include <cstddef>
 
 # include <poll.h>
 # include <csignal>
@@ -90,6 +93,7 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 
 	connection.send_commande("CONNECT Nomi", Commande::CONNECT);
 
+	data.user->giveRoomManager(&room);
 	data.user->setPos(Vector2 {400, 225});
 
 	GameCamera			camera(data.user.get(), data.user->getPos(), 2.0);
@@ -111,16 +115,18 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 		camera.update(room.getCurrentRoom());
 
 		room.updateRoom();
+		data.user->debug_orientation();
 		data.user->update();
 
         BeginDrawing();
             ClearBackground(BLACK);
-			
+
 			BeginMode2D(*camera.getCamera());
 			{
 				// DrawTMX(room.getCurrentRoom()->getTileMap(), camera.getCamera(), NULL, 0, 0, WHITE);
 				room.drawRoom(&camera);
 				data.user->onDraw();
+				data.user->draw_foot();
 			}
 			EndMode2D();
 

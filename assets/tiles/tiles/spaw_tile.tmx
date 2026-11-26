@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="45" height="25" tilewidth="20" tileheight="20" infinite="0" nextlayerid="6" nextobjectid="10">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="45" height="25" tilewidth="20" tileheight="20" infinite="0" nextlayerid="7" nextobjectid="10">
  <tileset firstgid="1" source="Cyber_city.tsx"/>
  <tileset firstgid="4236" source="Sidewalk_full.tsx"/>
  <layer id="1" name="Tile Layer 1" width="45" height="25" locked="1">
@@ -89,17 +89,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Walls" visible="0">
-  <object id="1" x="-0.645833" y="60.1667" width="360.667" height="120.5"/>
-  <object id="2" x="-0.0304697" y="-0.25" width="280.364" height="63.2652"/>
-  <object id="3" x="278" y="0.5" width="163.75" height="19"/>
-  <object id="4" x="400.773" y="59.25" width="500.561" height="121.295"/>
-  <object id="5" x="440" y="0.5" width="461.5" height="60"/>
-  <object id="6" x="-1.50017" y="319.083" width="481" height="183.167"/>
-  <object id="7" x="520.5" y="319.417" width="481" height="182.833"/>
- </objectgroup>
- <objectgroup id="5" name="Objects" visible="0">
-  <object id="8" x="369.333" y="170.667"/>
-  <object id="9" x="270.333" y="17" width="28.6667" height="23"/>
- </objectgroup>
+ <group id="6" name="Collisons">
+  <objectgroup id="4" name="Walls">
+   <object id="1" x="-0.645833" y="60.1667" width="360.667" height="120.5"/>
+   <object id="2" x="-0.0304697" y="-0.25" width="280.364" height="63.2652"/>
+   <object id="3" x="278" y="0.5" width="163.75" height="19"/>
+   <object id="4" x="400.773" y="59.25" width="500.561" height="121.295"/>
+   <object id="5" x="440" y="0.5" width="461.5" height="60"/>
+   <object id="6" x="-1.50017" y="319.083" width="481" height="183.167"/>
+   <object id="7" x="520.5" y="319.417" width="481" height="182.833"/>
+  </objectgroup>
+  <objectgroup id="5" name="Objects">
+   <object id="8" x="369.333" y="170.667"/>
+   <object id="9" x="270.333" y="17" width="28.6667" height="23"/>
+  </objectgroup>
+ </group>
 </map>

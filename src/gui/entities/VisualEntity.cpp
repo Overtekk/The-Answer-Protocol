@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 14:38:54 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/17 09:55:27 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/25 10:41:29 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 # include "gui/entities/VisualEntity.hpp"
 # include "config/config_messages.h"
+#include "raylib.h"
 # include "utils.h"
 
 # define FRAME_DURATION 0.18f
@@ -155,6 +156,13 @@ int		VisualEntity::getHeight() const
 }
 
 // Error
-void VisualEntity::sendObjectError(const std::string &error) {
+void 	VisualEntity::sendObjectError(const std::string &error) {
    print_log(errObject(error));
+}
+
+void	VisualEntity::debug_orientation() {
+	if (IsKeyReleased(KEY_C)) {
+		if (this->_orientation == EntityDirection::RIGHT) {setOrientation(EntityDirection::LEFT); }
+		else if (this->_orientation == EntityDirection::LEFT) {setOrientation(EntityDirection::RIGHT); }
+	}
 }
