@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 11:28:25 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/10 13:53:22 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:14:43 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "server/manager/GasterManager.hpp"
 # include "server/CommandHandler.hpp"
 # include "server/TCPServer.hpp"
+# include "server/TCP_event.hpp"
 # include "config/config.hpp"
 # include "config/config_messages.h"
 # include "server.h"
@@ -38,15 +39,17 @@ int main() {
 	 }
 
 	// Create the manager.
-	 GasterManager gaster(world_data);
+	GasterManager gaster(world_data);
 
-	 CommandHandler	cmd_handler(gaster);
+	CommandHandler	cmd_handler(gaster);
 
-	 // Create the server.
-	 TCPServer server(SERVER_PORT, cmd_handler);
-	 std::cout << SERVER_LISTENING_PORT << SERVER_PORT << "...\n";
-	 std::cout << SERVER_LISTENING_MSG;
-	 server.run();
+	TCPEvent	evt_handler(gaster);
+
+	// Create the server.
+	TCPServer server(SERVER_PORT, cmd_handler, evt_handler);
+	std::cout << SERVER_LISTENING_PORT << SERVER_PORT << "...\n";
+	std::cout << SERVER_LISTENING_MSG;
+	server.run();
 
 	return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 10:47:46 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/25 11:24:22 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/26 10:09:01 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,7 +513,6 @@ void	CommandHandler::commandMove(TCPSession& session, std::string& argument) {
 			return;
 		}
 
-	TCPEvent event = TCPEvent(_manager);
 	const std::string prev_room = _manager.getPlayerRoom(session.getUsername());
 
 	// Check if player can move

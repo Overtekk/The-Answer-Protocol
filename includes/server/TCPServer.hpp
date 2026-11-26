@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TCPServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:18 by roandrie          #+#    #+#             */
-/*   Updated: 2026/10/12 13:58:45 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:21:06 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@
 # include "server/TCPSession.hpp"
 
 class CommandHandler;
+class TCPEvent;
 
 
 class TCPServer {
 	private :
 		TCPSocket		_listen_socket;
 		CommandHandler&	_cmd_handler;
+		TCPEvent&		_evt_handler;
 
 		std::unordered_map<int, std::unique_ptr<TCPSession>>	_sessions;
 		std::vector<struct pollfd>	_poll_fds;
@@ -51,7 +53,7 @@ class TCPServer {
 
 	public :
 		// --- CONSTRUCTOR ---
-		explicit TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log = false);
+		explicit TCPServer(std::uint16_t port, CommandHandler& cmd_handler, TCPEvent& evt_handler, bool save_log = false);
 		// --- DESTRUCTOR ---
 		~TCPServer() = default;
 

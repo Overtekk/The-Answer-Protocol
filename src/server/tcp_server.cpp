@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp_server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roandrie <roandrie@student.42lehavre.fr    +#+  +:+       +#+        */
+/*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/07 15:22:45 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/18 14:41:46 by roandrie         ###   ########.fr       */
+/*   Updated: 2026/11/26 10:22:01 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "server/TCPServer.hpp"
 # include "server/CommandHandler.hpp"
+# include "server/TCP_event.hpp"
 # include "server/logger.hpp"
 # include "config/config_messages.h"
 # include "utils.h"
@@ -23,9 +24,10 @@
 // ============================================================================
 // =====================       CONSTRUCTOR      ===============================
 // ============================================================================
-TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, bool save_log) :
+TCPServer::TCPServer(std::uint16_t port, CommandHandler& cmd_handler, TCPEvent& evt_handler, bool save_log) :
 	_listen_socket(-1),
 	_cmd_handler(cmd_handler),
+	_evt_handler(evt_handler),
 	_is_running(false),
 	_save_log_in_file(save_log)
 {
@@ -43,6 +45,7 @@ void	TCPServer::run() {
 	while (_is_running) {
 		// make the enemies play (before buildPollFds, so new messages are sent right away)
 		_cmd_handler.updateCombats(_sessions);
+		_evt_handler.updateEvents(_sessions);
 		buildPollFds();
 
 		int return_value = poll(_poll_fds.data(), _poll_fds.size(), 100);

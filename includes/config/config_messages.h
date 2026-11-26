@@ -6,7 +6,7 @@
 /*   By: npillet <npillet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/10 11:51:32 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/25 12:10:49 by npillet          ###   ########.fr       */
+/*   Updated: 2026/11/26 09:23:18 by npillet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 // ==== NAME ====
 // ==============
 # define NAME_SERVER				"[" BBLU "Server" RESET "] "
-# define NAME_GASTER_MANAGER		"[" GRN "GasterManager" GRY "]: "
+# define NAME_GASTER_MANAGER		"[GasterManager]: "
 # define NAME_EVENT					"" CYN "EVT "
 
 // ==============
