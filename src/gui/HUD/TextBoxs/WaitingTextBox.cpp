@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/25 16:59:31 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/25 17:02:03 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 13:42:31 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 
 
 WaitingTextBox::WaitingTextBox(
-    const std::string &msg
-):  TextBoxInterface(msg)
+    const std::string &msg,
+    int font_size
+):  TextBoxInterface(msg, font_size)
 {}
 
 void	WaitingTextBox::skipTextBox() {

@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/14 12:13:57 by roandrie          #+#    #+#             */
-/*   Updated: 2026/11/26 16:43:22 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 13:57:31 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@
 # include <iostream>
 # include <string.h>
 
-# include "gui/HUD/TextBoxs/WaitingTextBox.hpp"
 # include "raylib.h"
 # include "gui/rooms/RoomManager.hpp"
 # include "gui/GameCamera.hpp"
 # include "gui/data/VisualWorldState.hpp"
 # include "gui/entities/User.hpp"
 # include "gui/HUD/TextBoxs/TextBoxManager.hpp"
+# include "gui/HUD/TextBoxs/AutoTextBox.hpp"
 # include "gui/Items/VisualItemWeapon.hpp"
 # include "gui/Items/VisualItemConsumable.hpp"
 # include "base_class/entities/NPC.hpp"
@@ -113,7 +113,8 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 		connection.recive();
 	}
 
-	TextBoxManager::access().addTextBox<WaitingTextBox>("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+	// TextBoxManager::access().addTextBox<AutoTextBox>("Test Cedric"); <-- textBox exemple
+
     while (!WindowShouldClose())
     {
 		connection.recive();
@@ -131,7 +132,6 @@ void graphic(WorldConfig& world_config, int argc, char** argv)
 
 			BeginMode2D(*camera.getCamera());
 			{
-				// DrawTMX(room.getCurrentRoom()->getTileMap(), camera.getCamera(), NULL, 0, 0, WHITE);
 				room.drawRoom(&camera);
 				data.user->onDraw();
 				data.user->draw_foot();

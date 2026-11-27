@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 13:45:19 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/26 16:01:37 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 11:48:23 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <nlohmann/json.hpp>
 
 # include "gui/HUD/TextBoxs/TextBoxManager.hpp"
-# include "gui/HUD/TextBoxs/AutoTextBox.hpp"
+# include "gui/HUD/TextBoxs/WaitingTextBox.hpp"
 # include "gui/GameCamera.hpp"
 # include "gui/rooms/RoomManager.hpp"
 # include "gui/Items/VisualItem.hpp"
@@ -127,7 +127,7 @@ void    		RoomManager::checkItemsPickedUp() {
 		if (IsKeyReleased(KEY_E)) {
 			if (CheckCollisionPointRec(this->_user->getPos(), item->getItemBox())) {
 				item->ItemPicked();
-				TextBoxManager::access().addTextBox<AutoTextBox>("You found an item !");
+				TextBoxManager::access().addTextBox<WaitingTextBox>("You found an item !");
 			}
 		}
 	}

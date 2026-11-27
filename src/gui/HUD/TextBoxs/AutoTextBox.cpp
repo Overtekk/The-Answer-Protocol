@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/25 16:32:47 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/25 16:55:46 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 13:42:12 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 
 AutoTextBox::AutoTextBox(
     const std::string &msg,
+    int font_size,
     float skip_time
-):  TextBoxInterface(msg),
+):  TextBoxInterface(msg, font_size),
     skip_timer(skip_time)
 {}
 

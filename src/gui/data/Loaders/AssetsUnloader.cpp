@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 14:04:20 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/19 08:50:34 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 12:19:52 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,5 @@ void UnloadAssets(LoadedAssets& assets) {
     }
     assets.sprites.clear();
     assets.tile_maps.clear();
+    UnloadFont(assets.font);
 }

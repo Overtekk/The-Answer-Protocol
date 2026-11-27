@@ -6,7 +6,7 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 13:23:31 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/18 12:37:16 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 12:16:35 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ struct LoadedAssets
 {
     Assets                                      assets;
     
-    std::unordered_map<std::string, Texture2D> sprites;
-    std::unordered_map<std::string, TmxMap*> tile_maps;
+    std::unordered_map<std::string, Texture2D>  sprites;
+    std::unordered_map<std::string, TmxMap*>    tile_maps;
+    Font                                        font;
 };

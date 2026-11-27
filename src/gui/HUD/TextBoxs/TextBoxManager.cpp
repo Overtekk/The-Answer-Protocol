@@ -6,10 +6,13 @@
 /*   By: nbuchy <nbuchy@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/25 15:22:38 by nbuchy            #+#    #+#             */
-/*   Updated: 2026/11/26 16:12:56 by nbuchy           ###   ########.fr       */
+/*   Updated: 2026/11/27 13:45:26 by nbuchy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
+# include <string>
+# include <vector>
 # include "raylib.h"
 # include "gui/HUD/TextBoxs/TextBoxInterface.hpp"
 # include "gui/HUD/TextBoxs/TextBoxManager.hpp"
@@ -17,8 +20,33 @@
 
 void	TextBoxManager::loadAssets(LoadedAssets &assets){
     this->_hud_texture = assets.sprites.at("HUD");
+    this->_font = assets.font;
 }
 
+std::vector<std::string>	TextBoxManager::msg_splitter(std::string &msg) {
+    size_t last_index = 0;
+    std::vector<std::string> result;
+    std::string line = "";
+
+    for (size_t i = 0 ; i < msg.length(); i++) {
+        line = msg.substr(last_index, (i - last_index) + 1);
+        // split if \n
+        if (line.back() == '\n') {
+            result.push_back(line);
+            i++;
+            last_index = i;
+        }
+        // if line too long, split from the last space 
+        else if (MeasureTextEx(_font, line.c_str(), FONT_SIZE, 5).x > max_txt_lenght) {
+            size_t last_space_index = line.rfind(" ");
+            result.push_back(line.substr(0, last_space_index) + "\n");
+            i = last_index + last_space_index + 1;
+            last_index = i;
+        }
+    }
+    result.push_back(line);
+    return (result);
+}
 
 void    TextBoxManager::updatedTextBoxes() {
     if (this->_boxes.empty() == false){
@@ -40,7 +68,7 @@ void    TextBoxManager::drawTextBoxes() {
     if (this->_boxes.empty() == false) {
 		
         DrawTexturePro(_hud_texture, rec_src, rec_dest, Vector2{rec_dest.width / 2, rec_dest.height / 2}, 0.0f, WHITE);
-        this->_boxes.front().get()->displayText(rec_dest.x - x_txt_offset, rec_dest.y - y_txt_offset, max_txt_lenght);
+        this->_boxes.front().get()->displayText(rec_dest.x - x_txt_offset, rec_dest.y - y_txt_offset, _font);
     }
 }
 
